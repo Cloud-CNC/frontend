@@ -1,9 +1,10 @@
 module.exports = {
   root: true,
   env: {
+    browser: true,
     node: true
   },
-  'extends': [
+  extends: [
     'plugin:vue/essential',
     'eslint:recommended'
   ],
@@ -12,7 +13,36 @@ module.exports = {
   },
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+		'arrow-parens': [
+			'warn',
+			'as-needed'
+		],
+		'brace-style': [
+			'warn',
+			'allman'
+		],
+		'camelcase': [
+			'warn',
+			{
+				properties: 'always'
+			}
+		],
+		'curly': 'warn',
+		'no-var': 'error',
+		'no-extra-semi': 'error',
+		'object-curly-spacing': 'warn',
+		'semi': 'error',
+		'quotes': [
+			'warn',
+			'single'
+		],
+		'quote-props': [
+			'warn',
+			'consistent-as-needed'
+		],
+		'space-in-parens': 'warn',
+		'prefer-const': 'warn'
   },
   overrides: [
     {
@@ -25,4 +55,4 @@ module.exports = {
       }
     }
   ]
-}
+};
