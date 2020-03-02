@@ -54,12 +54,12 @@
 <script>
 //Imports
 import api from '../assets/api';
-import gcodeViewer from 'vue-gcode-viewer';
+import vueGcodeViewer from 'vue-gcode-viewer';
 import lightbox from '../components/lightbox';
 
 export default {
   components: {
-    'gcode-viewer': gcodeViewer,
+    'gcode-viewer': vueGcodeViewer,
     lightbox
   },
   data: () => ({

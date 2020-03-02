@@ -2,8 +2,10 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib';
 
+//Vue plugin
 Vue.use(Vuetify);
 
+//Vuetify singleton
 export default new Vuetify({
   icons: {
     iconfont: 'md'

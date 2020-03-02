@@ -2,6 +2,9 @@
  * @fileoverview API Wrapper
  */
 
+//Imports
+import app from '../main';
+
 /**
  * API Wrapper
  */
@@ -207,7 +210,7 @@ export default {
       const res = await rest('POST', '/controllers', {
         name
       });
-      
+
       return {
         _id: res._id,
         key: res.key
@@ -321,7 +324,7 @@ export default {
 
 /**
  * Simplified REST API client
- * @param {String} method HTTP Mwthod
+ * @param {String} method HTTP Method
  * @param {String} url Relative URL
  * @param {Object} body JSON Body
  * @returns {Promise<Object>}
@@ -336,26 +339,23 @@ async function rest(method, url, body = null)
     options.headers = {'Content-Type': 'application/json'};
   }
 
-  //URL
-  url = process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'testing' ? `https://127.0.0.1:443/api${url}` : `/api${url}`;
-
   //Request
-  let res = await (await fetch(url, options)).text();
+  let res = await (await fetch(`/api${url}`, options)).text();
 
   //Parse
   try
   {
     res = JSON.parse(res);
   }
-  catch (e)
+  catch (error)
   {
-    console.error(e);
+    console.error(error);
   }
 
   //Error
   if (res.error && res.error.name == 'Unrecognized Session')
   {
-    window.$router.push('/login');
+    app.$router.push('/login');
   }
   else if (res.error)
   {

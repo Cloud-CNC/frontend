@@ -1,9 +1,5 @@
 <template>
-  <v-dialog
-    :value="value"
-    @input="event => $emit('input', event)"
-    max-width="500px"
-  >
+  <v-dialog :value="value" @input="event => $emit('input', event)" max-width="500px">
     <v-card>
       <v-card-title primary-title>
         <slot name="title"></slot>

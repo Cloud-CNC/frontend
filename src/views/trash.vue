@@ -1,30 +1,25 @@
 <template>
-  <v-container align-start fluid fill-height>
-    <v-col cols="12">
-      <v-row justify="space-around">
-        <v-card v-for="file in files" :key="file._id" elevation="6" max-width="500">
-          <v-card-title>{{ file.name }}</v-card-title>
-          <v-card-text v-if="file.description != 'null'">{{ file.description }}</v-card-text>
-          <v-card-actions>
-            <v-item-group>
-              <v-btn @click="recover(file)">Recover</v-btn>
-              <v-btn color="error" @click="remove(file)">Remove</v-btn>
-            </v-item-group>
-          </v-card-actions>
-        </v-card>
-        <v-card v-if="files.length == 0">
-          <v-card-title class="font-weight-light">No files available</v-card-title>
-        </v-card>
-      </v-row>
-    </v-col>
-  </v-container>
+  <gallery :entities="files">
+    <template v-slot:="props">
+      <v-item-group>
+        <v-btn @click="recover(props.entity)">Recover</v-btn>
+        <v-btn color="error" @click="remove(props.entity)">Remove</v-btn>
+      </v-item-group>
+    </template>
+
+    <template v-slot:empty class="font-weight-light">No files available!</template>
+  </gallery>
 </template>
 
 <script>
 //Imports
 import api from '../assets/api';
+import gallery from '../components/gallery';
 
 export default {
+  components: {
+    gallery
+  },
   data: () => ({
     files: []
   }),

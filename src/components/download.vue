@@ -1,8 +1,5 @@
 <template>
-  <a
-    id="link"
-    ref="link"
-  ></a>
+  <a id="link" ref="link"></a>
 </template>
 
 <script>
@@ -16,7 +13,7 @@ export default {
   {
     this.$root.$on('download', id =>
     {
-      if(id == this.id)
+      if (id == this.id)
       {
         this.download();
       }

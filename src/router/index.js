@@ -13,8 +13,10 @@ import login from '../views/login.vue';
 import machines from '../views/machines.vue';
 import trash from '../views/trash.vue';
 
+//Vue plugin
 Vue.use(VueRouter);
 
+//Routes
 const routes = [
   {
     path: '/', redirect: '/files'
@@ -48,10 +50,9 @@ const routes = [
   }
 ];
 
-const router = new VueRouter({
+//Router singleton
+export default new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
 });
-
-export default router;
