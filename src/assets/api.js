@@ -51,9 +51,9 @@ export default {
     /**
      * Get all roles
      */
-    roles()
+    async roles()
     {
-      return rest('GET', '/accounts/roles');  
+      return (await rest('GET', '/accounts/roles')).roles;  
     },
     /**
      * Create an account
