@@ -3,7 +3,7 @@
  */
 
 //Imports
-import app from '../main';
+import main from '../main';
 
 /**
  * API Wrapper
@@ -49,18 +49,23 @@ export default {
       return rest('GET', '/accounts/all');
     },
     /**
+     * Get all roles
+     */
+    roles()
+    {
+      return rest('GET', '/accounts/roles');  
+    },
+    /**
      * Create an account
-     * @param {String} role 'admin' or 'user'
-     * @param {String} firstName 
-     * @param {String} lastName 
+     * @param {String} role
      * @param {String} username 
      * @param {String} password 
      * @param {Boolean} mfa
      */
-    async create(role, firstName, lastName, username, password, mfa)
+    async create(role, username, password, mfa)
     {
       return rest('POST', '/accounts', {
-        role, firstName, lastName, username, password, mfa
+        role, username, password, mfa
       });
     },
     impersonate: {
@@ -99,8 +104,6 @@ export default {
      * Update an account
      * @param {Object} data 
      * @param {String} data.role
-     * @param {String} data.firstName
-     * @param {String} data.lastName
      * @param {String} data.username
      * @param {String} data.password
      * @param {String} data.mfa
@@ -108,7 +111,7 @@ export default {
      */
     async update(data, id = 'own')
     {
-      await rest('PATCH', `/accounts/${id}`, data);
+      return rest('PATCH', `/accounts/${id}`, data);
     },
     /**
      * Remove an account
@@ -299,10 +302,8 @@ export default {
     },
     /**
      * Update a machine
-     * @param {Object} data 
+     * @param {Object} data
      * @param {String} data.role
-     * @param {String} data.firstName
-     * @param {String} data.lastName
      * @param {String} data.username
      * @param {String} data.password
      * @param {String} id 
@@ -343,30 +344,33 @@ async function rest(method, url, body = null)
   let res = await (await fetch(`/api${url}`, options)).text();
 
   //Parse
-  try
+  if (res != '')
   {
-    res = JSON.parse(res);
-  }
-  catch (error)
-  {
-    console.error(error);
+    try
+    {
+      res = JSON.parse(res);
+    }
+    catch (error)
+    {
+      console.error(error);
+      return Promise.reject(error);
+    }
   }
 
   //Error
   if (res.error && res.error.name == 'Unrecognized Session')
   {
-    app.$router.push('/login');
+    main.$router.push('/login');
   }
   else if (res.error)
   {
     //Display popup
-    const error = window.vm.$children[0].error;
+    const error = main.$children[0].error;
     error.name = res.error.name;
     error.description = res.error.description;
     error.visible = true;
 
-    //Log
-    console.error(res.error);
+    console.error(`${res.error.name} - ${res.error.description}`);
     return Promise.reject(res.error);
   }
   else

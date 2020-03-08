@@ -9,7 +9,6 @@ export default {
   name: /^.{3,30}$/,
   otp: /^\d{6}$/,
   password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-z0-9]).{12,256}$/,
-  role: /^admin|user$/,
   status: /^0|1$/,
   tags: /^.{0,200}$/,
   username: /^.{3,30}$/

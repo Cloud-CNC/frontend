@@ -28,7 +28,7 @@
     </v-container>
     <v-footer fixed color="transparent">
       <v-spacer>
-        <v-btn icon x-large color="accent" @click="add()" id="plus">
+        <v-btn icon x-large color="accent" @click="$emit('add')" id="plus">
           <v-icon id="add">add</v-icon>
         </v-btn>
       </v-spacer>
@@ -40,12 +40,6 @@
 export default {
   props: {
     entities: Array
-  },
-  methods: {
-    add: function ()
-    {
-      this.$emit('add');
-    }
   }
 };
 </script>

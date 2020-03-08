@@ -8,29 +8,14 @@
           <v-card-text id="container">
             <v-form v-model="prechecks">
               <v-text-field
-                filled
-                single-line
                 :rules="[rules.required, rules.username]"
                 label="Username"
                 prepend-icon="account_circle"
                 v-if="initial"
                 v-model="username"
               ></v-text-field>
+              <password icon v-model="password"></password>
               <v-text-field
-                filled
-                single-line
-                :append-icon="password.visible ? 'visibility_off' : 'visibility'"
-                :rules="[rules.required, rules.password]"
-                :type="password.visible ? 'text' : 'password'"
-                @click:append="password.visible = !password.visible"
-                label="Password"
-                prepend-icon="lock"
-                v-if="initial"
-                v-model="password.value"
-              ></v-text-field>
-              <v-text-field
-                filled
-                single-line
                 :rules="[rules.required, rules.otp]"
                 label="MFA Code"
                 prepend-icon="vpn_key"
@@ -59,20 +44,21 @@
 //Imports
 import api from '../assets/api';
 import filters from '../assets/filters';
+import password from '../components/password';
 
 export default {
+  components: {
+    password
+  },
   data: () => ({
+    pswd: null,
     initial: true,
     username: null,
-    password: {
-      value: null,
-      visible: false
-    },
+    password: null,
     otp: null,
     rules: {
       required: value => value != null || 'Required',
       username: value => filters.name.test(value) || 'Invalid username',
-      password: value => filters.password.test(value) || 'Invalid password',
       otp: value => filters.otp.test(value) || 'Invalid code'
     },
     prechecks: false,
@@ -84,7 +70,7 @@ export default {
       //Initial phase of MFA (Or only stage if disabled)
       if (this.initial)
       {
-        api.sessions.login(this.username, this.password.value).then(res =>
+        api.sessions.login(this.username, this.password).then(res =>
         {
           if (res.valid && !res.mfa)
           {

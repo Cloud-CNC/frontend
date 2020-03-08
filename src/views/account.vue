@@ -1,96 +1,107 @@
 <template>
-  <v-container align-center fluid fill-height>
-    <v-col cols="12">
-      <v-row justify="center">
-        <v-card width="500">
-          <v-card-title class="font-weight-light text-center">Edit your account</v-card-title>
-          <v-card-text>
-            <v-form>
-              <v-list>
-                <v-list-item>
-                  <v-text-field
-                    ref="firstName"
-                    v-model="account.firstName"
-                    counter="30"
-                    label="First Name"
-                    :rules="[rules.required, rules.firstName]"
-                    @blur="update('firstName')"
-                  />
-                </v-list-item>
+  <div>
+    <lightbox v-model="lightbox.visible">
+      <template v-slot:title>MFA QR Code</template>
 
-                <v-list-item>
-                  <v-text-field
-                    ref="lastName"
-                    v-model="account.lastName"
-                    counter="30"
-                    label="Last Name"
-                    :rules="[rules.required, rules.lastName]"
-                    @blur="update('lastName')"
-                  />
-                </v-list-item>
+      <template v-slot:content>
+        <v-list>
+          <v-list-item>
+            <qr :text="lightbox.text"></qr>
+          </v-list-item>
+          <v-list-item>
+            <v-btn @click="lightbox.visible = false">Close</v-btn>
+          </v-list-item>
+        </v-list>
+      </template>
+    </lightbox>
 
-                <v-list-item>
-                  <v-text-field
-                    ref="username"
-                    v-model="account.username"
-                    counter="30"
-                    label="Username"
-                    :rules="[rules.required, rules.username]"
-                    @blur="update('username')"
-                  />
-                </v-list-item>
+    <v-container align-center fluid fill-height>
+      <v-col cols="12">
+        <v-row justify="center">
+          <v-card width="500">
+            <v-card-title class="font-weight-light text-center">Edit your account</v-card-title>
+            <v-card-text>
+              <v-form>
+                <v-list>
+                  <v-list-item>
+                    <v-text-field
+                      ref="username"
+                      v-model="account.username"
+                      counter="30"
+                      label="Username"
+                      :rules="[rules.required, rules.username]"
+                      @blur="update('username')"
+                    />
+                  </v-list-item>
 
-                <v-list-item>
-                  <v-text-field
-                    ref="password"
-                    v-model="account.password"
-                    counter="256"
-                    label="Password"
-                    type="password"
-                    :rules="[rules.required, rules.password]"
-                    @blur="update('password')"
-                  />
-                </v-list-item>
+                  <v-list-item>
+                    <password ref="password" v-model="account.password" @blur="update('password')"></password>
+                  </v-list-item>
 
-                <v-list-item>
-                  <v-select
-                    ref="role"
-                    v-model="account.role"
-                    :items="account.roles"
-                    label="Role"
-                    @blur="update('role')"
-                  />
-                </v-list-item>
-              </v-list>
-            </v-form>
-          </v-card-text>
-        </v-card>
-      </v-row>
-    </v-col>
-  </v-container>
+                  <v-list-item>
+                    <v-checkbox
+                      ref="mfa"
+                      v-model="account.mfa"
+                      label="MFA"
+                      @click.passive.stop="update('mfa')"
+                    ></v-checkbox>
+                  </v-list-item>
+
+                  <v-list-item>
+                    <v-select
+                      :items="account.roles"
+                      @blur="update('role')"
+                      label="Role"
+                      ref="role"
+                      v-model="account.role"
+                    >
+                      <template
+                        v-slot:item="role"
+                      >{{role.item.charAt(0).toUpperCase() + role.item.substring(1)}}</template>
+                      <template
+                        v-slot:selection="role"
+                      >{{role.item.charAt(0).toUpperCase() + role.item.substring(1)}}</template>
+                    </v-select>
+                  </v-list-item>
+                </v-list>
+              </v-form>
+            </v-card-text>
+          </v-card>
+        </v-row>
+      </v-col>
+    </v-container>
+  </div>
 </template>
 
 <script>
 //Imports
 import api from '../assets/api';
 import filters from '../assets/filters';
+import lightbox from '../components/lightbox';
+import password from '../components/password';
+import qr from '../components/qr';
 
 export default {
+  components: {
+    lightbox,
+    password,
+    qr
+  },
   data: () => ({
     account: {
-      roles: ['Admin', 'User'],
+      roles: ['error'],
       role: null,
-      firstName: null,
-      lastName: null,
       username: null,
-      password: null
+      password: null,
+      mfa: false
+    },
+    lightbox: {
+      text: null,
+      visible: false
     },
     rules: {
       required: value => value != null || 'Required',
-      firstName: value => filters.name.test(value) || 'Invalid first name',
-      lastName: value => filters.name.test(value) || 'Invalid last name',
-      username: value => filters.name.test(value) || 'Invalid username',
-      password: value => filters.password.test(value) || 'Invalid password'
+      username: value => filters.name.test(value) || 'Invalid username'
     }
   }),
   created: function ()
@@ -98,10 +109,15 @@ export default {
     //Get account
     api.accounts.get().then(account =>
     {
-      this.account.firstName = account.firstName;
-      this.account.lastName = account.lastName;
       this.account.username = account.username;
-      this.account.role = account.role.charAt(0).toUpperCase() + account.role.substring(1);
+      this.account.mfa = account.mfa;
+      this.account.role = account.role;
+    });
+
+    //Get roles
+    api.accounts.roles().then(roles =>
+    {
+      this.account.roles = roles;
     });
   },
   methods: {
@@ -111,11 +127,13 @@ export default {
       //Precheck
       if (this.$refs[property].valid)
       {
-        //Update backend
-        if (property == 'role')
+        if (property == 'mfa' && this.account.mfa)
         {
-          const role = this.account.role.charAt(0).toLowerCase() + this.account.role.substring(1);
-          api.accounts.update({[property]: role});
+          api.accounts.update({[property]: this.account[property]}).then(res =>
+          {
+            this.lightbox.text = res.otpauth;
+            this.lightbox.visible = true;
+          });
         }
         else
         {

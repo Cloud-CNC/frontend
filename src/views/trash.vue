@@ -1,6 +1,6 @@
 <template>
   <gallery :entities="files">
-    <template v-slot:="props">
+    <template v-slot:actions="props">
       <v-item-group>
         <v-btn @click="recover(props.entity)">Recover</v-btn>
         <v-btn color="error" @click="remove(props.entity)">Remove</v-btn>

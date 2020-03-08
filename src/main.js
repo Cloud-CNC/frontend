@@ -7,7 +7,7 @@ import vuetify from './plugins/vuetify';
 import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import 'material-icons/iconfont/material-icons.scss';
 
-Vue.config.productionTip = false;
+Vue.config.devtools = true;
 
 //Vue singleton
 export default new Vue({

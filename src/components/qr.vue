@@ -18,7 +18,6 @@ export default {
       {
         this.$nextTick(() =>
         {
-          console.log('Updating!');
           qrcode.toCanvas(this.$refs.canvas, this.text);
         });
       }

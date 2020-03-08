@@ -34,9 +34,10 @@
             <v-list-item>
               <v-combobox
                 chips
+                deletable-chips
                 multiple
                 :rules="[rules.required, rules.tags]"
-                @blur="update('tags')"
+                @change="update('tags')"
                 label="Tags"
                 ref="tags"
                 v-model="lightboxes.upsert.tags"
@@ -103,7 +104,7 @@
 
     <gallery @add="upsert()" :entities="machines">
       <template v-slot:description="props">
-        <p>Machine bound to controller: {{props.entity.controller.name}}</p>
+        <p>Machine bound to controller: {{props.entity.controller}}</p>
         <v-chip-group column>
           <v-chip small :key="tag" v-for="tag in props.entity.tags">{{ tag }}</v-chip>
         </v-chip-group>
@@ -207,7 +208,7 @@ export default {
     //Create machine
     create: function ()
     {
-      api.machines.create(this.lightboxes.upsert.controller._id, this.lightboxes.upsert.name, this.lightboxes.upsert.tags, this.lightboxes.upsert.length, this.lightboxes.upsert.width, this.lightboxes.upsert.height).then(({_id, controller}) =>
+      api.machines.create(this.lightboxes.upsert.controller, this.lightboxes.upsert.name, this.lightboxes.upsert.tags, this.lightboxes.upsert.length, this.lightboxes.upsert.width, this.lightboxes.upsert.height).then(({_id, controller}) =>
       {
         //Add to list
         this.machines.push({
