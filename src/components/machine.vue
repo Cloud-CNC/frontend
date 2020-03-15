@@ -1,6 +1,27 @@
 <template>
   <v-container cols="12">
     <v-row>
+      <!--
+        Place camera feeds for all machines here.
+        Use the "v-if" prop (v-if="machine._id == '<ID>'") to hide/show elements for different machines.
+
+        Access the API via the "api" object or use the "send" function to send raw data to the appropriate machine.
+        
+        Lightbox visibility is available via the "visible" boolean.
+        Machine information is available via the "machine" object:
+        {
+          "tags": String[]
+          "_id": String,
+          "controller": String,
+          "name": String,
+          "length": Number,
+          "width": Number,
+          "height": Number,
+          "__v": Number
+        }
+      -->
+    </v-row>
+    <v-row>
       <v-col cols="5">
         <v-row justify="center">
           <v-list>
@@ -85,7 +106,14 @@ export default {
     command: null
   }),
   props: {
-    machine: Object
+    machine: {
+      type: Object,
+      required: true
+    },
+    visible: {
+      type: Boolean,
+      required: true
+    }
   },
   methods: {
     send(data)

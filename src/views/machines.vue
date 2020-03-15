@@ -98,13 +98,13 @@
     <lightbox v-model="lightboxes.control.visible">
       <template v-slot:title>Control {{machine.name}}</template>
       <template v-slot:content>
-        <machine :machine="machine" />
+        <machine :machine="machine" :visible="lightboxes.control.visible" />
       </template>
     </lightbox>
 
     <gallery @add="upsert()" :entities="machines">
       <template v-slot:description="props">
-        <p>Machine bound to controller: {{props.entity.controller}}</p>
+        <p>Machine bound to controller: {{controllers.find(controller => controller._id == props.entity.controller).name}}</p>
         <v-chip-group column>
           <v-chip small :key="tag" v-for="tag in props.entity.tags">{{ tag }}</v-chip>
         </v-chip-group>
@@ -167,11 +167,11 @@ export default {
   }),
   created: function ()
   {
-    //Get machines
-    api.machines.all().then(machines => this.machines = machines);
-
     //Get controllers
     api.controllers.all().then(controllers => this.controllers = controllers);
+
+    //Get machines
+    api.machines.all().then(machines => this.machines = machines);
   },
   methods:
   {
@@ -182,7 +182,7 @@ export default {
       if (machine == null)
       {
         this.lightboxes.upsert._id = null;
-        this.lightboxes.upsert.controller = this.controllers[0];
+        this.lightboxes.upsert.controller = this.controllers[0]._id;
         this.lightboxes.upsert.name = null;
         this.lightboxes.upsert.tags = [];
         this.lightboxes.upsert.length = 0;
