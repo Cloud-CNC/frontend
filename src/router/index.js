@@ -19,34 +19,89 @@ Vue.use(VueRouter);
 //Routes
 const routes = [
   {
-    path: '/', redirect: '/files'
+    path: '/',
+    redirect: '/files',
+    meta: {
+      menu: false
+    }
   },
   {
-    name: 'Login', path: '/login', component: login
+    name: 'Login',
+    path: '/login',
+    component: login,
+    meta: {
+      menu: false
+    }
   },
   {
-    name: 'File', path: '/file/:id', component: file
+    name: 'File',
+    path: '/file/:id',
+    component: file,
+    meta: {
+      menu: false
+    }
   },
   {
-    name: 'Files', path: '/files', component: files
+    name: 'Files',
+    path: '/files',
+    component: files,
+    meta: {
+      icon: 'folder',
+      menu: true
+    }
   },
   {
-    name: 'Trash', path: '/trash', component: trash
+    name: 'Trash',
+    path: '/trash',
+    component: trash,
+    meta: {
+      icon: 'delete',
+      menu: true
+    }
   },
   {
-    name: 'Machines', path: '/machines', component: machines
+    name: 'Machines',
+    path: '/machines',
+    component: machines,
+    meta: {
+      icon: 'dock',
+      menu: true
+    }
   },
   {
-    name: 'Controllers', path: '/controllers', component: controllers
+    name: 'Controllers',
+    path: '/controllers',
+    component: controllers,
+    meta: {
+      icon: 'account_tree',
+      menu: true
+    }
   },
   {
-    name: 'Admin', path: '/admin', component: admin
+    name: 'Admin',
+    path: '/admin',
+    component: admin,
+    meta: {
+      icon: 'gavel',
+      menu: true
+    }
   },
   {
-    name: 'Account', path: '/account/:id?', component: account
+    name: 'Account',
+    path: '/account/:id?',
+    component: account,
+    meta: {
+      icon: 'account_circle',
+      menu: true
+    }
   },
   {
-    name: '404', path: '/**', component: error
+    name: '404',
+    path: '/**',
+    component: error,
+    meta: {
+      menu: false
+    }
   }
 ];
 

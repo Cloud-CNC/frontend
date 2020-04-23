@@ -18,81 +18,16 @@
 
       <v-divider></v-divider>
 
-      <v-list-item>
+      <v-list-item v-for="route in menuRoutes" :key="route.path">
         <v-list-item-icon>
-          <v-icon>account_circle</v-icon>
+          <v-icon>{{route.meta.icon}}</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-btn
             text
             class="font-weight-light"
-            to="/account"
-          >Account</v-btn>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list-item>
-        <v-list-item-icon>
-          <v-icon>gavel</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>
-          <v-btn
-            text
-            class="font-weight-light"
-            to="/admin"
-          >Admin</v-btn>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list-item>
-        <v-list-item-icon>
-          <v-icon>folder</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>
-          <v-btn
-            text
-            class="font-weight-light"
-            to="/files"
-          >Files</v-btn>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list-item>
-        <v-list-item-icon>
-          <v-icon>delete</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>
-          <v-btn
-            text
-            class="font-weight-light"
-            to="/trash"
-          >Trash</v-btn>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list-item>
-        <v-list-item-icon>
-          <v-icon>dock</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>
-          <v-btn
-            text
-            class="font-weight-light"
-            to="/machines"
-          >Machines</v-btn>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list-item>
-        <v-list-item-icon>
-          <v-icon>account_tree</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>
-          <v-btn
-            text
-            class="font-weight-light"
-            to="/controllers"
-          >Controllers</v-btn>
+            :to="route.path"
+          >{{route.name}}</v-btn>
         </v-list-item-content>
       </v-list-item>
 
@@ -174,6 +109,12 @@ import api from './assets/api';
 import pkg from '../package.json';
 
 export default {
+  computed: {
+    menuRoutes: function()
+    {
+      return this.$router.options.routes.filter(route => route.meta.menu);
+    }
+  },
   created: function ()
   {
     //Dark mode
@@ -242,6 +183,10 @@ export default {
 </script>
 
 <style>
+html {
+  overflow-y: auto !important;
+}
+
 #error {
   padding: 12px;
 }

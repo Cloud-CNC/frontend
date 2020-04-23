@@ -4,6 +4,10 @@
 [![issues](https://img.shields.io/github/issues/Cloud-CNC/frontend)](https://github.com/Cloud-CNC/frontend/issues)
 [![last commit](https://img.shields.io/github/last-commit/Cloud-CNC/frontend)](https://github.com/Cloud-CNC/frontend/commits/master)
 
+## Production
+
+View guides, documentation and more at [cloud-cnc.github.io](https://cloud-cnc.github.io)
+
 This repository is only intended for developers, end users should probably use the [core repository](https://github.com/cloud-cnc/core) unless you're using a static resource server, then you can build your own frontend using this repository. This is used as a submodule in the [core repository](https://github.com/cloud-cnc/core).
 
 ## Development
