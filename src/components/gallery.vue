@@ -39,7 +39,10 @@
 <script>
 export default {
   props: {
-    entities: Array
+    entities: {
+      required: true,
+      type: Array
+    }
   }
 };
 </script>

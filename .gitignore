@@ -24,3 +24,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Istanbul
+.nyc_output
+coverage

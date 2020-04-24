@@ -99,7 +99,7 @@
 
 <script>
 //Imports
-import api from '../assets/api';
+import api from '@/assets/api';
 
 export default {
   data: () => ({
@@ -107,12 +107,12 @@ export default {
   }),
   props: {
     machine: {
-      type: Object,
-      required: true
+      required: true,
+      type: Object
     },
     visible: {
-      type: Boolean,
-      required: true
+      required: true,
+      type: Boolean
     }
   },
   methods: {

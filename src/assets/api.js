@@ -3,7 +3,7 @@
  */
 
 //Imports
-import main from '../main';
+import main from '@/main';
 
 /**
  * API Wrapper

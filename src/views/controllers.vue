@@ -1,7 +1,9 @@
 <template>
   <div>
     <lightbox v-model="lightbox.visible">
-      <template v-slot:title>{{ lightbox.create ? 'Create a new controller' : 'Edit ' + lightbox.name }}</template>
+      <template
+        v-slot:title
+      >{{ lightbox.create ? 'Create a new controller' : 'Edit ' + lightbox.name }}</template>
       <template v-slot:content>
         <v-form v-model="prechecks">
           <v-list>
@@ -31,15 +33,19 @@
       <template v-slot:actions="props">
         <v-item-group>
           <download
-            :data="props.entity.key"
-            :filename="`Controller_Key_${props.entity.name}_${props.entity._id}.txt`"
-            :id="props.entity._id"
-          ></download>
-          <v-btn @click="$root.$emit('download', props.entity._id)">Download</v-btn>
+            :data="download(props.entity.name, props.entity._id, props.entity.key)"
+            :filename="`${props.entity.name}.txt`"
+          >
+            <template>
+              <v-btn>Download</v-btn>
+            </template>
+          </download>
           <v-btn @click="showLightbox(props.entity)">Edit</v-btn>
           <v-btn color="error" @click="remove(props.entity)">Remove</v-btn>
         </v-item-group>
       </template>
+
+      <template v-slot:empty class="font-weight-light">No controllers available!</template>
     </gallery>
   </div>
 </template>
@@ -82,6 +88,11 @@ export default {
   },
   methods:
   {
+    //Generate download data
+    download: (name, _id, key) =>
+    {
+      return `Name: ${name}\r\nID: ${_id}\r\nKey: ${key}`;
+    },
     //Show lightbox
     showLightbox: function (controller)
     {

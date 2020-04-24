@@ -40,8 +40,8 @@ export default {
       type: Boolean
     },
     value: {
-      type: String,
-      required: true
+      required: true,
+      type: String
     }
   }
 };

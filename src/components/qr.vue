@@ -8,7 +8,10 @@ import qrcode from 'qrcode';
 
 export default {
   props: {
-    text: String
+    text: {
+      required: true,
+      type: String
+    }
   },
   watch: {
     text: {

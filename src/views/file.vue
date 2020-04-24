@@ -63,7 +63,9 @@ export default {
     lightbox
   },
   data: () => ({
-    machines: [],
+    machines: [{
+      _id: null
+    }],
     machine: null,
     file: {
       name: null,
@@ -117,7 +119,7 @@ export default {
         {
           extrusionColor: '#1B5E20',
           pathColor: '#4CAF50',
-          bedColor: '#212121',
+          bedColor: '#3a3a3a',
           backgroundColor: '#212121'
         } : {
           extrusionColor: '#1565C0',
