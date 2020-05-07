@@ -3,7 +3,8 @@
  */
 
 //Imports
-import main from '@/main';
+import router from '@/router/index';
+import store from '@/store/index';
 
 /**
  * API Wrapper
@@ -76,9 +77,10 @@ export default {
        */
       async start(id, name)
       {
-        //Client-side cookie
-        document.cookie = `impersonate=${name}`;
+        //Vuex
+        store.commit('showImpersonate', name);
 
+        //API
         await rest('POST', `/accounts/${id}/impersonate/start`);
       },
       /**
@@ -86,9 +88,10 @@ export default {
        */
       async stop()
       {
-        //Client-side cookie
-        document.cookie = 'impersonate=;';
+        //Vuex
+        store.commit('hideImpersonate');
 
+        //API
         await rest('POST', '/accounts/impersonate/stop');
       }
     },
@@ -341,7 +344,7 @@ async function rest(method, url, body = null)
   }
 
   //Request
-  let res = await (await fetch(`/api${url}`, options)).text();
+  let res = await (await fetch(`${process.env.config.core.url}/api${url}`, options)).text();
 
   //Parse
   if (res != '')
@@ -360,17 +363,14 @@ async function rest(method, url, body = null)
   //Error
   if (res.error && res.error.name == 'Unrecognized Session')
   {
-    main.$router.push('/login');
+    router.push('/login');
   }
   else if (res.error)
   {
     //Display popup
-    const error = main.$children[0].error;
-    error.name = res.error.name;
-    error.description = res.error.description;
-    error.visible = true;
+    store.commit('showError', res.error.name, res.error.description);
 
-    console.error(`${res.error.name} - ${res.error.description}`);
+    console.error(`API Error: ${res.error.name} - ${res.error.description}`);
     return Promise.reject(res.error);
   }
   else

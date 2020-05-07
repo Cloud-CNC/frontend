@@ -1,11 +1,16 @@
+/**
+ * @fileoverview Primary bootstrapping location
+ */
+
 //Imports
-import Vue from 'vue';
-import App from './App.vue';
 import './registerServiceWorker';
-import router from './router';
-import vuetify from './plugins/vuetify';
-import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import 'material-icons/iconfont/material-icons.scss';
+import 'roboto-fontface/css/roboto/roboto-fontface.css';
+import App from './App.vue';
+import router from './router';
+import store from './store';
+import Vue from 'vue';
+import vuetify from './plugins/vuetify';
 
 Vue.config.devtools = true;
 
@@ -13,5 +18,6 @@ Vue.config.devtools = true;
 export default new Vue({
   router,
   vuetify,
+  store,
   render: h => h(App)
 }).$mount('#app');

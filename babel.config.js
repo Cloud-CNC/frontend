@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Babel config
+ */
+
+//Export
 module.exports = {
   env: {
     test: {

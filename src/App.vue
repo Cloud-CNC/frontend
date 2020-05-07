@@ -61,18 +61,18 @@
       <router-view></router-view>
     </v-content>
 
-    <v-snackbar :timeout="0" v-model="impersonate.visible">
-      You're currently impersonating {{impersonate.name}}!
-      <v-btn color="accent" @click="stopImpersonate(); impersonate.visible = false">Stop</v-btn>
+    <v-snackbar :timeout="0" v-model="$store.state.impersonate.visible">
+      You're currently impersonating {{$store.state.impersonate.name}}!
+      <v-btn color="accent" @click="stopImpersonate(); $store.commit('hideImpersonate')">Stop</v-btn>
     </v-snackbar>
 
-    <v-bottom-sheet v-model="error.visible">
+    <v-bottom-sheet v-model="$store.state.error.visible">
       <v-sheet class="text-center" color="error" id="error">
-        <v-btn icon x-large @click="error.visible = false">
+        <v-btn icon x-large @click="$store.commit('hideError')">
           <v-icon>close</v-icon>
         </v-btn>
-        <h1 class="font-weight-light title">{{error.name}}</h1>
-        <p class="font-weight-light" id="error-description">{{error.description}}</p>
+        <h1 class="font-weight-light title">{{$store.state.error.name}}</h1>
+        <p class="font-weight-light" id="error-description">{{$store.state.error.description}}</p>
       </v-sheet>
     </v-bottom-sheet>
   </v-app>
@@ -93,36 +93,12 @@ export default {
   created: function ()
   {
     //Dark mode
-    let dark = true;
-
-    //No cookie, use OS preference
-    if (document.cookie.length == 0 || !/dark=(?=true)/.test(document.cookie))
-    {
-      dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-    //Cookie
-    else
-    {
-      dark = /dark=(?=true)/.test(document.cookie);
-    }
-    this.$vuetify.theme.dark = dark;
-
-    //Impersonate
-    if (document.cookie.length > 0 && /impersonate=([^;]+)/.test(document.cookie))
-    {
-      this.impersonate.name = /impersonate=([^;]+)/.exec(document.cookie)[1];
-      this.impersonate.visible = true;
-    }
+    this.$vuetify.theme.dark = this.$store.state.dark;
 
     //Version information
     this.version = pkg.version;
   },
   data: () => ({
-    error: {
-      name: null,
-      description: null,
-      visible: false
-    },
     impersonate: {
       name: null,
       visible: false
@@ -133,14 +109,8 @@ export default {
   methods: {
     invertTheme: function ()
     {
-      //Get new theme
-      const theme = !this.$vuetify.theme.dark;
-
-      //Invert theme
-      this.$vuetify.theme.dark = theme;
-
-      //Set cookie
-      document.cookie = 'dark=' + theme;
+      //Vuex
+      this.$store.commit('invertTheme');
     },
     logout: function ()
     {

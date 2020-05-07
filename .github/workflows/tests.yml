@@ -17,4 +17,4 @@ jobs:
       - name: Install Modules
         run: sudo npm ci --unsafe-perm=true --allow-root
       - name: Run Tests
-        run: sudo npm run test:unit
+        run: sudo npm run coverage

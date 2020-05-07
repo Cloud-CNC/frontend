@@ -1,4 +1,8 @@
-//Vue
+/**
+ * @fileoverview Vue router
+ */
+
+//Imports
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
@@ -105,7 +109,7 @@ const routes = [
   }
 ];
 
-//Router singleton
+//Export a router singleton
 export default new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Vuetify plugin
+ */
+
 //Imports
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib';

@@ -55,6 +55,9 @@ describe('machine.vue', () =>
           height: 12.0
         },
         visible: true
+      },
+      stubs: {
+        App: true
       }
     });
 
