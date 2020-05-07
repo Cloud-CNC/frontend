@@ -39,7 +39,7 @@ module.exports = {
 		],
 		'quote-props': [
 			'warn',
-			'consistent-as-needed'
+			'as-needed'
 		],
 		'space-in-parens': 'warn',
 		'prefer-const': 'warn'
