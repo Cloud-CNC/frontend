@@ -13,7 +13,13 @@ Vue.use(Vuex);
 
 //Export
 export default new Vuex.Store({
-  plugins: [PersistedState()],
+  plugins: [PersistedState({
+    paths: [
+      'dark',
+      'impersonate.name',
+      'impersonate.visible'
+    ]
+  })],
   state: {
     dark: true,
     error: {
@@ -27,6 +33,10 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    invertTheme: state =>
+    {
+      state.dark = !state.dark;
+    },
     hideError: state =>
     {
       state.error.name = null;
@@ -51,11 +61,10 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    invertTheme: state =>
+    invertTheme: ctx =>
     {
-      console.log('Inverting!');
-      state.dark = !state.dark;
-      Vuetify.theme.dark = state.dark;
+      ctx.commit('invertTheme');
+      Vuetify.framework.theme.dark = ctx.state.dark;
     }
   },
   modules: {

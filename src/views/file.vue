@@ -16,10 +16,10 @@
             </v-list-item>
 
             <v-list-item>
-              <v-item-group>
+              <v-btn-toggle>
                 <v-btn @click="execute">Execute</v-btn>
                 <v-btn @click="visible = false">Cancel</v-btn>
-              </v-item-group>
+              </v-btn-toggle>
             </v-list-item>
           </v-list>
         </v-form>
@@ -34,7 +34,7 @@
 
           <v-toolbar-items>
             <v-btn icon @click="machine = machines[0]._id; visible = true">
-              <v-icon>settings</v-icon>
+              <v-icon>dock</v-icon>
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>

@@ -78,7 +78,7 @@
             </v-list-item>
 
             <v-list-item>
-              <v-item-group>
+              <v-btn-toggle>
                 <v-btn
                   :disabled="!prechecks"
                   @click="create()"
@@ -88,7 +88,7 @@
                 <v-btn
                   @click="lightboxes.upsert.visible = false"
                 >{{ lightboxes.upsert.create ? 'Cancel' : 'Close' }}</v-btn>
-              </v-item-group>
+              </v-btn-toggle>
             </v-list-item>
           </v-list>
         </v-form>
@@ -111,11 +111,11 @@
       </template>
 
       <template v-slot:actions="props">
-        <v-item-group>
+        <v-btn-toggle>
           <v-btn @click="machine = props.entity; lightboxes.control.visible = true">Control</v-btn>
           <v-btn @click="upsert(props.entity)">Edit</v-btn>
           <v-btn color="error" @click="remove(props.entity)">Remove</v-btn>
-        </v-item-group>
+        </v-btn-toggle>
       </template>
 
       <template v-slot:empty class="font-weight-light">No machines available!</template>

@@ -1,10 +1,10 @@
 <template>
   <gallery :entities="files">
     <template v-slot:actions="props">
-      <v-item-group>
+      <v-btn-toggle>
         <v-btn @click="recover(props.entity)">Recover</v-btn>
         <v-btn color="error" @click="remove(props.entity)">Remove</v-btn>
-      </v-item-group>
+      </v-btn-toggle>
     </template>
 
     <template v-slot:empty class="font-weight-light">No files available!</template>

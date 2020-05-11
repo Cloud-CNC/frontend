@@ -24,13 +24,13 @@ describe('password.vue', () =>
     expect(password.props).to.haveOwnProperty('value');
     expect(password.props.icon).to.haveOwnProperty('default');
     expect(password.props.icon).to.haveOwnProperty('type');
-    expect(password.props.value).to.haveOwnProperty('required');
     expect(password.props.value).to.haveOwnProperty('type');
+    expect(password.props.value).to.haveOwnProperty('validator');
 
     expect(password.props.icon.default).to.equal(false);
     expect(password.props.icon.type).to.equal(Boolean);
-    expect(password.props.value.required).to.equal(true);
     expect(password.props.value.type).to.equal(String);
+    expect(password.props.value.validator).to.be.a('function');
   });
 
   it('renders icon version correctly', () =>

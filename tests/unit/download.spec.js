@@ -33,7 +33,7 @@ describe('download.vue', () =>
       }
     });
 
-    expect(wrapper.contains('a')).to.be.true;
+    expect(wrapper.contains('v-btn-stub')).to.be.true;
     expect(wrapper.attributes('download')).to.equal('name.gcode');
     expect(wrapper.attributes('href')).to.equal('data:text/plain;charset=utf-8,abc');
 

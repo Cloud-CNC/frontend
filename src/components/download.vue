@@ -1,7 +1,12 @@
 <template>
-  <a class="download" :download="filename" :href="`data:text/plain;charset=utf-8,${encodeURIComponent(this.data)}`" ref="link">
-    <slot/>
-  </a>
+  <v-btn
+    class="download"
+    :download="filename"
+    :href="`data:text/plain;charset=utf-8,${encodeURIComponent(this.data)}`"
+    ref="link"
+  >
+    <slot />
+  </v-btn>
 </template>
 
 <script>
@@ -12,9 +17,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.download {
-  text-decoration: none;
-}
-</style>

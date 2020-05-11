@@ -91,8 +91,8 @@ const routes = [
     }
   },
   {
-    name: 'Account',
-    path: '/account/:id?',
+    name: 'My Account',
+    path: '/account/own',
     component: account,
     meta: {
       icon: 'account_circle',

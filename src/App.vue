@@ -28,19 +28,13 @@
         </v-list-item-content>
       </v-list-item>
 
-      <!--<template v-slot:append>
-        <v-btn text class="font-weight-light" href="https://cloud-cnc.github.io">
-          <v-icon>open_in_new</v-icon>Documentation
-        </v-btn>
-      </template>-->
-
       <template v-slot:append>
         <v-list-item>
           <v-list-item-icon>
             <v-icon>open_in_new</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-btn text class="font-weight-light" href="https://cloud-cnc.github.io">Documentation</v-btn>
+            <v-btn text class="font-weight-light" href="https://cloud-cnc.github.io" target="_blank">Documentation</v-btn>
           </v-list-item-content>
         </v-list-item>
       </template>
@@ -110,7 +104,7 @@ export default {
     invertTheme: function ()
     {
       //Vuex
-      this.$store.commit('invertTheme');
+      this.$store.dispatch('invertTheme');
     },
     logout: function ()
     {

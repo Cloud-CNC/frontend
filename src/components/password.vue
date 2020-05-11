@@ -11,7 +11,7 @@
     counter="256"
     label="Password"
     ref="password"
-    v-model="value"
+    :value="value"
   ></v-text-field>
 </template>
 
@@ -40,8 +40,8 @@ export default {
       type: Boolean
     },
     value: {
-      required: true,
-      type: String
+      type: String,
+      validator: value => value == null || typeof value == 'string'
     }
   }
 };

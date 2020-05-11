@@ -19,10 +19,10 @@
             </v-list-item>
 
             <v-list-item>
-              <v-item-group>
+              <v-btn-toggle>
                 <v-btn v-if="lightbox.create" :disabled="!prechecks" @click="create()">Create</v-btn>
                 <v-btn @click="lightbox.visible = false">{{ lightbox.create ? 'Cancel' : 'Close' }}</v-btn>
-              </v-item-group>
+              </v-btn-toggle>
             </v-list-item>
           </v-list>
         </v-form>
@@ -31,18 +31,14 @@
 
     <gallery @add="showLightbox()" :entities="controllers">
       <template v-slot:actions="props">
-        <v-item-group>
+        <v-btn-toggle>
           <download
             :data="download(props.entity.name, props.entity._id, props.entity.key)"
             :filename="`${props.entity.name}.txt`"
-          >
-            <template>
-              <v-btn>Download</v-btn>
-            </template>
-          </download>
+          >Download</download>
           <v-btn @click="showLightbox(props.entity)">Edit</v-btn>
           <v-btn color="error" @click="remove(props.entity)">Remove</v-btn>
-        </v-item-group>
+        </v-btn-toggle>
       </template>
 
       <template v-slot:empty class="font-weight-light">No controllers available!</template>
