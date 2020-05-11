@@ -1,6 +1,6 @@
 # Frontend
 ![status](https://img.shields.io/badge/status-under%20development-yellow)
-[![tests](https://img.shields.io/github/workflow/status/Cloud-CNC/frontend/tests)](https://github.com/Cloud-CNC/frontend/actions)
+[![tests](https://img.shields.io/github/workflow/status/Cloud-CNC/frontend/Tests)](https://github.com/Cloud-CNC/frontend/actions)
 [![issues](https://img.shields.io/github/issues/Cloud-CNC/frontend)](https://github.com/Cloud-CNC/frontend/issues)
 [![last commit](https://img.shields.io/github/last-commit/Cloud-CNC/frontend)](https://github.com/Cloud-CNC/frontend/commits/master)
 
