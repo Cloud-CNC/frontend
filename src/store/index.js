@@ -43,10 +43,10 @@ export default new Vuex.Store({
       state.error.description = null;
       state.error.visible = false;
     },
-    showError: (state, name, description) =>
+    showError: (state, payload) =>
     {
-      state.error.name = name;
-      state.error.description = description;
+      state.error.name = payload.name;
+      state.error.description = payload.description;
       state.error.visible = true;
     },
     hideImpersonate: state =>

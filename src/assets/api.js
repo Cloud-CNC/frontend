@@ -368,9 +368,9 @@ async function rest(method, url, body = null)
   else if (res.error)
   {
     //Display popup
-    store.commit('showError', res.error.name, res.error.description);
+    store.commit('showError', res.error);
 
-    console.error(`API Error: ${res.error.name} - ${res.error.description}`);
+    console.error(`API Error: ${res.error.name} (${res.error.description})`);
     return Promise.reject(res.error);
   }
   else
