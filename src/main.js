@@ -3,12 +3,13 @@
  */
 
 //Imports
-import './registerServiceWorker';
+import '@/registerServiceWorker';
+import '@/plugins/gcode-viewer';
 import 'material-icons/iconfont/material-icons.scss';
 import 'roboto-fontface/css/roboto/roboto-fontface.css';
-import App from './App.vue';
-import router from './router';
-import store from './store';
+import App from '@/App.vue';
+import router from '@/router';
+import store from '@/store';
 import Vue from 'vue';
 import vuetify from './plugins/vuetify';
 

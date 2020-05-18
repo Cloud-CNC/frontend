@@ -54,12 +54,10 @@
 <script>
 //Imports
 import api from '../assets/api';
-import vueGcodeViewer from 'vue-gcode-viewer';
 import lightbox from '../components/lightbox';
 
 export default {
   components: {
-    'gcode-viewer': vueGcodeViewer,
     lightbox
   },
   data: () => ({
@@ -70,18 +68,18 @@ export default {
     file: {
       name: null,
       description: null,
-      raw: null
+      raw: ''
     },
     visible: false,
     viewer: {
       bed: {
-        X: 20,
-        Y: 20
+        X: 10,
+        Y: 10
       },
       position: {
-        X: 10,
+        X: 5,
         Y: 0,
-        Z: -10
+        Z: -5
       },
       rotation: {
         X: -90,
