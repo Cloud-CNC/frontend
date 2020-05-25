@@ -22,18 +22,18 @@ module.exports = {
 			'warn',
 			'allman'
 		],
-		'camelcase': [
+		camelcase: [
 			'warn',
 			{
 				properties: 'always'
 			}
 		],
-		'curly': 'warn',
+		curly: 'warn',
 		'no-var': 'error',
 		'no-extra-semi': 'error',
 		'object-curly-spacing': 'warn',
-		'semi': 'error',
-		'quotes': [
+		semi: 'error',
+		quotes: [
 			'warn',
 			'single'
 		],
