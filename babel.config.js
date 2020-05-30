@@ -4,17 +4,7 @@
 
 //Export
 module.exports = {
-  env: {
-    test: {
-      plugins: [
-        [
-          'istanbul', {
-            useInlineSourceMaps: false
-          }
-        ]
-      ]
-    }
-  },
+  plugins: ['istanbul'],
   presets: [
     '@vue/cli-plugin-babel/preset'
   ]

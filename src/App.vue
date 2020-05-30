@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app data-e2e="app">
     <v-navigation-drawer app temporary color="secondary" v-model="menu">
       <v-list-item nav two-line>
         <v-list-item-content>
@@ -24,7 +24,7 @@
           <v-icon>exit_to_app</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-btn text class="font-weight-light" @click="logout()">Logout</v-btn>
+          <v-btn text data-e2e="logout" class="font-weight-light" @click="logout()">Logout</v-btn>
         </v-list-item-content>
       </v-list-item>
 
@@ -41,12 +41,12 @@
     </v-navigation-drawer>
 
     <v-app-bar app color="primary">
-      <v-app-bar-nav-icon @click="menu = !menu" v-if="$route.path != '/login'"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon @click="menu = !menu" data-e2e="menu" v-if="$route.path != '/login'"></v-app-bar-nav-icon>
       <v-toolbar-title class="display-1 font-weight-thin">{{ $route.name }}</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
-      <v-btn icon @click="invertTheme()">
+      <v-btn icon @click="invertTheme()" data-e2e="invert">
         <v-icon>invert_colors</v-icon>
       </v-btn>
     </v-app-bar>
@@ -57,7 +57,7 @@
 
     <v-snackbar :timeout="0" v-model="$store.state.impersonate.visible">
       You're currently impersonating {{$store.state.impersonate.name}}!
-      <v-btn color="accent" @click="stopImpersonate(); $store.commit('hideImpersonate')">Stop</v-btn>
+      <v-btn color="accent" @click="stopImpersonate(); $store.commit('hideImpersonate')" data-e2e="stop-impersonating">Stop</v-btn>
     </v-snackbar>
 
     <v-bottom-sheet v-model="$store.state.error.visible">

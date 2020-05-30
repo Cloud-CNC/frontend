@@ -9,14 +9,16 @@
             <v-form v-model="prechecks">
               <v-text-field
                 :rules="[rules.required, rules.username]"
+                data-e2e="username"
                 label="Username"
                 prepend-icon="account_circle"
                 v-if="initial"
                 v-model="username"
               ></v-text-field>
-              <password icon v-model="password"></password>
+              <password icon data-e2e="password" v-if="initial" v-model="password"></password>
               <v-text-field
                 :rules="[rules.required, rules.otp]"
+                data-e2e="otp"
                 label="MFA Code"
                 prepend-icon="vpn_key"
                 type="number"
@@ -26,10 +28,14 @@
             </v-form>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="secondary" :disabled="!prechecks" @click="login">Submit</v-btn>
+            <v-btn color="secondary" data-e2e="login" :disabled="!prechecks" @click="login">Submit</v-btn>
           </v-card-actions>
         </v-card>
-        <v-snackbar v-model="invalid" class="font-weight-light title">
+        <v-snackbar
+          class="font-weight-light title"
+          data-e2e="invalid-credentials"
+          v-model="invalid"
+        >
           Invalid username, password, or MFA code!
           <v-btn icon color="accent" @click="invalid = false">
             <v-icon>close</v-icon>

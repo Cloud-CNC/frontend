@@ -9,10 +9,10 @@
           :key="entity._id"
           max-width="500"
         >
-          <v-card-title primary-title class="font-weight-light">
+          <v-card-title primary-title class="font-weight-light" data-e2e="entity-name">
             <slot name="name" :entity="entity">{{entity.name}}</slot>
           </v-card-title>
-          <v-card-text class="font-weight-light">
+          <v-card-text class="font-weight-light" data-e2e="entity-description">
             <slot name="description" :entity="entity">{{entity.description}}</slot>
           </v-card-text>
           <v-card-actions class="font-weight-light">
@@ -28,7 +28,7 @@
     </v-container>
     <v-footer fixed color="transparent">
       <v-spacer>
-        <v-btn icon x-large color="accent" @click="$emit('add')" id="plus">
+        <v-btn icon x-large color="accent" @click="$emit('add')" data-e2e="create" id="plus">
           <v-icon id="add">add</v-icon>
         </v-btn>
       </v-spacer>

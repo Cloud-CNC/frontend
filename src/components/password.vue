@@ -1,5 +1,6 @@
 <template>
   <v-text-field
+    :data-e2e="dataE2e"
     :append-icon="visible ? 'visibility_off' : 'visibility'"
     :prepend-icon="icon ? 'lock' : null"
     :rules="[rules.required, rules.password]"
@@ -29,12 +30,15 @@ export default {
     visible: false
   }),
   methods: {
-    update: function(valid)
+    update: function (valid)
     {
       this.valid = !valid;
     }
   },
   props: {
+    dataE2e: {
+      type: String
+    },
     icon: {
       default: false,
       type: Boolean

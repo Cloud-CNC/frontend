@@ -1,20 +1,5 @@
 <template>
   <div>
-    <lightbox v-model="lightbox.visible">
-      <template v-slot:title>MFA QR Code</template>
-
-      <template v-slot:content>
-        <v-list>
-          <v-list-item>
-            <qr :text="lightbox.text"></qr>
-          </v-list-item>
-          <v-list-item>
-            <v-btn @click="lightbox.visible = false">Close</v-btn>
-          </v-list-item>
-        </v-list>
-      </template>
-    </lightbox>
-
     <v-container align-center fluid fill-height>
       <v-col cols="12">
         <v-row justify="center">
@@ -25,25 +10,32 @@
                 <v-list>
                   <v-list-item>
                     <v-text-field
-                      ref="username"
-                      v-model="account.username"
-                      counter="30"
-                      label="Username"
                       :rules="[rules.required, rules.username]"
                       @blur="update('username')"
+                      counter="30"
+                      data-e2e="account-username"
+                      label="Username"
+                      ref="username"
+                      v-model="account.username"
                     />
                   </v-list-item>
 
                   <v-list-item>
-                    <password ref="password" v-model="account.password" @blur="update('password')"></password>
+                    <password
+                      data-e2e="account-password"
+                      ref="password"
+                      v-model="account.password"
+                      @blur="update('password')"
+                    ></password>
                   </v-list-item>
 
                   <v-list-item>
                     <v-checkbox
+                      @click.passive.stop="update('mfa')"
+                      data-e2e="account-mfa"
+                      label="MFA"
                       ref="mfa"
                       v-model="account.mfa"
-                      label="MFA"
-                      @click.passive.stop="update('mfa')"
                     ></v-checkbox>
                   </v-list-item>
 
@@ -51,6 +43,7 @@
                     <v-select
                       :items="account.roles"
                       @blur="update('role')"
+                      data-e2e="account-role"
                       label="Role"
                       ref="role"
                       v-model="account.role"
@@ -70,6 +63,21 @@
         </v-row>
       </v-col>
     </v-container>
+
+    <lightbox v-model="lightbox.visible">
+      <template v-slot:title>MFA QR Code</template>
+
+      <template v-slot:content>
+        <v-list>
+          <v-list-item>
+            <qr data-e2e="account-mfa-token" :text="lightbox.text"></qr>
+          </v-list-item>
+          <v-list-item>
+            <v-btn @click="lightbox.visible = false" data-e2e="close-account-mfa-token">Close</v-btn>
+          </v-list-item>
+        </v-list>
+      </template>
+    </lightbox>
   </div>
 </template>
 

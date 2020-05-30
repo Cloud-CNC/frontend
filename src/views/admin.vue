@@ -10,19 +10,21 @@
           <v-list>
             <v-list-item>
               <v-text-field
-                ref="username"
-                v-model="lightboxes.upsert.username"
-                counter="30"
-                label="Username"
                 :rules="[rules.required, rules.username]"
                 @blur="update('username')"
+                counter="30"
+                data-e2e="account-username"
+                label="Username"
+                ref="username"
+                v-model="lightboxes.upsert.username"
               />
             </v-list-item>
 
             <v-list-item>
               <password
-                autocomplete="new-password"
                 @blur="update('password')"
+                autocomplete="new-password"
+                data-e2e="account-password"
                 ref="password"
                 v-model="lightboxes.upsert.password"
               ></password>
@@ -30,10 +32,11 @@
 
             <v-list-item>
               <v-checkbox
+                @click.passive.stop="update('mfa')"
+                data-e2e="account-mfa"
+                label="MFA"
                 ref="mfa"
                 v-model="lightboxes.upsert.mfa"
-                label="MFA"
-                @click.passive.stop="update('mfa')"
               ></v-checkbox>
             </v-list-item>
 
@@ -41,6 +44,7 @@
               <v-select
                 :items="lightboxes.upsert.roles"
                 @blur="update('role')"
+                data-e2e="account-role"
                 label="Role"
                 ref="role"
                 v-model="lightboxes.upsert.role"
@@ -57,12 +61,14 @@
             <v-list-item>
               <v-btn-toggle>
                 <v-btn
-                  v-if="lightboxes.upsert.create"
                   :disabled="!prechecks"
                   @click="create()"
+                  data-e2e="create-account"
+                  v-if="lightboxes.upsert.create"
                 >Create</v-btn>
                 <v-btn
                   @click="lightboxes.upsert.visible = false"
+                  data-e2e="close-account"
                 >{{ lightboxes.upsert.create ? 'Cancel' : 'Close' }}</v-btn>
               </v-btn-toggle>
             </v-list-item>
@@ -77,10 +83,10 @@
       <template v-slot:content>
         <v-list>
           <v-list-item>
-            <qr :text="lightboxes.qr.text"></qr>
+            <qr data-e2e="account-mfa-token" :text="lightboxes.qr.text"></qr>
           </v-list-item>
           <v-list-item>
-            <v-btn @click="lightboxes.qr.visible = false">Close</v-btn>
+            <v-btn @click="lightboxes.qr.visible = false" data-e2e="close-account-mfa-token">Close</v-btn>
           </v-list-item>
         </v-list>
       </template>
@@ -97,9 +103,9 @@
 
       <template v-slot:actions="props">
         <v-btn-toggle>
-          <v-btn @click="impersonate(props.entity)">Impersonate</v-btn>
-          <v-btn @click="showLightbox(props.entity)">Edit</v-btn>
-          <v-btn color="error" @click="remove(props.entity)">Remove</v-btn>
+          <v-btn @click="impersonate(props.entity)" data-e2e="impersonate-account">Impersonate</v-btn>
+          <v-btn @click="showLightbox(props.entity)" data-e2e="edit-account">Edit</v-btn>
+          <v-btn color="error" @click="remove(props.entity)" data-e2e="remove-account">Remove</v-btn>
         </v-btn-toggle>
       </template>
 

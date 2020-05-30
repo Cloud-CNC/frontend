@@ -2,8 +2,8 @@
   <gallery :entities="files">
     <template v-slot:actions="props">
       <v-btn-toggle>
-        <v-btn @click="recover(props.entity)">Recover</v-btn>
-        <v-btn color="error" @click="remove(props.entity)">Remove</v-btn>
+        <v-btn @click="recover(props.entity)" data-e2e="recover-file">Recover</v-btn>
+        <v-btn color="error" @click="remove(props.entity)" data-e2e="remove-file">Remove</v-btn>
       </v-btn-toggle>
     </template>
 

@@ -7,40 +7,42 @@
           <v-list>
             <v-list-item>
               <v-text-field
-                ref="name"
-                v-model="lightbox.name"
-                counter="30"
-                label="Name"
                 :rules="[rules.required, rules.name]"
                 @blur="update('name')"
+                counter="30"
+                data-e2e="file-name"
+                label="Name"
+                ref="name"
+                v-model="lightbox.name"
               />
             </v-list-item>
 
             <v-list-item>
               <v-textarea
-                ref="description"
-                v-model="lightbox.description"
-                counter="1000"
-                label="Description"
                 :rules="[rules.description]"
                 @blur="update('description')"
+                counter="1000"
+                data-e2e="file-description"
+                label="Description"
+                ref="description"
+                v-model="lightbox.description"
               />
             </v-list-item>
 
             <v-list-item v-if="lightbox.create">
               <v-file-input
-                ref="file"
-                accept=".gcode"
-                label="File"
                 :rules="[rules.raw]"
-                @blur="update('name')"
                 @change="lightbox.raw = $event"
+                accept=".gcode"
+                data-e2e="file-raw"
+                label="File"
+                ref="file"
               />
             </v-list-item>
             <v-list-item>
               <v-btn-toggle>
-                <v-btn v-if="lightbox.create" :disabled="!prechecks" @click="create()">Create</v-btn>
-                <v-btn @click="lightbox.visible = false">{{ lightbox.create ? 'Cancel' : 'Close' }}</v-btn>
+                <v-btn data-e2e="create-file" v-if="lightbox.create" :disabled="!prechecks" @click="create()">Create</v-btn>
+                <v-btn @click="lightbox.visible = false" data-e2e="close-file">{{ lightbox.create ? 'Cancel' : 'Close' }}</v-btn>
               </v-btn-toggle>
             </v-list-item>
           </v-list>
@@ -50,9 +52,9 @@
     <gallery @add="showLightbox()" :entities="files">
       <template v-slot:actions="props">
         <v-btn-toggle>
-          <v-btn :to="`/file/${props.entity._id}`">Open</v-btn>
-          <v-btn @click="showLightbox(props.entity)">Edit</v-btn>
-          <v-btn color="error" @click="remove(props.entity)">Remove</v-btn>
+          <v-btn data-e2e="open-file" :to="`/file/${props.entity._id}`">Open</v-btn>
+          <v-btn data-e2e="edit-file" @click="showLightbox(props.entity)">Edit</v-btn>
+          <v-btn data-e2e="remove-file" color="error" @click="remove(props.entity)">Remove</v-btn>
         </v-btn-toggle>
       </template>
 

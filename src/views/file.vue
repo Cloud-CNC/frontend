@@ -47,6 +47,7 @@
       :rotation="viewer.rotation"
       :scale="viewer.scale"
       :theme="theme"
+      data-e2e="file-viewer"
     />
   </div>
 </template>
