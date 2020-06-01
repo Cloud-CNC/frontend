@@ -272,10 +272,7 @@ export default {
         controller, name, tags, length, width, height
       });
 
-      return {
-        _id: res._id,
-        controller: res.controller
-      };
+      return res._id;
     },
     /**
      * Get a machine

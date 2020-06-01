@@ -13,6 +13,7 @@
                 :rules="[rules.required, rules.name]"
                 @blur="update('name')"
                 counter="30"
+                data-e2e="machine-name"
                 label="Name"
                 ref="name"
                 v-model="lightboxes.upsert.name"
@@ -22,7 +23,9 @@
             <v-list-item>
               <v-select
                 :items="controllers"
+                :rules="[rules.required]"
                 @blur="update('controller')"
+                data-e2e="machine-controller"
                 item-text="name"
                 item-value="_id"
                 label="Controller"
@@ -38,6 +41,7 @@
                 multiple
                 :rules="[rules.required, rules.tags]"
                 @change="update('tags')"
+                data-e2e="machine-tags"
                 label="Tags"
                 ref="tags"
                 v-model="lightboxes.upsert.tags"
@@ -48,6 +52,7 @@
               <v-text-field
                 :rules="[rules.required, rules.number]"
                 @blur="update('length')"
+                data-e2e="machine-length"
                 label="Length"
                 ref="length"
                 type="number"
@@ -59,6 +64,7 @@
               <v-text-field
                 :rules="[rules.required, rules.number]"
                 @blur="update('width')"
+                data-e2e="machine-width"
                 label="Width"
                 ref="width"
                 type="number"
@@ -70,6 +76,7 @@
               <v-text-field
                 :rules="[rules.required, rules.number]"
                 @blur="update('height')"
+                data-e2e="machine-height"
                 label="Height"
                 ref="height"
                 type="number"
@@ -82,11 +89,13 @@
                 <v-btn
                   :disabled="!prechecks"
                   @click="create()"
+                  data-e2e="create-machine"
                   v-if="lightboxes.upsert.create"
                 >Create</v-btn>
 
                 <v-btn
                   @click="lightboxes.upsert.visible = false"
+                  data-e2e="close-machine"
                 >{{ lightboxes.upsert.create ? 'Cancel' : 'Close' }}</v-btn>
               </v-btn-toggle>
             </v-list-item>
@@ -112,9 +121,9 @@
 
       <template v-slot:actions="props">
         <v-btn-toggle>
-          <v-btn @click="machine = props.entity; lightboxes.control.visible = true">Control</v-btn>
-          <v-btn @click="upsert(props.entity)">Edit</v-btn>
-          <v-btn color="error" @click="remove(props.entity)">Remove</v-btn>
+          <v-btn @click="machine = props.entity; lightboxes.control.visible = true" data-e2e="control-machine">Control</v-btn>
+          <v-btn @click="upsert(props.entity)" data-e2e="edit-machine">Edit</v-btn>
+          <v-btn color="error" @click="remove(props.entity)" data-e2e="remove-machine">Remove</v-btn>
         </v-btn-toggle>
       </template>
 
@@ -182,7 +191,7 @@ export default {
       if (machine == null)
       {
         this.lightboxes.upsert._id = null;
-        this.lightboxes.upsert.controller = this.controllers[0]._id;
+        this.lightboxes.upsert.controller = this.controllers.length > 0 ? this.controllers[0]._id : null;
         this.lightboxes.upsert.name = null;
         this.lightboxes.upsert.tags = [];
         this.lightboxes.upsert.length = 0;
@@ -208,12 +217,12 @@ export default {
     //Create machine
     create: function ()
     {
-      api.machines.create(this.lightboxes.upsert.controller, this.lightboxes.upsert.name, this.lightboxes.upsert.tags, this.lightboxes.upsert.length, this.lightboxes.upsert.width, this.lightboxes.upsert.height).then(({_id, controller}) =>
+      api.machines.create(this.lightboxes.upsert.controller, this.lightboxes.upsert.name, this.lightboxes.upsert.tags, this.lightboxes.upsert.length, this.lightboxes.upsert.width, this.lightboxes.upsert.height).then(_id =>
       {
         //Add to list
         this.machines.push({
           _id,
-          controller,
+          controller: this.lightboxes.upsert.controller,
           name: this.lightboxes.upsert.name,
           tags: this.lightboxes.upsert.tags,
           length: this.lightboxes.upsert.length,

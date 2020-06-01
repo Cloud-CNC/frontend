@@ -9,19 +9,28 @@
           <v-list>
             <v-list-item>
               <v-text-field
-                ref="name"
-                v-model="lightbox.name"
-                counter="30"
-                label="Name"
                 :rules="[rules.required, rules.name]"
                 @blur="update('name')"
+                counter="30"
+                data-e2e="controller-name"
+                label="Name"
+                ref="name"
+                v-model="lightbox.name"
               />
             </v-list-item>
 
             <v-list-item>
               <v-btn-toggle>
-                <v-btn v-if="lightbox.create" :disabled="!prechecks" @click="create()">Create</v-btn>
-                <v-btn @click="lightbox.visible = false">{{ lightbox.create ? 'Cancel' : 'Close' }}</v-btn>
+                <v-btn
+                  :disabled="!prechecks"
+                  @click="create()"
+                  data-e2e="create-controller"
+                  v-if="lightbox.create"
+                >Create</v-btn>
+                <v-btn
+                  @click="lightbox.visible = false"
+                  data-e2e="close-controller"
+                >{{ lightbox.create ? 'Cancel' : 'Close' }}</v-btn>
               </v-btn-toggle>
             </v-list-item>
           </v-list>
@@ -35,9 +44,10 @@
           <download
             :data="download(props.entity.name, props.entity._id, props.entity.key)"
             :filename="`${props.entity.name}.txt`"
+            data-e2e="download-controller-key"
           >Download</download>
-          <v-btn @click="showLightbox(props.entity)">Edit</v-btn>
-          <v-btn color="error" @click="remove(props.entity)">Remove</v-btn>
+          <v-btn @click="showLightbox(props.entity)" data-e2e="edit-controller">Edit</v-btn>
+          <v-btn color="error" @click="remove(props.entity)" data-e2e="remove-controller">Remove</v-btn>
         </v-btn-toggle>
       </template>
 
