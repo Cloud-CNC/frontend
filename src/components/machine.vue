@@ -26,16 +26,16 @@
         <v-row justify="center">
           <v-list>
             <v-list-item>
-              <v-btn block @click="send('M112\n')" color="red">Emergency Stop</v-btn>
+              <v-btn block @click="send('M112\n')" color="red" data-e2e="emergency-stop-machine">Emergency Stop</v-btn>
             </v-list-item>
             <v-list-item>
-              <v-btn block @click="send('M0\n')">Stop</v-btn>
+              <v-btn block @click="send('M0\n')" data-e2e="stop-machine">Stop</v-btn>
             </v-list-item>
             <v-list-item>
-              <v-btn block @click="send('M81\n')">Off</v-btn>
+              <v-btn block @click="send('M81\n')" data-e2e="turn-off-machine">Off</v-btn>
             </v-list-item>
             <v-list-item>
-              <v-btn block @click="send('G28\n')">Home</v-btn>
+              <v-btn block @click="send('G28\n')" data-e2e="home-machine">Home</v-btn>
             </v-list-item>
           </v-list>
         </v-row>
@@ -46,37 +46,37 @@
             <v-row align="center">
               <v-col cols="9">
                 <v-row justify="center">
-                  <v-btn icon @click="send('G91\n G0 Y10\n')">
+                  <v-btn icon @click="send('G91\nG0 Y10\n')" data-e2e="jog-machine-forward">
                     <v-icon>keyboard_arrow_up</v-icon>
                   </v-btn>
                 </v-row>
                 <v-row>
                   <v-col cols="5" align="center">
-                    <v-btn icon @click="send('G91\n G0 X10\n')">
+                    <v-btn icon @click="send('G91\nG0 X10\n')" data-e2e="jog-machine-left">
                       <v-icon>keyboard_arrow_left</v-icon>
                     </v-btn>
                   </v-col>
                   <v-col cols="2"></v-col>
                   <v-col cols="5" align="center">
-                    <v-btn icon @click="send('G91\n G0 X-10\n')">
+                    <v-btn icon @click="send('G91\nG0 X-10\n')" data-e2e="jog-machine-right">
                       <v-icon>keyboard_arrow_right</v-icon>
                     </v-btn>
                   </v-col>
                 </v-row>
                 <v-row justify="center">
-                  <v-btn icon @click="send('G91\n G0 Y-10\n')">
+                  <v-btn icon @click="send('G91\nG0 Y-10\n')" data-e2e="jog-machine-backward">
                     <v-icon>keyboard_arrow_down</v-icon>
                   </v-btn>
                 </v-row>
               </v-col>
               <v-col cols="3">
                 <v-row justify="center">
-                  <v-btn icon @click="send('G91\n G0 Z10\n')">
+                  <v-btn icon @click="send('G91\nG0 Z10\n')" data-e2e="jog-machine-up">
                     <v-icon>keyboard_arrow_up</v-icon>
                   </v-btn>
                 </v-row>
                 <v-row justify="center">
-                  <v-btn icon @click="send('G91\n G0 Z-10\n')">
+                  <v-btn icon @click="send('G91\nG0 Z-10\n')" data-e2e="jog-machine-down">
                     <v-icon>keyboard_arrow_down</v-icon>
                   </v-btn>
                 </v-row>
@@ -88,10 +88,10 @@
     </v-row>
     <v-row>
       <v-col cols="10">
-        <v-text-field label="GCODE" v-model="command"></v-text-field>
+        <v-text-field data-e2e="machine-command" label="GCODE" v-model="command"></v-text-field>
       </v-col>
       <v-col cols="2">
-        <v-btn @click="send(`${command}\n`)" color="primary">Send</v-btn>
+        <v-btn @click="send(`${command}\n`)" color="primary" data-e2e="send-machine-command">Send</v-btn>
       </v-col>
     </v-row>
   </v-container>

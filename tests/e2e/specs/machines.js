@@ -2,10 +2,18 @@
  * @fileoverview Machines E2E tests
  */
 
+//Imports
+const IpcHelper = require('../utils/ipc');
+const childProcess = require('child_process');
+const path = require('path');
+
+//The mock machine's controller's key
+let controllerKey;
+
 describe('machines', () =>
 {
   //Create mock controller
-  before(() =>
+  before(done =>
   {
     cy.login();
     cy.visit('/controllers');
@@ -15,6 +23,16 @@ describe('machines', () =>
     cy.get('[data-e2e=controller-name]').type('Test Controller');
 
     cy.get('[data-e2e=create-controller]').click();
+
+    //Extract the key
+    cy.get('[data-e2e=download-controller-key]').invoke('attr', 'href').then(async href =>
+    {
+      const res = await fetch(href);
+      const text = await res.text();
+      controllerKey = /Key:\s+([A-z0-9\\/\\+=]+)/.exec(text)[1];
+
+      done();
+    });
   });
 
   beforeEach(() =>
@@ -74,6 +92,79 @@ describe('machines', () =>
       });
     });
   });
+
+  /*describe('control a machine', () =>
+  {
+    let controllerProcess;
+
+    //Start the controller in E2E mode
+    before(done =>
+    {
+      //Extract the existing machine's ID and controller ID
+      cy.get('[data-e2e=machine-info]').then(element =>
+      {
+        const parsed = /Machine ID:\s+([0-9a-f]+)\s+Controller Name:\s+Local\s+Controller ID:\s+([0-9a-f]+)/.exec(element.text());
+
+        controllerProcess = childProcess.fork(path.resolve('../controller/index.js'), null, {
+          env: {
+            NODE_ENV: 'development',
+            E2E: 'true',
+            CONTROLLER_ID: parsed[2],
+            CONTROLLER_KEY: '',
+            MACHINE_ID: parsed[1]
+          }
+        });
+
+        done();
+      });
+    });
+
+    it('will control a machine using the GUI', async () =>
+    {
+      //Create an IPC helper to talk to the controller
+      const helper = new IpcHelper();
+
+      cy.get('[data-e2e=emergency-stop-machine]').click();
+      await helper.waitForMessage('M112\n');
+
+      cy.get('[data-e2e=stop-machine]').click();
+      await helper.waitForMessage('M0\n');
+
+      cy.get('[data-e2e=turn-off-machine]').click();
+      await helper.waitForMessage('M81\n');
+
+      cy.get('[data-e2e=home-machine]').click();
+      await helper.waitForMessage('G28\n');
+
+      cy.get('[data-e2e=jog-machine-forward]').click();
+      await helper.waitForMessage('G91\nG0 Y10\n');
+
+      cy.get('[data-e2e=jog-machine-left]').click();
+      await helper.waitForMessage('G91\nG0 X10\n');
+
+      cy.get('[data-e2e=jog-machine-right]').click();
+      await helper.waitForMessage('G91\nG0 X-10\n');
+
+      cy.get('[data-e2e=jog-machine-backward]').click();
+      await helper.waitForMessage('G91\nG0 Y-10\n');
+
+      cy.get('[data-e2e=jog-machine-up]').click();
+      await helper.waitForMessage('G91\nG0 Z10\n');
+
+      cy.get('[data-e2e=jog-machine-down]').click();
+      await helper.waitForMessage('G91\nG0 Z-10\n');
+    });
+
+    it('will control a machine using raw commands', done =>
+    {
+
+    });
+
+    after(() =>
+    {
+      controllerProcess.kill();
+    });
+  });*/
 
   describe('edit a machine', () =>
   {
