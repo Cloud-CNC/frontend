@@ -7,7 +7,8 @@
 <script>
 export default {
   computed: {
-    href: function() {
+    href: function ()    
+    {
       const blob = new Blob([this.data], {
         type: this.mime
       });
@@ -18,7 +19,7 @@ export default {
   props: {
     data: String,
     mime: {
-      default: "text/plain",
+      default: 'text/plain',
       type: String
     },
     filename: String

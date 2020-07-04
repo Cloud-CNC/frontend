@@ -11,9 +11,15 @@ module.exports = {
     url: 'https://127.0.0.1'
   },
 
+  //Mock controller options
+  controller: {
+    //Controller install location
+    location: '../controller'
+  },
+
   //Development server
   server: {
-    //TLS certificate	and key location (Development only) (PEM encoded)
+    //TLS certificate	and key location (PEM encoded)
     cert: './config/cert.cer',
     key: './config/key.pem',
 

@@ -3,6 +3,7 @@
  */
 
 //Imports
+const uuid = require('uuid').v4;
 const {IPC} = require('node-ipc');
 
 //Export
@@ -14,36 +15,79 @@ module.exports = class IpcHelper
   constructor()
   {
     this.id = '/test-machine';
+    this.listeners = {};
 
     //Create the IPC client
     this.client = new IPC();
 
-    this.client.appspace = 'cloud-cnc-e2e-tests';
-    this.client.silent = true;
-
-    this.client.connectTo(this.id);
+    this.client.config.appspace = 'cloud-cnc-e2e-tests';
+    this.client.config.silent = true;
   }
 
   /**
-   * @function Wait for the controller to send the specified message
-   * @param {string} msg 
+   * @function Connect to the controller
    * @returns {Promise<void>}
    */
-  waitForMessage(msg)
+  async connect()
   {
-    return new Promise(resolve =>
-    {
-      this.client.of[this.id].on('message', packet =>
-      {
-        //Convert packet data to string
-        const payload = new TextDecoder().decode(Buffer.from(packet.data));
+    await new Promise(resolve => this.client.connectTo(this.id, null, resolve));
 
-        if (msg == payload)
+    //Update listeners when a message is sent
+    this.client.of[this.id].on('message', packet =>
+    {
+      const payload = new TextDecoder().decode(Buffer.from(packet.data));
+
+      Object.keys(this.listeners).forEach(listener =>
+      {
+        //If the message matches a listener, raise the heard boolean
+        if (this.listeners[listener].msg == payload)
         {
-          resolve();
+          this.listeners[listener].heard = true;
         }
       });
+
+      //Echo back to controller to forward to the core to forward to the client
+      this.client.of[this.id].emit('message', `Machine received: ${payload}`);
     });
+  }
+
+  /**
+   * @function Add a listener that listens for a specific message from the controller
+   * @param {string} msg The message to listen for
+   * @returns {string} The listener ID 
+   */
+  addMessageListener(msg)
+  {
+    //Generate a new listener ID
+    const id = uuid();
+
+    //Add to listeners
+    this.listeners[id] = {
+      heard: false,
+      msg
+    };
+
+    return id;
+  }
+
+  /**
+   * @function Get if the listener has heard the message and remove the listener
+   * **WARNING**: This function will destroy the listener if it returns true
+   * @param {string} id The listener's ID
+   * @returns {boolean}
+   */
+  hasHeardMessage(id)
+  {
+    //Get if the listener has heard the message
+    const heard = this.listeners[id].heard;
+
+    //Delete the listener if heard
+    if (heard)
+    {
+      delete this.listeners[id];
+    }
+
+    return heard;
   }
 
   /**
@@ -57,10 +101,10 @@ module.exports = class IpcHelper
   }
 
   /**
-   * @function close the IPC socket
+   * @function Disconnect from the controller
    * @returns {void}
    */
-  close()
+  disconnect()
   {
     this.client.disconnect(this.id);
   }

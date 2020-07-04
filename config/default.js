@@ -13,10 +13,6 @@ module.exports = {
 
   //Development server
   server: {
-    //TLS certificate	and key location (Development only) (PEM encoded)
-    cert: '',
-    key: '',
-
     //Enable the development server (Also have to run the serve command)
     enabled: false
   }

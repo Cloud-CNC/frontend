@@ -57,3 +57,46 @@ Cypress.Commands.add('valid', selector =>
 {
   cy.get(selector).parent().children().should('not.have.class', 'error--text');
 });
+
+Cypress.Commands.add('hasHeardMessage', (msg, action) =>
+{
+  //This will start listening for messages but won't notify us
+  cy.task('addMessageListener', msg).then(listenerID =>
+  {
+    //Avoid a timing-based race condition by waiting before invoking the action
+    cy.wait(1000);
+
+    //Perform the post-registration, message invoking action
+    action();
+
+    //This must be recursive because of Cypress' fake promises (Otherwise we'd await the task each time)
+    const attempts = 4;
+    const checkIfHeard = iteration =>
+    {
+      if (iteration < attempts)
+      {
+        //Wait before checking if the message has been sent
+        cy.wait(1000);
+
+        //Return if the message has been sent otherwise recur
+        cy.task('hasHeardMessage', listenerID).then(hasHeard =>
+        {
+          if (!hasHeard)
+          {
+            checkIfHeard(iteration + 1);
+          }
+        });
+      }
+      else
+      {
+        const error = new Error(`Expected but failed to receive "${msg}" from the controller! (Tried ${attempts} times)`);
+        error.code = 'ENOMSG';
+        
+        throw error;
+      }
+    };
+
+    //Start the recursive function
+    checkIfHeard(0);
+  });
+});

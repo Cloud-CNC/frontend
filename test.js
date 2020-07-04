@@ -13,12 +13,12 @@ const {IPC} = require('node-ipc');
   ipc.config.appspace = 'cloud-cnc-e2e-tests';
   ipc.config.silent = true;
 
-  await new Promise(resolve => ipc.connectTo('/test-machine', null, resolve));
+  ipc.connectTo('/test-machine');
 
-  ipc.of['/test-machine'].on('connect', () =>
+  /*ipc.of['/test-machine'].on('connect', () =>
   {
     console.log('Connected!');
-  });
+  });*/
 
   ipc.of['/test-machine'].on('message', packet =>
   {
@@ -26,10 +26,13 @@ const {IPC} = require('node-ipc');
     const data = new TextDecoder().decode(Buffer.from(packet.data));
 
     console.log(data);
+
+    //Echo back
+    ipc.of['/test-machine'].emit('message', `<!--${data}-->`);
   });
 
-  ipc.of['/test-machine'].on('disconnect', () =>
+  /*ipc.of['/test-machine'].on('disconnect', () =>
   {
     console.log('Disconnected!');
-  });
+  });*/
 })();

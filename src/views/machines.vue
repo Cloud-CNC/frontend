@@ -104,7 +104,7 @@
       </template>
     </lightbox>
 
-    <lightbox v-model="lightboxes.control.visible">
+    <lightbox data-e2e="machine-controller" v-model="lightboxes.control.visible">
       <template v-slot:title>Control {{machine.name}}</template>
       <template v-slot:content>
         <machine :machine="machine" :visible="lightboxes.control.visible" />
@@ -143,11 +143,11 @@
 
 <script>
 //Imports
-import api from "../assets/api";
-import filters from "../assets/filters";
-import gallery from "../components/gallery";
-import lightbox from "../components/lightbox";
-import machine from "../components/machine";
+import api from '../assets/api';
+import filters from '../assets/filters';
+import gallery from '../components/gallery';
+import lightbox from '../components/lightbox';
+import machine from '../components/machine';
 
 export default {
   components: {
@@ -173,40 +173,45 @@ export default {
         visible: false
       }
     },
-    machine: { name: null },
+    machine: {name: null},
     machines: [],
     prechecks: false,
     rules: {
-      required: value => value != null || "Required",
-      name: value => filters.name.test(value) || "Invalid name",
+      required: value => value != null || 'Required',
+      name: value => filters.name.test(value) || 'Invalid name',
       tags: value =>
         (value instanceof Array && filters.tags.test(JSON.stringify(value))) ||
-        "Invalid tags",
-      number: value => typeof value == "number" || "Invalid number"
+        'Invalid tags',
+      number: value => typeof value == 'number' || 'Invalid number'
     }
   }),
-  created: function() {
+  created: function ()  
+  {
     //Get controllers
-    api.controllers.all().then(controllers => (this.controllers = controllers));
+    api.controllers.all().then(controllers => this.controllers = controllers);
 
     //Get machines
-    api.machines.all().then(machines => (this.machines = machines));
+    api.machines.all().then(machines => this.machines = machines);
   },
   methods: {
     //Show upsert lightbox
-    upsert: function(machine) {
+    upsert: function (machine)    
+    {
       //Configure lightbox
-      if (machine == null) {
+      if (machine == null)      
+      {
         this.lightboxes.upsert._id = null;
         this.lightboxes.upsert.controller =
-          this.controllers.length > 0 ? this.controllers[0]._id : null;
+          this.controllers.length > 0 ? this.controllers[this.controllers.length - 1]._id : null;
         this.lightboxes.upsert.name = null;
         this.lightboxes.upsert.tags = [];
         this.lightboxes.upsert.length = 0;
         this.lightboxes.upsert.width = 0;
         this.lightboxes.upsert.height = 0;
         this.lightboxes.upsert.create = true;
-      } else {
+      }
+      else      
+      {
         this.lightboxes.upsert._id = machine._id;
         this.lightboxes.upsert.controller = machine.controller;
         this.lightboxes.upsert.name = machine.name;
@@ -221,7 +226,8 @@ export default {
       this.lightboxes.upsert.visible = true;
     },
     //Create machine
-    create: function() {
+    create: function ()    
+    {
       api.machines
         .create(
           this.lightboxes.upsert.controller,
@@ -231,7 +237,8 @@ export default {
           this.lightboxes.upsert.width,
           this.lightboxes.upsert.height
         )
-        .then(_id => {
+        .then(_id =>        
+        {
           //Add to list
           this.machines.push({
             _id,
@@ -248,9 +255,11 @@ export default {
         });
     },
     //Update machine
-    update: function(property) {
+    update: function (property)    
+    {
       //Precheck
-      if (this.$refs[property].valid && !this.lightboxes.upsert.create) {
+      if (this.$refs[property].valid && !this.lightboxes.upsert.create)      
+      {
         //Update front end
         const machine = this.machines.find(
           machine => machine._id == this.lightboxes.upsert._id
@@ -258,22 +267,27 @@ export default {
         machine[property] = this.lightboxes.upsert[property];
 
         //Update backend
-        if (property == "controller") {
+        if (property == 'controller')        
+        {
           api.machines.update(
-            { [property]: this.lightboxes.upsert[property]._id },
+            {[property]: this.lightboxes.upsert[property]._id},
             this.lightboxes.upsert._id
           );
-        } else {
+        }
+        else        
+        {
           api.machines.update(
-            { [property]: this.lightboxes.upsert[property] },
+            {[property]: this.lightboxes.upsert[property]},
             this.lightboxes.upsert._id
           );
         }
       }
     },
     //Remove machine
-    remove: function(machine) {
-      api.machines.remove(machine._id).then(() => {
+    remove: function (machine)    
+    {
+      api.machines.remove(machine._id).then(() =>      
+      {
         //Get index
         const index = this.machines.findIndex(item => item._id == machine._id);
 
