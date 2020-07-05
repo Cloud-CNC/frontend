@@ -70,6 +70,8 @@ describe('admin', () =>
 
         cy.get('[data-e2e=close-account-mfa-token]').click();
 
+        cy.wait(1000);
+
         cy.count('[data-e2e=entity-name]').should('eq', before + 1);
       });
     });
@@ -158,6 +160,8 @@ describe('admin', () =>
 
       cy.get('[data-e2e=close-account]').click();
 
+      cy.wait(1000);
+
       cy.get('[data-e2e=entity-name]').last().contains(username);
     });
   });
@@ -169,11 +173,13 @@ describe('admin', () =>
       //Wait for page to render
       cy.get('[data-e2e=entity-name]').should('be.visible');
 
-      //Get number of files before removing one
+      //Get number of accounts before removing one
       cy.count('[data-e2e=entity-name]').then(before =>
       {
         cy.get('[data-e2e=remove-account]').last().click();
         cy.get('[data-e2e=remove-account]').last().click();
+
+        cy.wait(1000);
 
         cy.count('[data-e2e=entity-name]').should('eq', before - 2);
       });

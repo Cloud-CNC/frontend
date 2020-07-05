@@ -106,19 +106,18 @@ describe('machines', () =>
 
   describe('control a machine', () =>
   {
-    //Start the controller in E2E mode
     before(() =>
     {
-      //Extract the existing machine's ID and controller ID
+      //Extract the machine's ID and controller ID
       cy.get('[data-e2e=machine-info]').then(elements =>
       {
         const element = elements[elements.length - 1];
         const parsed = /Machine ID:\s+([0-9a-f]+)\s+Controller Name:\s+.+\s+Controller ID:\s+([0-9a-f]+)/.exec(element.innerText);
 
-        //console.log(parsed);
+        //Start the controller in E2E mode
         cy.task('startController', {
           controllerID: parsed[2],
-          controllerKey: controllerKey,
+          controllerKey,
           machineID: parsed[1]
         });
       });
@@ -226,9 +225,9 @@ describe('machines', () =>
       });
     });
 
-    //Stop the controller
     after(() =>
     {
+      //Stop the controller
       cy.task('stopController');
     });
   });

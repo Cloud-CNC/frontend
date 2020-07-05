@@ -31,19 +31,19 @@
             </v-list-item>
 
             <v-list-item>
-              <v-checkbox
-                @click.passive.stop="update('mfa')"
+              <v-switch
+                @change="update('mfa')"
                 data-e2e="account-mfa"
                 label="MFA"
                 ref="mfa"
                 v-model="lightboxes.upsert.mfa"
-              ></v-checkbox>
+              ></v-switch>
             </v-list-item>
 
             <v-list-item>
               <v-select
                 :items="lightboxes.upsert.roles"
-                @blur="update('role')"
+                @change="update('role')"
                 data-e2e="account-role"
                 label="Role"
                 ref="role"

@@ -37,6 +37,8 @@ module.exports = class IpcHelper
     {
       const payload = new TextDecoder().decode(Buffer.from(packet.data));
 
+      console.log(`Received "${payload}" from controller!`);
+
       Object.keys(this.listeners).forEach(listener =>
       {
         //If the message matches a listener, raise the heard boolean
@@ -47,7 +49,7 @@ module.exports = class IpcHelper
       });
 
       //Echo back to controller to forward to the core to forward to the client
-      this.client.of[this.id].emit('message', `Machine received: ${payload}`);
+      this.client.of[this.id].emit('message', `Machine received "${payload}"!`);
     });
   }
 

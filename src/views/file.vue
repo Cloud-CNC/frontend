@@ -1,12 +1,13 @@
 <template>
   <div>
-    <lightbox v-model="visible">
+    <lightbox data-e2e="execute-file-lightbox" v-model="visible">
       <template v-slot:title>Execute {{ file.name }}</template>
       <template v-slot:content>
         <v-form>
           <v-list>
             <v-list-item>
               <v-select
+                data-e2e="execute-machine"
                 item-text="name"
                 item-value="_id"
                 :items="machines"
@@ -17,7 +18,7 @@
 
             <v-list-item>
               <v-btn-toggle>
-                <v-btn @click="execute">Execute</v-btn>
+                <v-btn @click="execute" data-e2e="confirm-execute">Execute</v-btn>
                 <v-btn @click="visible = false">Cancel</v-btn>
               </v-btn-toggle>
             </v-list-item>
@@ -33,7 +34,7 @@
           <v-spacer />
 
           <v-toolbar-items>
-            <v-btn icon @click="machine = machines[0]._id; visible = true">
+            <v-btn icon @click="showLightbox()" data-e2e="execute-file">
               <v-icon>dock</v-icon>
             </v-btn>
           </v-toolbar-items>
@@ -100,12 +101,19 @@ export default {
     api.machines.all().then(machines =>
     {
       this.machines = machines;
+      this.machine = this.machines[0]?._id;
     });
 
     //Get file
     api.files.get(this.$route.params.id).then(file => this.file = file);
   },
   methods: {
+    //Show the execute lightbox
+    showLightbox: function ()
+    {
+      this.visible = true;
+    },
+    //Execute the file
     execute: function ()
     {
       api.machines.execute(this.machine, this.$route.params.id);

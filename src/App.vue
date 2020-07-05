@@ -61,8 +61,8 @@
     </v-snackbar>
 
     <v-bottom-sheet v-model="$store.state.error.visible">
-      <v-sheet class="text-center" color="error" id="error">
-        <v-btn icon x-large @click="$store.commit('hideError')">
+      <v-sheet class="text-center" color="error" data-e2e="global-error-message" id="error">
+        <v-btn icon x-large @click="$store.commit('hideError')" data-e2e="dismiss-global-error-message">
           <v-icon>close</v-icon>
         </v-btn>
         <h1 class="font-weight-light title">{{$store.state.error.name}}</h1>

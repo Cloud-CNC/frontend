@@ -50,6 +50,8 @@ describe('files', () =>
         cy.valid('[data-e2e=create-file]');
         cy.get('[data-e2e=create-file]').click();
 
+        cy.wait(1000);
+
         cy.count('[data-e2e=entity-name]').should('eq', before + 1);
       });
     });
@@ -61,7 +63,7 @@ describe('files', () =>
     {
       cy.get('[data-e2e=edit-file]').last().click();
 
-      cy.get('[data-e2e=file-raw').should('not.be.visible');
+      cy.get('[data-e2e=file-raw]').should('not.be.visible');
     });
 
     it('will validate input', () =>
@@ -95,8 +97,10 @@ describe('files', () =>
 
       cy.get('[data-e2e=close-file]').click();
 
+      cy.wait(1000);
+
       cy.get('[data-e2e=entity-name]').last().contains(name);
-      cy.get('[data-e2e=entity-description').last().contains(description);
+      cy.get('[data-e2e=entity-description]').last().contains(description);
     });
   });
 
@@ -112,8 +116,22 @@ describe('files', () =>
       {
         cy.get('[data-e2e=remove-file]').last().click();
 
+        cy.wait(1000);
+
         cy.count('[data-e2e=entity-name]').should('eq', before - 1);
       });
     });
+  });
+
+  after(() =>
+  {
+    cy.login();
+
+    //Remove the file permanently
+    cy.visit('/trash');
+
+    cy.get('[data-e2e=remove-file]').last().click();
+
+    cy.wait(1000);
   });
 });
