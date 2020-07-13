@@ -28,8 +28,10 @@ jobs:
         run: sudo apt install -y mongodb
       - name: ESLint
         run: npx eslint frontend
-      - name: Debug
-        run: cat /home/runner/work/frontend/frontend/package.json
+      - name: Debug 1
+        run: ls /home/runner/work/frontend/
+      - name: Debug 2
+        run: ls /home/runner/work/frontend/frontend/
       - uses: paambaati/codeclimate-action@v2.6.0
         name: Run Tests
         env:
