@@ -24,8 +24,10 @@ jobs:
           path: core
       - name: Install core modules
         run: cd core && sudo npm ci --unsafe-perm=true --allow-root && cd ..
-      - uses: stefanoeb/eslint-action@1.0.2
-        name: ESLint
+      - name: Install MongoDB
+        run: sudo apt install -y mongodb
+      - name: ESLint
+        run: eslint frontend
       - uses: paambaati/codeclimate-action@v2.6.0
         name: Run Tests
         env:
