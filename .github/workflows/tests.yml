@@ -28,9 +28,11 @@ jobs:
         run: sudo apt install -y mongodb
       - name: ESLint
         run: npx eslint frontend
+      - name: Change to frontend
+        run: cd frontend
       - uses: paambaati/codeclimate-action@v2.6.0
         name: Run Tests
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_REPORTER_ID }}
         with:
-          coverageCommand: 'cd frontend && sudo npm run coverage'
+          coverageCommand: sudo npm run coverage
