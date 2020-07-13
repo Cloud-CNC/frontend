@@ -9,11 +9,5 @@ module.exports = {
   core: {
     //URL of the Cloud CNC core (Use an empty string to make the API address relative to the website address)
     url: ''
-  },
-
-  //Development server
-  server: {
-    //Enable the development server (Also have to run the serve command)
-    enabled: false
   }
 };

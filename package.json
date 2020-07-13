@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
+    "core": "node tests/e2e/utils/core.js",
     "coverage": "npm run test:unit && npm run test:e2e && nyc report --reporter=lcov",
     "lint": "vue-cli-service lint",
     "serve": "vue-cli-service serve --host 127.0.0.1 --https --port 8443",
-    "test:e2e": "concurrently --kill-others --success first \"npm:serve\" \"vue-cli-service test:e2e --headless --url https://127.0.0.1:8443\"",
-    "test:e2e:gui": "concurrently --kill-others --success first \"npm:serve\" \"vue-cli-service test:e2e --url https://127.0.0.1:8443\"",
-    "test:unit": "nyc --no-clean --silent vue-cli-service test:unit"
+    "test:e2e": "cross-env NODE_ENV=development concurrently --kill-others --success first \"npm:core\" \"npm:serve\" \"vue-cli-service test:e2e --headless --url https://127.0.0.1:8443\"",
+    "test:e2e:gui": "cross-env NODE_ENV=development concurrently --kill-others --success first \"npm:core\" \"npm:serve\" \"vue-cli-service test:e2e --url https://127.0.0.1:8443\"",
+    "test:unit": "cross-env NODE_ENV=development nyc --no-clean --silent vue-cli-service test:unit"
   },
   "dependencies": {
     "config": "^3.3.1",
@@ -41,6 +42,7 @@
     "chai": "^4.1.2",
     "chromedriver": "^81.0.0",
     "concurrently": "^5.2.0",
+    "cross-env": "^7.0.2",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
     "geckodriver": "^1.19.1",

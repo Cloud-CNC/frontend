@@ -8,17 +8,27 @@ jobs:
       matrix:
         node: [13, 14]
     steps:
-      - uses: actions/checkout@v2.1.0
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
+      - name: Clone frontend
+        uses: actions/checkout@v2.1.0
+        with:
+          path: frontend
+      - name: Install frontend modules
+        run: cd frontend && sudo npm ci --unsafe-perm=true --allow-root && cd ..
+      - name: Clone core
+        uses: actions/checkout@v2.1.0
+        with:
+          repository: 'cloud-cnc/core'
+          path: core
+      - name: Install core modules
+        run: cd core && sudo npm ci --unsafe-perm=true --allow-root && cd ..
       - uses: stefanoeb/eslint-action@1.0.2
         name: ESLint
-      - name: Install Modules
-        run: sudo npm ci --unsafe-perm=true --allow-root
       - uses: paambaati/codeclimate-action@v2.6.0
         name: Run Tests
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_REPORTER_ID }}
         with:
-          coverageCommand: sudo npm run coverage
+          coverageCommand: cd frontend && sudo npm run coverage

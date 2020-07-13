@@ -84,7 +84,7 @@ describe('file', () =>
         const element = elements[elements.length - 1];
         const parsed = /Machine ID:\s+([0-9a-f]+)\s+Controller Name:\s+.+\s+Controller ID:\s+([0-9a-f]+)/.exec(element.innerText);
 
-        cy.task('startController', {
+        cy.task('start', {
           controllerID: parsed[2],
           controllerKey,
           machineID: parsed[1]
@@ -115,7 +115,7 @@ describe('file', () =>
       cy.login();
 
       //Stop the mock controller
-      cy.task('stopController');
+      cy.task('stop');
 
       //Remove the machine
       cy.visit('/machines');

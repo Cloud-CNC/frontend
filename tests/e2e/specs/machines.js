@@ -115,7 +115,7 @@ describe('machines', () =>
         const parsed = /Machine ID:\s+([0-9a-f]+)\s+Controller Name:\s+.+\s+Controller ID:\s+([0-9a-f]+)/.exec(element.innerText);
 
         //Start the controller in E2E mode
-        cy.task('startController', {
+        cy.task('start', {
           controllerID: parsed[2],
           controllerKey,
           machineID: parsed[1]
@@ -228,7 +228,7 @@ describe('machines', () =>
     after(() =>
     {
       //Stop the controller
-      cy.task('stopController');
+      cy.task('stop');
     });
   });
 

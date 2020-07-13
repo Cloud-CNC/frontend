@@ -1,5 +1,5 @@
 /**
- * @fileoverview IPC Helper for E2E Tests
+ * @fileoverview IPC helper for E2E tests
  */
 
 //Imports

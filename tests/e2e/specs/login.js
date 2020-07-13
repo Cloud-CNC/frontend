@@ -61,7 +61,6 @@ describe('login', () =>
 
       cy.get('[data-e2e=login]').click();
 
-      cy.get('[data-e2e=invalid-credentials]').children().eq(0).should('not.be.visible');
       cy.url().should('eq', 'https://127.0.0.1:8443/files');
     });
   });
