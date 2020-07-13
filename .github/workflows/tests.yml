@@ -21,6 +21,13 @@ jobs:
         run: ls /home/runner/work/ && echo --- && ls /home/runner/work/frontend
       - name: Install frontend modules
         run: cd frontend && sudo npm ci --unsafe-perm=true --allow-root
+      - name: Clone controller
+        uses: actions/checkout@v2.1.0
+        with:
+          repository: 'cloud-cnc/controller'
+          path: controller
+      - name: Install core modules
+        run: cd controller && sudo npm ci --unsafe-perm=true --allow-root
       - name: Clone core
         uses: actions/checkout@v2.1.0
         with:
