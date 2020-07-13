@@ -29,7 +29,7 @@ jobs:
       - name: ESLint
         run: npx eslint frontend
       - name: Debug
-        run: ls -R
+        run: cat /home/runner/work/frontend/frontend/package.json
       - uses: paambaati/codeclimate-action@v2.6.0
         name: Run Tests
         env:
