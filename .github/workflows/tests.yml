@@ -20,25 +20,25 @@ jobs:
       - name: Debug 2
         run: ls /home/runner/work/ && echo --- && ls /home/runner/work/frontend
       - name: Install frontend modules
-        run: cd /home/runner/work/frontend/frontend/frontend && sudo npm ci --unsafe-perm=true --allow-root
+        run: cd frontend && sudo npm ci --unsafe-perm=true --allow-root
       - name: Clone controller
         uses: actions/checkout@v2.1.0
         with:
           repository: 'cloud-cnc/controller'
           path: controller
       - name: Install core modules
-        run: cd /home/runner/work/frontend/frontend/controller && sudo npm ci --unsafe-perm=true --allow-root
+        run: cd controller && sudo npm ci --unsafe-perm=true --allow-root
       - name: Clone core
         uses: actions/checkout@v2.1.0
         with:
           repository: 'cloud-cnc/core'
           path: core
       - name: Install core modules
-        run: /home/runner/work/frontend/frontend/core && sudo npm ci --unsafe-perm=true --allow-root
+        run: cd core && sudo npm ci --unsafe-perm=true --allow-root
       - name: Generate Salt
-        run: cd /home/runner/work/frontend/frontend/core/config && openssl rand -out secret.txt -base64 512
+        run: cd core/config && ls && openssl rand -out secret.txt -base64 512
       - name: Generate Certificate
-        run: cd /home/runner/work/frontend/frontend/core/config && openssl req -newkey rsa:2048 -nodes -x509 -subj "/CN=127.0.0.1" -addext "subjectAltName = IP:127.0.0.1" -keyout key.pem -out cert.cer
+        run: cd core/config && openssl req -newkey rsa:2048 -nodes -x509 -subj "/CN=127.0.0.1" -addext "subjectAltName = IP:127.0.0.1" -keyout key.pem -out cert.cer
       - name: Install MongoDB
         run: sudo apt install -y mongodb
       - name: ESLint
