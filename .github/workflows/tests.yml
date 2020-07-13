@@ -29,9 +29,9 @@ jobs:
       - name: ESLint
         run: npx eslint frontend
       - name: Debug 1
-        run: ls /home/runner/work/frontend/
+        run: ls /home/runner/work/frontend/frontend
       - name: Debug 2
-        run: ls /home/runner/work/frontend/frontend/
+        run: ls /home/runner/work/frontend/frontend/frontend
       - uses: paambaati/codeclimate-action@v2.6.0
         name: Run Tests
         env:
