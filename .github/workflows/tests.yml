@@ -33,4 +33,4 @@ jobs:
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_REPORTER_ID }}
         with:
-          coverageCommand: cd frontend && sudo npm run coverage
+          coverageCommand: 'cd frontend && sudo npm run coverage'
