@@ -12,18 +12,18 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - name: Debug 1
-        run: ls /home/runner/work/ && echo --- && ls /home/runner/work/frontend
+        run: echo ${{ github.ref }}
       - name: Clone frontend
         uses: actions/checkout@v2.1.0
         with:
+          ref: ${{ github.ref }}
           path: frontend
-      - name: Debug 2
-        run: ls /home/runner/work/ && echo --- && ls /home/runner/work/frontend
       - name: Install frontend modules
         run: cd frontend && sudo npm ci --unsafe-perm=true --allow-root
       - name: Clone controller
         uses: actions/checkout@v2.1.0
         with:
+          ref: ${{ github.ref }}
           repository: 'cloud-cnc/controller'
           path: controller
       - name: Install core modules
@@ -31,6 +31,7 @@ jobs:
       - name: Clone core
         uses: actions/checkout@v2.1.0
         with:
+          ref: ${{ github.ref }}
           repository: 'cloud-cnc/core'
           path: core
       - name: Install core modules
@@ -43,8 +44,6 @@ jobs:
         run: sudo apt install -y mongodb
       - name: ESLint
         run: npx eslint frontend
-      - name: Debug 3
-        run: ls /home/runner/work/frontend/frontend/core && echo --- && ls /home/runner/work/frontend/frontend/frontend
       - uses: paambaati/codeclimate-action@v2.6.0
         name: Run Tests
         env:
