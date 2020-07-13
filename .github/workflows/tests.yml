@@ -20,14 +20,18 @@ jobs:
       - name: Debug 2
         run: ls /home/runner/work/ && ls /home/runner/work/frontend
       - name: Install frontend modules
-        run: cd frontend && sudo npm ci --unsafe-perm=true --allow-root && cd ..
+        run: cd frontend && sudo npm ci --unsafe-perm=true --allow-root
       - name: Clone core
         uses: actions/checkout@v2.1.0
         with:
           repository: 'cloud-cnc/core'
           path: core
       - name: Install core modules
-        run: cd core && sudo npm ci --unsafe-perm=true --allow-root && cd ..
+        run: cd core && sudo npm ci --unsafe-perm=true --allow-root
+      - name: Generate Salt
+        run: cd core/config && openssl rand -out secret.txt -base64 512
+      - name: Generate Certificate
+        run: cd core/config && openssl req -newkey rsa:2048 -nodes -x509 -subj "/CN=127.0.0.1" -addext "subjectAltName = IP:127.0.0.1" -keyout key.pem -out cert.cer
       - name: Install MongoDB
         run: sudo apt install -y mongodb
       - name: ESLint
