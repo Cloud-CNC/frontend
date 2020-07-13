@@ -36,7 +36,7 @@ jobs:
       - name: Install core modules
         run: cd core && sudo npm ci --unsafe-perm=true --allow-root
       - name: Generate Salt
-        run: cd core/config && ls && openssl rand -out secret.txt -base64 512
+        run: ls && cd core/config && openssl rand -out secret.txt -base64 512
       - name: Generate Certificate
         run: cd core/config && openssl req -newkey rsa:2048 -nodes -x509 -subj "/CN=127.0.0.1" -addext "subjectAltName = IP:127.0.0.1" -keyout key.pem -out cert.cer
       - name: Install MongoDB
