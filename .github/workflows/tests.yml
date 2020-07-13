@@ -11,10 +11,14 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
+      - name: Debug 1
+        run: ls /home/runner/work/ && ls /home/runner/work/frontend
       - name: Clone frontend
         uses: actions/checkout@v2.1.0
         with:
           path: frontend
+      - name: Debug 2
+        run: ls /home/runner/work/ && ls /home/runner/work/frontend
       - name: Install frontend modules
         run: cd frontend && sudo npm ci --unsafe-perm=true --allow-root && cd ..
       - name: Clone core
@@ -28,10 +32,8 @@ jobs:
         run: sudo apt install -y mongodb
       - name: ESLint
         run: npx eslint frontend
-      - name: Debug 1
-        run: ls /home/runner/work/frontend/frontend
-      - name: Debug 2
-        run: ls /home/runner/work/frontend/frontend/frontend
+      - name: Debug 3
+        run: ls /home/runner/work/ && ls /home/runner/work/frontend/frontend/frontend
       - uses: paambaati/codeclimate-action@v2.6.0
         name: Run Tests
         env:
