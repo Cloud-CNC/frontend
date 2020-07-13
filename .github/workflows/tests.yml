@@ -12,13 +12,13 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - name: Debug 1
-        run: ls /home/runner/work/ && ls /home/runner/work/frontend
+        run: ls /home/runner/work/ && echo --- && ls /home/runner/work/frontend
       - name: Clone frontend
         uses: actions/checkout@v2.1.0
         with:
           path: frontend
       - name: Debug 2
-        run: ls /home/runner/work/ && ls /home/runner/work/frontend
+        run: ls /home/runner/work/ && echo --- && ls /home/runner/work/frontend
       - name: Install frontend modules
         run: cd frontend && sudo npm ci --unsafe-perm=true --allow-root
       - name: Clone core
@@ -37,7 +37,7 @@ jobs:
       - name: ESLint
         run: npx eslint frontend
       - name: Debug 3
-        run: ls /home/runner/work/ && ls /home/runner/work/frontend/frontend/frontend
+        run: ls /home/runner/work/frontend/frontend/core && echo --- && ls /home/runner/work/frontend/frontend/frontend
       - uses: paambaati/codeclimate-action@v2.6.0
         name: Run Tests
         env:
