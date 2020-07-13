@@ -27,7 +27,7 @@ jobs:
       - name: Install MongoDB
         run: sudo apt install -y mongodb
       - name: ESLint
-        run: eslint frontend
+        run: npx eslint frontend
       - uses: paambaati/codeclimate-action@v2.6.0
         name: Run Tests
         env:
