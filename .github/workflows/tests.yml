@@ -11,39 +11,73 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
+
+      #Generate a certificate (Used by frontend and cor)
+      - name: Generate Certificate
+        working-directory: $GITHUB_WORKSPACE
+        run: openssl req -newkey rsa:2048 -nodes -x509 -subj "/CN=127.0.0.1" -addext "subjectAltName = IP:127.0.0.1" -keyout key.pem -out cert.cer
+
+      #Debug
+      - name: Debug 0
+        run: ls
+
       - name: Debug 1
-        run: echo ${{ github.ref }}
+        run: pwd
+
+      - name: Debug 2
+        run: cd .. && pwd
+
+      - name: Debug 3
+        run: pwd
+
+      #Setup the frontend
       - name: Clone frontend
         uses: actions/checkout@v2.1.0
         with:
           ref: ${{ github.ref }}
           path: frontend
+
       - name: Install frontend modules
-        run: cd frontend && sudo npm ci --unsafe-perm=true --allow-root
+        working-directory: ./frontend
+        run: sudo npm ci --unsafe-perm=true --allow-root
+
+      #Run ESlint on the frontend
+      - name: ESlint
+        working-directory: ./frontend
+        run: npx eslint .
+
+      #Setup the controller
       - name: Clone controller
         uses: actions/checkout@v2.1.0
         with:
           ref: ${{ github.ref }}
           repository: 'cloud-cnc/controller'
           path: controller
-      - name: Install core modules
-        run: cd controller && sudo npm ci --unsafe-perm=true --allow-root
+
+      - name: Install controller modules
+        working-directory: ./controller
+        run: sudo npm ci --unsafe-perm=true --allow-root
+
+      #Setup the core
+      - name: Install MongoDB
+        run: sudo apt install -y mongodb
+
       - name: Clone core
         uses: actions/checkout@v2.1.0
         with:
           ref: ${{ github.ref }}
           repository: 'cloud-cnc/core'
           path: core
+
       - name: Install core modules
-        run: cd core && sudo npm ci --unsafe-perm=true --allow-root
+        working-directory: ./core
+        run: sudo npm ci --unsafe-perm=true --allow-root
+
       - name: Generate Salt
-        run: ls core && cd core/config && openssl rand -out secret.txt -base64 512
-      - name: Generate Certificate
-        run: cd core/config && openssl req -newkey rsa:2048 -nodes -x509 -subj "/CN=127.0.0.1" -addext "subjectAltName = IP:127.0.0.1" -keyout key.pem -out cert.cer
-      - name: Install MongoDB
-        run: sudo apt install -y mongodb
-      - name: ESLint
-        run: npx eslint frontend
+        working-directory: ./core/config
+        run: openssl rand -out secret.txt -base64 512
+
+      #Run unit + E2E tests
       - uses: paambaati/codeclimate-action@v2.6.0
         name: Run Tests
         env:
