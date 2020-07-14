@@ -8,11 +8,6 @@ const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 
-const p1 = path.resolve('./config');
-console.log(`P1: ${p1}`);
-const p2 = fs.readdirSync(p1);
-console.log(`P2: ${p2.join(', ')}`);
-
 //Export
 module.exports = {
   configureWebpack: {

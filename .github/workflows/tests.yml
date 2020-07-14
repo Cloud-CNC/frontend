@@ -27,6 +27,12 @@ jobs:
         working-directory: ./frontend
         run: sudo npm ci --unsafe-perm=true --allow-root
 
+      - name: Link frontend TLS certificate
+        working-directory: ./frontend
+        run: |
+          ln -s ../cert.cer ./
+          ln -s ../key.pem ./
+
       #Run ESlint on the frontend
       - name: ESlint
         working-directory: ./frontend
@@ -58,6 +64,12 @@ jobs:
       - name: Install core modules
         working-directory: ./core
         run: sudo npm ci --unsafe-perm=true --allow-root
+
+      - name: Link core TLS certificate
+        working-directory: ./core
+        run: |
+          ln -s ../cert.cer ./
+          ln -s ../key.pem ./
 
       - name: Generate Salt
         working-directory: ./core/config
