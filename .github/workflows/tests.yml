@@ -28,7 +28,7 @@ jobs:
         run: sudo npm ci --unsafe-perm=true --allow-root
 
       - name: Link frontend TLS certificate
-        working-directory: ./frontend
+        working-directory: ./frontend/config
         run: |
           ln -s ../cert.cer ./
           ln -s ../key.pem ./
@@ -69,7 +69,7 @@ jobs:
         run: sudo npm ci --unsafe-perm=true --allow-root
 
       - name: Link core TLS certificate
-        working-directory: ./core
+        working-directory: ./core/config
         run: |
           ln -s ../cert.cer ./
           ln -s ../key.pem ./
