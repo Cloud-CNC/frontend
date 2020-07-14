@@ -30,8 +30,8 @@ jobs:
       - name: Link frontend TLS certificate
         working-directory: ./frontend/config
         run: |
-          ln -s ../cert.cer ./
-          ln -s ../key.pem ./
+          ln -s ../../cert.cer ./
+          ln -s ../../key.pem ./
           ls
           cat ./cert.cer
           cat ./key.pem
@@ -71,8 +71,8 @@ jobs:
       - name: Link core TLS certificate
         working-directory: ./core/config
         run: |
-          ln -s ../cert.cer ./
-          ln -s ../key.pem ./
+          ln -s ../../cert.cer ./
+          ln -s ../../key.pem ./
           ls
           cat ./cert.cer
           cat ./key.pem
