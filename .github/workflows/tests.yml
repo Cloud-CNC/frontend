@@ -82,4 +82,4 @@ jobs:
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_REPORTER_ID }}
         with:
-          coverageCommand: sudo npm run coverage --prefix frontend
+          coverageCommand: cd ./frontend && sudo npm run coverage
