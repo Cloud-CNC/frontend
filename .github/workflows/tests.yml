@@ -14,7 +14,6 @@ jobs:
 
       #Generate a certificate (Used by frontend and cor)
       - name: Generate Certificate
-        working-directory: $GITHUB_WORKSPACE
         run: openssl req -newkey rsa:2048 -nodes -x509 -subj "/CN=127.0.0.1" -addext "subjectAltName = IP:127.0.0.1" -keyout key.pem -out cert.cer
 
       #Debug

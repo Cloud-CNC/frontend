@@ -14,7 +14,7 @@ module.exports = {
       new webpack.DefinePlugin({'process.env.config': JSON.stringify(require('config'))})
     ]
   },
-  devServer: {
+  devServer: process.env.NODE_ENV == 'development' && {
     cert: fs.readFileSync(config.get('server.cert')),
     key: fs.readFileSync(config.get('server.key'))
   },
