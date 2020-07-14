@@ -32,6 +32,9 @@ jobs:
         run: |
           ln -s ../cert.cer ./
           ln -s ../key.pem ./
+          ls
+          cat ./cert.cer
+          cat ./key.pem
 
       #Run ESlint on the frontend
       - name: ESlint
@@ -70,6 +73,9 @@ jobs:
         run: |
           ln -s ../cert.cer ./
           ln -s ../key.pem ./
+          ls
+          cat ./cert.cer
+          cat ./key.pem
 
       - name: Generate Salt
         working-directory: ./core/config
