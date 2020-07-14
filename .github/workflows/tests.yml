@@ -16,19 +16,6 @@ jobs:
       - name: Generate Certificate
         run: openssl req -newkey rsa:2048 -nodes -x509 -subj "/CN=127.0.0.1" -addext "subjectAltName = IP:127.0.0.1" -keyout key.pem -out cert.cer
 
-      #Debug
-      - name: Debug 0
-        run: ls
-
-      - name: Debug 1
-        run: pwd
-
-      - name: Debug 2
-        run: cd .. && pwd
-
-      - name: Debug 3
-        run: pwd
-
       #Setup the frontend
       - name: Clone frontend
         uses: actions/checkout@v2.1.0
@@ -82,4 +69,4 @@ jobs:
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_REPORTER_ID }}
         with:
-          coverageCommand: cd ./frontend && sudo npm run coverage
+          coverageCommand: sudo npm run coverage --prefix frontend
