@@ -27,7 +27,7 @@ describe('download.vue', () =>
         default: '<h1>Click to download</h1>'
       },
       propsData: {
-        data: 'abc',
+        data: 'abc def',
         filename: 'name.gcode',
         id: 'test-id'
       }
@@ -35,7 +35,7 @@ describe('download.vue', () =>
 
     expect(wrapper.contains('v-btn-stub')).to.be.true;
     expect(wrapper.attributes('download')).to.equal('name.gcode');
-    expect(wrapper.attributes('href')).to.equal('data:text/plain;charset=utf-8,abc');
+    expect(wrapper.attributes('href')).to.equal('data:text/plain;charset=utf-8,abc%20def');
 
     expect(wrapper.contains('h1')).to.be.true;
     expect(wrapper.find('h1').text()).to.equal('Click to download');

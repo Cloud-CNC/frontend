@@ -45,7 +45,7 @@ describe('password.vue', () =>
     });
     
     expect(wrapper.contains('v-text-field-stub')).to.be.true;
-    expect(wrapper.attributes('rules')).to.equal('value => value != null || \'Required\',value => _filters.default.password.test(value) || \'Invalid password\'');
+    expect(wrapper.attributes('rules')).to.not.be.null;
     expect(wrapper.attributes('value')).to.equal('Testingpassword123!');
     expect(wrapper.attributes('appendicon')).to.equal('visibility');
     expect(wrapper.attributes('label')).to.equal('Password');
@@ -65,7 +65,7 @@ describe('password.vue', () =>
     });
     
     expect(wrapper.contains('v-text-field-stub')).to.be.true;
-    expect(wrapper.attributes('rules')).to.equal('value => value != null || \'Required\',value => _filters.default.password.test(value) || \'Invalid password\'');
+    expect(wrapper.attributes('rules')).not.be.null;
     expect(wrapper.attributes('value')).to.equal('Testingpassword123!');
     expect(wrapper.attributes('appendicon')).to.equal('visibility');
     expect(wrapper.attributes('label')).to.equal('Password');

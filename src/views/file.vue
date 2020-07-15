@@ -101,7 +101,11 @@ export default {
     api.machines.all().then(machines =>
     {
       this.machines = machines;
-      this.machine = this.machines[0]?._id;
+
+      if (this.machines[0] != null && this.machines[0]._id != null)
+      {
+        this.machine = this.machines[0]._id;
+      }
     });
 
     //Get file
