@@ -81,6 +81,11 @@ jobs:
         working-directory: ./core/config
         run: openssl rand -out secret.txt -base64 512
 
+      - name: Debug
+        run: |
+          ls /home/runner/work/frontend/frontend/core
+          cat /home/runner/work/frontend/frontend/core/app.js
+
       #Run unit + E2E tests
       - uses: paambaati/codeclimate-action@v2.6.0
         name: Run Tests
