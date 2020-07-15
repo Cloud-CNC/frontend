@@ -7,13 +7,15 @@ const childProcess = require('child_process');
 const nodeConfig = require('config');
 const path = require('path');
 
-//Start the core server
-console.log('Starting the core server');
+//Get the core server location
+const coreLocation = path.resolve(nodeConfig.get('core.location'));
+console.log(`Starting the core server located at: ${coreLocation}`);
 
+//Start the core server
 const coreProcess = childProcess.spawn('node', [
   'app.js'
 ], {
-  cwd: path.resolve(nodeConfig.get('core.location')),
+  cwd: coreLocation,
   env: {
     NODE_ENV: 'development'
   }

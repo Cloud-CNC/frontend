@@ -24,11 +24,15 @@ module.exports = {
    */
   start: async ({controllerID, controllerKey, machineID}) =>
   {
+    //Get the controller location
+    const controllerLocation = path.resolve(nodeConfig.get('controller.location'));
+    console.log(`Starting the mock controller located at: ${controllerLocation}`);
+
     //Start the controller
     controllerProcess = childProcess.spawn('node', [
       'index.js'
     ], {
-      cwd: path.resolve(nodeConfig.get('controller.location')),
+      cwd: controllerLocation,
       env: {
         NODE_ENV: 'development',
         E2E: 'true',
