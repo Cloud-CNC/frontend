@@ -34,11 +34,12 @@ module.exports = {
     ], {
       cwd: controllerLocation,
       env: {
-        NODE_ENV: 'development',
-        E2E: 'true',
         CONTROLLER_ID: controllerID,
         CONTROLLER_KEY: controllerKey,
-        MACHINE_ID: machineID
+        E2E: 'true',
+        MACHINE_ID: machineID,
+        NODE_ENV: 'development',
+        PATH: process.env.PATH
       }
     });
 
