@@ -16,6 +16,7 @@ module.exports = {
     ]
   },
   devServer: process.env.NODE_ENV == 'development' ? {
+    progress: false,
     cert: fs.readFileSync(path.resolve(config.get('server.cert'))),
     key: fs.readFileSync(path.resolve(config.get('server.key')))
   } : undefined,
