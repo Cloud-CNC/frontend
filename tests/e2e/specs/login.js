@@ -145,7 +145,7 @@ describe('login', () =>
 
       cy.get('[data-e2e=login]').click();
 
-      cy.wait(1000);
+      cy.wait(2000);
 
       cy.url().should('eq', 'https://127.0.0.1:8443/files');
     });
@@ -159,7 +159,7 @@ describe('login', () =>
 
       cy.get('[data-e2e=remove-account]').last().click();
 
-      cy.wait(1000);
+      cy.wait(2000);
     });
   });
 });

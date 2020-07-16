@@ -21,7 +21,7 @@ describe('machines', () =>
 
     cy.get('[data-e2e=create-controller]').click();
 
-    cy.wait(1000);
+    cy.wait(2000);
   });
 
   //Extract the key
@@ -42,7 +42,7 @@ describe('machines', () =>
   {
     cy.login();
     cy.visit('/machines');
-    cy.wait(1000);
+    cy.wait(2000);
   });
 
   describe('create a machine', () =>
@@ -98,7 +98,7 @@ describe('machines', () =>
 
         cy.get('[data-e2e=create-machine]').click();
 
-        cy.wait(1000);
+        cy.wait(2000);
         cy.count('[data-e2e=entity-name]').should('eq', before + 1);
       });
     });
@@ -296,7 +296,7 @@ describe('machines', () =>
       cy.count('[data-e2e=entity-name]').then(before =>
       {
         cy.get('[data-e2e=remove-machine]').last().click();
-        cy.wait(1000);
+        cy.wait(2000);
 
         cy.count('[data-e2e=entity-name]').should('eq', before - 1);
       });

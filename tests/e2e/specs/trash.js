@@ -24,11 +24,11 @@ describe('trash', () =>
     cy.valid('[data-e2e=create-file]');
     cy.get('[data-e2e=create-file]').click();
 
-    cy.wait(1000);
+    cy.wait(2000);
 
     cy.get('[data-e2e=remove-file]').click();
 
-    cy.wait(1000);
+    cy.wait(2000);
   });
 
   it('will recover a file', () =>
@@ -47,21 +47,21 @@ describe('trash', () =>
       {
         cy.get('[data-e2e=recover-file]').last().click();
 
-        cy.wait(1000);
+        cy.wait(2000);
 
         cy.count('[data-e2e=entity-name]').should('eq', beforeTrash - 1);
 
         //Visit the files page
         cy.visit('/files');
 
-        cy.wait(1000);
+        cy.wait(2000);
 
         cy.count('[data-e2e=entity-name]').should('eq', beforeFiles + 1);
 
         //Reset for next test
         cy.get('[data-e2e=remove-file]').last().click();
 
-        cy.wait(1000);
+        cy.wait(2000);
       });
     });
   });
@@ -73,7 +73,7 @@ describe('trash', () =>
     {
       cy.get('[data-e2e=remove-file]').last().click();
 
-      cy.wait(1000);
+      cy.wait(2000);
 
       cy.count('[data-e2e=entity-name]').should('eq', before - 1);
     });

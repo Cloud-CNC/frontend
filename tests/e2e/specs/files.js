@@ -50,7 +50,7 @@ describe('files', () =>
         cy.valid('[data-e2e=create-file]');
         cy.get('[data-e2e=create-file]').click();
 
-        cy.wait(1000);
+        cy.wait(2000);
 
         cy.count('[data-e2e=entity-name]').should('eq', before + 1);
       });
@@ -97,7 +97,7 @@ describe('files', () =>
 
       cy.get('[data-e2e=close-file]').click();
 
-      cy.wait(1000);
+      cy.wait(2000);
 
       cy.get('[data-e2e=entity-name]').last().contains(name);
       cy.get('[data-e2e=entity-description]').last().contains(description);
@@ -116,7 +116,7 @@ describe('files', () =>
       {
         cy.get('[data-e2e=remove-file]').last().click();
 
-        cy.wait(1000);
+        cy.wait(2000);
 
         cy.count('[data-e2e=entity-name]').should('eq', before - 1);
       });
@@ -132,6 +132,6 @@ describe('files', () =>
 
     cy.get('[data-e2e=remove-file]').last().click();
 
-    cy.wait(1000);
+    cy.wait(2000);
   });
 });

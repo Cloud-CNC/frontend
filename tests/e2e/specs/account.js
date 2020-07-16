@@ -23,7 +23,7 @@ describe('account', () =>
       cy.get('[data-e2e=account-password]').type(password);
       cy.get('[data-e2e=create-account]').click();
 
-      cy.wait(1000);
+      cy.wait(2000);
     });
 
     it('will edit own account', () =>
@@ -43,7 +43,7 @@ describe('account', () =>
       cy.get('[data-e2e=account-role]').parent().parent().click();
       cy.get('[role=listbox]').children().eq(1).click();
 
-      cy.wait(1000);
+      cy.wait(2000);
 
       cy.reload();
 

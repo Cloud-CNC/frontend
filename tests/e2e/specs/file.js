@@ -20,7 +20,7 @@ describe('file', () =>
 
     cy.get('[data-e2e=create-file]').click();
 
-    cy.wait(1000);
+    cy.wait(2000);
   });
 
   it('will display a file', () =>
@@ -28,6 +28,8 @@ describe('file', () =>
     cy.get('[data-e2e=open-file]').last().click();
 
     cy.url().should('match', /^https:\/\/127\.0\.0\.1:8443\/file\/[0-9a-f]{24}$/);
+
+    cy.wait(20000);
 
     cy.get('[data-e2e=file-viewer]').should('be.visible');
   });
@@ -50,7 +52,7 @@ describe('file', () =>
 
       cy.get('[data-e2e=create-controller]').click();
 
-      cy.wait(1000);
+      cy.wait(2000);
 
       cy.get('[data-e2e=download-controller-key]').last().invoke('attr', 'href').then(async href =>
       {
@@ -76,7 +78,7 @@ describe('file', () =>
 
       cy.get('[data-e2e=create-machine]').click();
 
-      cy.wait(1000);
+      cy.wait(2000);
 
       //Extract the machine's ID and controller ID
       cy.get('[data-e2e=machine-info]').then(elements =>
@@ -122,14 +124,14 @@ describe('file', () =>
 
       cy.get('[data-e2e=remove-machine]').last().click();
 
-      cy.wait(1000);
+      cy.wait(2000);
 
       //Remote the controller
       cy.visit('/controllers');
 
       cy.get('[data-e2e=remove-controller]').last().click();
 
-      cy.wait(1000);
+      cy.wait(2000);
     });
   });
 
@@ -140,7 +142,7 @@ describe('file', () =>
     //Remove the file
     cy.get('[data-e2e=remove-file]').last().click();
 
-    cy.wait(1000);
+    cy.wait(2000);
 
     cy.visit('/trash');
 

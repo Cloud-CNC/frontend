@@ -40,7 +40,7 @@ describe('controllers', () =>
 
         cy.get('[data-e2e=create-controller]').click();
 
-        cy.wait(1000);
+        cy.wait(2000);
 
         cy.count('[data-e2e=entity-name]').should('eq', before + 1);
       });
@@ -87,7 +87,7 @@ describe('controllers', () =>
 
       cy.get('[data-e2e=close-controller]').click();
 
-      cy.wait(1000);
+      cy.wait(2000);
 
       cy.get('[data-e2e=entity-name]').last().contains(name);
     });
@@ -105,7 +105,7 @@ describe('controllers', () =>
       {
         cy.get('[data-e2e=remove-controller]').last().click();
 
-        cy.wait(1000);
+        cy.wait(2000);
 
         cy.count('[data-e2e=entity-name]').should('eq', before - 1);
       });

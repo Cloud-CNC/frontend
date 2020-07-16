@@ -53,12 +53,12 @@ describe('general', () =>
 
       cy.get('[data-e2e=create-controller]').click();
 
-      cy.wait(1000);
+      cy.wait(2000);
 
       //Create a machine
       cy.visit('/machines');
 
-      cy.wait(1000);
+      cy.wait(2000);
 
       cy.get('[data-e2e=create]').click();
 
@@ -74,7 +74,7 @@ describe('general', () =>
 
       cy.get('[data-e2e=create-machine]').click();
 
-      cy.wait(1000);
+      cy.wait(2000);
     });
 
     it('will display an error message', () =>
@@ -105,14 +105,14 @@ describe('general', () =>
 
       cy.get('[data-e2e=remove-machine]').last().click();
 
-      cy.wait(1000);
+      cy.wait(2000);
 
       //Remote the controller
       cy.visit('/controllers');
 
       cy.get('[data-e2e=remove-controller]').last().click();
 
-      cy.wait(1000);
+      cy.wait(2000);
     });
   });
 });

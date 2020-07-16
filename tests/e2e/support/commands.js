@@ -24,6 +24,8 @@ Cypress.Commands.add('login', (username = 'Test Account', password = 'Testingpas
 
   cy.get('[data-e2e=login]').click();
 
+  cy.wait(2000);
+
   cy.url().should('eq', 'https://127.0.0.1:8443/files');
 });
 
@@ -64,19 +66,19 @@ Cypress.Commands.add('hasHeardMessage', (msg, action) =>
   cy.task('addMessageListener', msg).then(listenerID =>
   {
     //Avoid a timing-based race condition by waiting before invoking the action
-    cy.wait(1000);
+    cy.wait(2000);
 
     //Perform the post-registration, message invoking action
     action();
 
     //This must be recursive because of Cypress' fake promises (Otherwise we'd await the task each time)
-    const attempts = 4;
+    const attempts = 6;
     const checkIfHeard = iteration =>
     {
       if (iteration < attempts)
       {
         //Wait before checking if the message has been sent
-        cy.wait(1000);
+        cy.wait(2000);
 
         //Return if the message has been sent otherwise recur
         cy.task('hasHeardMessage', listenerID).then(hasHeard =>

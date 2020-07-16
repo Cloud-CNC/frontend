@@ -27,7 +27,7 @@ module.exports = (on, config) =>
 
   //Config
   return Object.assign({}, config, {
-    defaultCommandTimeout: 1000 * 8,
+    defaultCommandTimeout: 1000 * 10,
     fixturesFolder: 'tests/e2e/fixtures',
     integrationFolder: 'tests/e2e/specs',
     pluginsFile: 'tests/e2e/plugins/index.js',
