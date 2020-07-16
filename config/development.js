@@ -7,6 +7,9 @@
 module.exports = {
   //Core server options
   core: {
+    //Core MongoDB URI 
+    database: 'mongodb://localhost:27017/cloud-cnc-development',
+
     //Core install location
     location: '../core',
 

@@ -10,6 +10,7 @@
 // const webpack = require('@cypress/webpack-preprocessor')
 
 //Imports
+const account = require('./account');
 const ipc = require('./ipc');
 
 module.exports = (on, config) => 
@@ -20,6 +21,7 @@ module.exports = (on, config) =>
 
   //Tasks
   on('task', {
+    ...account,
     ...ipc
   });
 
