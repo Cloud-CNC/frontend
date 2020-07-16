@@ -50,7 +50,7 @@ describe('files', () =>
         cy.valid('[data-e2e=create-file]');
         cy.get('[data-e2e=create-file]').click();
 
-        cy.wait(4000);
+        cy.wait(8000);
 
         cy.count('[data-e2e=entity-name]').should('eq', before + 1);
       });

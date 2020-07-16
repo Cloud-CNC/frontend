@@ -50,6 +50,12 @@ jobs:
         working-directory: ./controller
         run: sudo npm ci --unsafe-perm=true --allow-root
 
+      #Used to whitelist the self signed certificate
+      - name: Link controller TLS certificate
+        working-directory: ./frontend/config
+        run: |
+          ln -s ../../cert.cer ./
+
       #Setup the core
       - name: Install MongoDB
         run: sudo apt install -y mongodb

@@ -20,11 +20,13 @@ describe('file', () =>
 
     cy.get('[data-e2e=create-file]').click();
 
-    cy.wait(4000);
+    cy.wait(2000);
   });
 
   it('will display a file', () =>
   {
+    cy.wait(2000);
+
     cy.get('[data-e2e=open-file]').last().click();
 
     cy.url().should('match', /^https:\/\/127\.0\.0\.1:8443\/file\/[0-9a-f]{24}$/);
