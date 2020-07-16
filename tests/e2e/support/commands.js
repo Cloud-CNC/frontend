@@ -78,7 +78,7 @@ Cypress.Commands.add('hasHeardMessage', (msg, action) =>
       if (iteration < attempts)
       {
         //Wait before checking if the message has been sent
-        cy.wait(2000);
+        cy.wait(4000);
 
         //Return if the message has been sent otherwise recur
         cy.task('hasHeardMessage', listenerID).then(hasHeard =>
