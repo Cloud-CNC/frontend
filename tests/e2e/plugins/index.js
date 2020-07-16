@@ -25,6 +25,7 @@ module.exports = (on, config) =>
 
   //Config
   return Object.assign({}, config, {
+    pageLoadTimeout: 1000 * 60 * 3,
     fixturesFolder: 'tests/e2e/fixtures',
     integrationFolder: 'tests/e2e/specs',
     pluginsFile: 'tests/e2e/plugins/index.js',
