@@ -52,7 +52,7 @@ jobs:
 
       #Used to whitelist the self signed certificate
       - name: Link controller TLS certificate
-        working-directory: ./frontend/config
+        working-directory: ./controller/config
         run: |
           ln -s ../../cert.cer ./
 
