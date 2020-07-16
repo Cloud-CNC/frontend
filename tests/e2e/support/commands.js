@@ -72,7 +72,7 @@ Cypress.Commands.add('hasHeardMessage', (msg, action) =>
     action();
 
     //This must be recursive because of Cypress' fake promises (Otherwise we'd await the task each time)
-    const attempts = 6;
+    const attempts = 4;
     const checkIfHeard = iteration =>
     {
       if (iteration < attempts)

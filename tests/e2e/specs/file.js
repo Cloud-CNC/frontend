@@ -20,7 +20,7 @@ describe('file', () =>
 
     cy.get('[data-e2e=create-file]').click();
 
-    cy.wait(2000);
+    cy.wait(4000);
   });
 
   it('will display a file', () =>
@@ -29,7 +29,7 @@ describe('file', () =>
 
     cy.url().should('match', /^https:\/\/127\.0\.0\.1:8443\/file\/[0-9a-f]{24}$/);
 
-    cy.wait(20000);
+    cy.wait(10000);
 
     cy.get('[data-e2e=file-viewer]').should('be.visible');
   });

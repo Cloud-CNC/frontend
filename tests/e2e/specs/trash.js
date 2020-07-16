@@ -24,7 +24,7 @@ describe('trash', () =>
     cy.valid('[data-e2e=create-file]');
     cy.get('[data-e2e=create-file]').click();
 
-    cy.wait(2000);
+    cy.wait(4000);
 
     cy.get('[data-e2e=remove-file]').click();
 
