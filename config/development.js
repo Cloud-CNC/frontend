@@ -7,9 +7,6 @@
 module.exports = {
   //Core server options
   core: {
-    //Core MongoDB URI 
-    database: 'mongodb://localhost:27017/cloud-cnc-development',
-
     //Core install location
     location: '../core',
 
@@ -23,10 +20,16 @@ module.exports = {
     location: '../controller'
   },
 
-  //Development server
-  server: {
+  //Cryptography options
+  cryptography: {
     //TLS certificate	and key location (PEM encoded)
     cert: './config/cert.cer',
-    key: './config/key.pem',
+    key: './config/key.pem'
+  },
+
+  //Persistant data storage
+  data: {
+    //MongoDB URI	
+    database: 'mongodb://localhost:27017/cloud-cnc-development'
   }
 };

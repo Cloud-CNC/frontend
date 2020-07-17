@@ -14,7 +14,7 @@ module.exports = class IpcHelper
 {
   constructor()
   {
-    this.id = '/test-machine';
+    this.id = 'test-machine';
     this.listeners = {};
 
     //Create the IPC client

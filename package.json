@@ -5,11 +5,12 @@
   "scripts": {
     "build": "vue-cli-service build",
     "core": "node tests/e2e/utils/core.js",
-    "coverage": "npm run test:unit && npm run test:e2e && nyc report --reporter=lcov",
+    "coverage": "npm run test:unit && npm run test:e2e:cli && nyc report --reporter=lcov",
     "lint": "vue-cli-service lint",
     "serve": "vue-cli-service serve --host 127.0.0.1 --https --port 8443",
-    "test:e2e:gui": "cross-env NODE_ENV=development concurrently --kill-others --success first \"npm:core\" \"npm:serve\" \"vue-cli-service test:e2e --url https://127.0.0.1:8443\"",
-    "test:e2e": "cross-env NODE_ENV=development concurrently --kill-others --success first \"npm:core\" \"npm:serve\" \"vue-cli-service test:e2e --headless --url https://127.0.0.1:8443\"",
+    "test:e2e": "vue-cli-service test:e2e --url https://127.0.0.1:8443",
+    "test:e2e:gui": "cross-env NODE_ENV=development concurrently --kill-others --success first \"npm:core\" \"npm:serve\" \"npm:test:e2e\"",
+    "test:e2e:cli": "cross-env NODE_ENV=development concurrently --kill-others --success first \"npm:core\" \"npm:serve\" \"npm:test:e2e -- --headless\"",
     "test:unit": "nyc --no-clean --silent vue-cli-service test:unit"
   },
   "dependencies": {

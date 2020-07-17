@@ -35,7 +35,7 @@ module.exports = {
         console.warn('[--------------------]');
 
         //Connect to the database
-        mongoose = await mongoose.connect(config.get('core.database'), {
+        mongoose = await mongoose.connect(config.get('data.database'), {
           useCreateIndex: true,
           useFindAndModify: false,
           useNewUrlParser: true,

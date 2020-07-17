@@ -136,6 +136,8 @@ describe('login', () =>
 
       cy.get('[data-e2e=login]').click();
 
+      cy.wait(2000);
+
       const otp = speakeasy.totp({
         encoding: 'base32',
         secret
