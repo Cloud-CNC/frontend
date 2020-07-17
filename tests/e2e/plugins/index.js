@@ -30,6 +30,7 @@ module.exports = (on, config) =>
     defaultCommandTimeout: 1000 * 10,
     fixturesFolder: 'tests/e2e/fixtures',
     integrationFolder: 'tests/e2e/specs',
+    pageLoadTimeout: 1000 * 60 * 3,
     pluginsFile: 'tests/e2e/plugins/index.js',
     screenshotsFolder: 'tests/e2e/screenshots',
     supportFile: 'tests/e2e/support/index.js',
