@@ -37,6 +37,7 @@ module.exports = {
         CONTROLLER_ID: controllerID,
         CONTROLLER_KEY: controllerKey,
         E2E: 'true',
+        LOG: 'console',
         MACHINE_ID: machineID,
         NODE_ENV: 'development',
         PATH: process.env.PATH

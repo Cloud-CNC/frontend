@@ -17,6 +17,7 @@ const coreProcess = childProcess.spawn('node', [
 ], {
   cwd: coreLocation,
   env: {
+    LOG: 'console',
     NODE_ENV: 'development',
     PATH: process.env.PATH
   }
