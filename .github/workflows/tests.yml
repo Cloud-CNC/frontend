@@ -1,7 +1,7 @@
 name: Tests
 on: push
 jobs:
-  build:
+  test:
     name: Test with Node ${{ matrix.node }}
     runs-on: ubuntu-latest
     strategy:
@@ -21,6 +21,7 @@ jobs:
         uses: actions/checkout@v2.1.0
         with:
           ref: ${{ github.ref }}
+          repository: 'cloud-cnc/frontend'
           path: frontend
 
       - name: Install frontend modules
