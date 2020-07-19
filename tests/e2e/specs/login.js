@@ -134,6 +134,8 @@ describe('login', () =>
       cy.get('[data-e2e=username]').type('Test Account 2');
       cy.get('[data-e2e=password]').type('Testingpassword123!');
 
+      cy.wait(500);
+
       cy.get('[data-e2e=login]').click();
 
       cy.wait(2000);
@@ -144,6 +146,8 @@ describe('login', () =>
       });
 
       cy.get('[data-e2e=otp]').type(otp);
+
+      cy.wait(500);
 
       cy.get('[data-e2e=login]').click();
 
