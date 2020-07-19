@@ -51,7 +51,14 @@ describe('controllers', () =>
   {
     it('will download the key', () =>
     {
-      cy.get('[data-e2e=download-controller-key]').last().invoke('attr', 'href').then(async href =>
+      //Disable downloading the key
+      cy.window().then(window =>
+      {
+        window.disableDownloads = true;
+      });
+
+      cy.get('[data-e2e=download-controller-key]').last().click();
+      cy.get('[data-e2e=download-controller-key]').last().children().eq(0).children().eq(0).invoke('attr', 'href').then(async href =>
       {
         const res = await fetch(href);
         const text = await res.text();

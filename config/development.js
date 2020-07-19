@@ -30,6 +30,6 @@ module.exports = {
   //Persistant data storage
   data: {
     //MongoDB URI	
-    database: 'mongodb://localhost:27017/cloud-cnc-development'
+    database: 'mongodb://localhost:27017/cloud-cnc-e2e'
   }
 };

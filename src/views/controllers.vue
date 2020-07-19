@@ -42,7 +42,7 @@
       <template v-slot:actions="props">
         <v-btn-toggle>
           <download
-            :data="download(props.entity.name, props.entity._id, props.entity.key)"
+            :data="download(props.entity.name, props.entity._id)"
             :filename="`${props.entity.name}.txt`"
             data-e2e="download-controller-key"
           >Download</download>
@@ -95,8 +95,11 @@ export default {
   methods:
   {
     //Generate download data
-    download: (name, _id, key) =>
+    download: (name, _id) => async() =>
     {
+      //Get key
+      const {key} = await api.controllers.key(_id);
+
       return `Name: ${name}\r\nID: ${_id}\r\nKey: ${key}`;
     },
     //Show lightbox
@@ -122,13 +125,12 @@ export default {
     //Create controller
     create: function ()
     {
-      api.controllers.create(this.lightbox.name).then(({_id, key}) =>
+      api.controllers.create(this.lightbox.name).then(async ({_id}) =>
       {
         //Add to list
         this.controllers.push({
           _id,
-          name: this.lightbox.name,
-          key
+          name: this.lightbox.name
         });
 
         //Hide lightbox
@@ -176,6 +178,5 @@ export default {
 
 textarea {
   height: 20vh;
-  width: 30vw !important;
 }
 </style>

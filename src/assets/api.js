@@ -223,6 +223,14 @@ export default {
       };
     },
     /**
+     * Get a controller's key
+     * @param {String} id 
+     */
+    key(id)
+    {
+      return rest('GET', `/controllers/${id}/key`);
+    },
+    /**
      * Get a controller
      * @param {String} id 
      */

@@ -1,37 +1,62 @@
 <template>
-  <v-btn class="download" :download="filename" :href="href" ref="link">
+  <v-btn class="download" @click="download">
+    <a :download="filename" ref="link" />
     <slot />
   </v-btn>
 </template>
 
 <script>
 export default {
-  computed: {
-    href: function ()    
+  data: () => ({
+    href: ''
+  }),
+  methods: {
+    async download(event)
     {
-      //In browsers, use the URL.createObjectURL method
-      if (typeof URL.createObjectURL == 'function')
-      {
-        const blob = new Blob([this.data], {
-          type: this.mime
-        });
+      //Get link
+      const link = this.$refs.link;
 
-        return URL.createObjectURL(blob);
-      }
-      //In NodeJS, manually create the string
-      else
+      //Prevent recursively ddosing the user
+      if (event.target != link)
       {
-        return `data:text/plain;charset=utf-8,${encodeURIComponent(this.data)}`;
+        //Resolve data
+        const data = typeof this.data == 'string' ? this.data : await this.data();
+
+        //Generate URL
+        let url;
+
+        //In browsers, use the URL.createObjectURL method
+        if (typeof URL.createObjectURL == 'function')
+        {
+          const blob = new Blob([data], {
+            type: this.mime
+          });
+
+          url = URL.createObjectURL(blob);
+        }
+        //In NodeJS, manually create the string
+        else
+        {
+          url = `data:${this.mime};charset=utf-8,${encodeURIComponent(data)}`;
+        }
+
+        //Download
+        link.href = url;
+
+        if (!window.disableDownloads)
+        {
+          link.click();
+        }
       }
     }
   },
   props: {
-    data: String,
+    data: [String, Function],
+    filename: String,
     mime: {
       default: 'text/plain',
       type: String
-    },
-    filename: String
+    }
   }
 };
 </script>

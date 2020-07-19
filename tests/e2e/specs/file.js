@@ -31,7 +31,7 @@ describe('file', () =>
 
     cy.url().should('match', /^https:\/\/127\.0\.0\.1:8443\/file\/[0-9a-f]{24}$/);
 
-    cy.wait(10000);
+    cy.wait(5000);
 
     cy.get('[data-e2e=file-viewer]').should('be.visible');
   });
@@ -56,7 +56,14 @@ describe('file', () =>
 
       cy.wait(2000);
 
-      cy.get('[data-e2e=download-controller-key]').last().invoke('attr', 'href').then(async href =>
+      //Disable downloading the key
+      cy.window().then(window =>
+      {
+        window.disableDownloads = true;
+      });
+
+      cy.get('[data-e2e=download-controller-key]').last().click();
+      cy.get('[data-e2e=download-controller-key]').last().children().eq(0).children().eq(0).invoke('attr', 'href').then(async href =>
       {
         const res = await fetch(href);
         const text = await res.text();
@@ -110,7 +117,7 @@ describe('file', () =>
 
       cy.hasHeardMessage(`M28\n${raw}M29\n`, () =>
       {
-        cy.get('[data-e2e=confirm-execute]').click();        
+        cy.get('[data-e2e=confirm-execute]').click();
       });
     });
 

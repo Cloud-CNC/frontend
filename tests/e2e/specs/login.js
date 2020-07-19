@@ -77,7 +77,7 @@ describe('login', () =>
       //Create an MFA account
       cy.visit('/admin');
 
-      cy.wait(5000);
+      cy.wait(2000);
 
       cy.get('[data-e2e=create]').click();
 
@@ -89,7 +89,7 @@ describe('login', () =>
 
       cy.get('[data-e2e=create-account]').click();
 
-      cy.wait(3000);
+      cy.wait(2000);
 
       //Extract MFA secret
       cy.get('[data-e2e=account-mfa-token]').then(element =>
