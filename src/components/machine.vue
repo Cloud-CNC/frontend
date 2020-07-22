@@ -22,11 +22,16 @@
       -->
     </v-row>
     <v-row>
-      <v-col cols="5">
+      <v-col sm="5" xs="12">
         <v-row justify="center">
           <v-list>
             <v-list-item>
-              <v-btn block @click="send('M112\n')" color="red" data-e2e="emergency-stop-machine">Emergency Stop</v-btn>
+              <v-btn
+                block
+                @click="send('M112\n')"
+                color="red"
+                data-e2e="emergency-stop-machine"
+              >Emergency Stop</v-btn>
             </v-list-item>
             <v-list-item>
               <v-btn block @click="send('M0\n')" data-e2e="stop-machine">Stop</v-btn>
@@ -40,59 +45,45 @@
           </v-list>
         </v-row>
       </v-col>
-      <v-col cols="7">
-        <v-row>
-          <v-container>
-            <v-row align="center">
-              <v-col cols="9">
-                <v-row justify="center">
-                  <v-btn icon @click="send('G91\nG0 Y10\n')" data-e2e="jog-machine-forward">
-                    <v-icon>keyboard_arrow_up</v-icon>
-                  </v-btn>
-                </v-row>
-                <v-row>
-                  <v-col cols="5" align="center">
-                    <v-btn icon @click="send('G91\nG0 X10\n')" data-e2e="jog-machine-left">
-                      <v-icon>keyboard_arrow_left</v-icon>
-                    </v-btn>
-                  </v-col>
-                  <v-col cols="2"></v-col>
-                  <v-col cols="5" align="center">
-                    <v-btn icon @click="send('G91\nG0 X-10\n')" data-e2e="jog-machine-right">
-                      <v-icon>keyboard_arrow_right</v-icon>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-                <v-row justify="center">
-                  <v-btn icon @click="send('G91\nG0 Y-10\n')" data-e2e="jog-machine-backward">
-                    <v-icon>keyboard_arrow_down</v-icon>
-                  </v-btn>
-                </v-row>
-              </v-col>
-              <v-col cols="3">
-                <v-row justify="center">
-                  <v-btn icon @click="send('G91\nG0 Z10\n')" data-e2e="jog-machine-up">
-                    <v-icon>keyboard_arrow_up</v-icon>
-                  </v-btn>
-                </v-row>
-                <v-row justify="center">
-                  <v-btn icon @click="send('G91\nG0 Z-10\n')" data-e2e="jog-machine-down">
-                    <v-icon>keyboard_arrow_down</v-icon>
-                  </v-btn>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-row>
+      <v-col id="jog-arrows-container" sm="7" xs="12">
+        <div id="jog-arrows">
+          <v-btn
+            icon
+            @click="send('G91\nG0 Y10\n')"
+            data-e2e="jog-machine-forward"
+            id="jog-forward"
+          >
+            <v-icon>keyboard_arrow_up</v-icon>
+          </v-btn>
+          <v-btn icon @click="send('G91\nG0 X10\n')" data-e2e="jog-machine-left" id="jog-left">
+            <v-icon>keyboard_arrow_left</v-icon>
+          </v-btn>
+          <v-btn icon @click="send('G91\nG0 X-10\n')" data-e2e="jog-machine-right" id="jog-right">
+            <v-icon>keyboard_arrow_right</v-icon>
+          </v-btn>
+          <v-btn
+            icon
+            @click="send('G91\nG0 Y-10\n')"
+            data-e2e="jog-machine-backward"
+            id="jog-backward"
+          >
+            <v-icon>keyboard_arrow_down</v-icon>
+          </v-btn>
+          <v-btn icon @click="send('G91\nG0 Z10\n')" data-e2e="jog-machine-up" id="jog-up">
+            <v-icon>keyboard_arrow_up</v-icon>
+          </v-btn>
+          <v-btn icon @click="send('G91\nG0 Z-10\n')" data-e2e="jog-machine-down" id="jog-down">
+            <v-icon>keyboard_arrow_down</v-icon>
+          </v-btn>
+        </div>
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="10">
-        <v-text-field data-e2e="machine-command" label="GCODE" v-model="command"></v-text-field>
-      </v-col>
-      <v-col cols="2">
-        <v-btn @click="send(`${command}\n`)" color="primary" data-e2e="send-machine-command">Send</v-btn>
-      </v-col>
+      <v-text-field data-e2e="machine-command" label="GCODE" v-model="command">
+        <template v-slot:append-outer>
+          <v-btn @click="send(`${command}\n`)" color="primary" data-e2e="send-machine-command">Send</v-btn>
+        </template>
+      </v-text-field>
     </v-row>
   </v-container>
 </template>
@@ -103,26 +94,66 @@ import api from '@/assets/api';
 
 export default {
   data: () => ({
-    command: null
+    command: null,
   }),
   props: {
     machine: {
       required: true,
-      type: Object
+      type: Object,
     },
     visible: {
       required: true,
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   methods: {
-    send(data)
+    send(data) 
     {
       api.machines.command(this.machine._id, data);
-    }
-  }
+    },
+  },
 };
 </script>
 
-<style>
+<style scoped>
+#jog-arrows-container {
+  margin: auto 0;
+  text-align: center;
+}
+
+#jog-arrows {
+  align-items: center;
+  justify-items: center;
+  display: inline-grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-areas:
+    ". forward . . up"
+    "left . right . ."
+    ". backward . . down";
+}
+
+#jog-forward {
+  grid-area: forward;
+}
+
+#jog-up {
+  grid-area: up;
+}
+
+#jog-left {
+  grid-area: left;
+}
+
+#jog-right {
+  grid-area: right;
+}
+
+#jog-backward {
+  grid-area: backward;
+}
+
+#jog-down {
+  grid-area: down;
+}
 </style>

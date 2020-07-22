@@ -58,10 +58,12 @@ describe('machine.vue', () =>
       }
     });
 
+    console.log(wrapper.html());
+
     expect(wrapper.contains('v-container-stub')).to.be.true;
 
-    expect(wrapper.findAll('v-row-stub')).to.have.length(11);
-    expect(wrapper.findAll('v-col-stub')).to.have.length(9);
+    expect(wrapper.findAll('v-row-stub')).to.have.length(4);
+    expect(wrapper.findAll('v-col-stub')).to.have.length(2);
 
     expect(wrapper.findAll('v-btn-stub').at(0).text()).to.equal('Emergency Stop');
     expect(wrapper.findAll('v-btn-stub').at(1).text()).to.equal('Stop');
@@ -73,6 +75,5 @@ describe('machine.vue', () =>
     expect(wrapper.findAll('v-btn-stub').at(7).text()).to.equal('keyboard_arrow_down');
     expect(wrapper.findAll('v-btn-stub').at(8).text()).to.equal('keyboard_arrow_up');
     expect(wrapper.findAll('v-btn-stub').at(9).text()).to.equal('keyboard_arrow_down');
-    expect(wrapper.findAll('v-btn-stub').at(10).text()).to.equal('Send');
   });
 });

@@ -21,15 +21,6 @@ config/*
 !config/default.js
 !config/development.js
 
-# Editor directories and files
-.idea
-.vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
 # Istanbul
 .nyc_output
 coverage

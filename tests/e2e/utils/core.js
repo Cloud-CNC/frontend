@@ -24,7 +24,8 @@ const coreProcess = childProcess.spawn('node', [
   }
 });
 
-//Proxy stdout to main thread
+//Proxy std streams to main thread
+coreProcess.stderr.pipe(process.stderr);
 coreProcess.stdout.pipe(process.stdout);
 
 //Stop he core server

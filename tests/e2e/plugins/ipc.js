@@ -44,7 +44,8 @@ module.exports = {
       }
     });
 
-    //Proxy stdout to main thread
+    //Proxy std streams to main thread
+    controllerProcess.stderr.pipe(process.stderr);
     controllerProcess.stdout.pipe(process.stdout);
 
     //Create an IPC helper to talk to the controller
