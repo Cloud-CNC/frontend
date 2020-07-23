@@ -114,7 +114,9 @@ export default {
      */
     async update(data, id = 'own')
     {
-      return rest('PATCH', `/accounts/${id}`, data);
+      const res = await rest('PATCH', `/accounts/${id}`, data);
+
+      return res.otpauth;
     },
     /**
      * Remove an account
@@ -217,10 +219,7 @@ export default {
         name
       });
 
-      return {
-        _id: res._id,
-        key: res.key
-      };
+      return res._id;
     },
     /**
      * Get a controller's key

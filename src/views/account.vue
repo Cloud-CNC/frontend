@@ -6,46 +6,31 @@
           <v-card width="500">
             <v-card-title class="font-weight-light text-center">Edit your account</v-card-title>
             <v-card-text>
-              <v-form>
+              <v-form v-model="prechecks">
                 <v-list>
                   <v-list-item>
                     <v-text-field
                       :rules="[rules.required, rules.username]"
-                      @blur="update('username')"
                       counter="30"
                       data-e2e="account-username"
                       label="Username"
-                      ref="username"
                       v-model="account.username"
                     />
                   </v-list-item>
 
                   <v-list-item>
-                    <password
-                      data-e2e="account-password"
-                      ref="password"
-                      v-model="account.password"
-                      @blur="update('password')"
-                    ></password>
+                    <password :rules="passwordRules" data-e2e="account-password" placeholder="[unchanged]" v-model="account.password"></password>
                   </v-list-item>
 
                   <v-list-item>
-                    <v-switch
-                      @change="update('mfa')"
-                      data-e2e="account-mfa"
-                      label="MFA"
-                      ref="mfa"
-                      v-model="account.mfa"
-                    ></v-switch>
+                    <v-switch data-e2e="account-mfa" label="MFA" v-model="account.mfa"></v-switch>
                   </v-list-item>
 
                   <v-list-item>
                     <v-select
-                      :items="account.roles"
-                      @change="update('role')"
+                      :items="roles"
                       data-e2e="account-role"
                       label="Role"
-                      ref="role"
                       v-model="account.role"
                     >
                       <template
@@ -56,6 +41,10 @@
                       >{{role.item.charAt(0).toUpperCase() + role.item.substring(1)}}</template>
                     </v-select>
                   </v-list-item>
+
+                  <v-list-item>
+                    <v-btn :disabled="!prechecks" @click="update()" data-e2e="update-account">Save</v-btn>
+                  </v-list-item>
                 </v-list>
               </v-form>
             </v-card-text>
@@ -64,16 +53,16 @@
       </v-col>
     </v-container>
 
-    <lightbox v-model="lightbox.visible">
+    <lightbox v-model="qr.visible">
       <template v-slot:title>MFA QR Code</template>
 
       <template v-slot:content>
         <v-list>
           <v-list-item>
-            <qr data-e2e="account-mfa-token" :text="lightbox.text"></qr>
+            <qr data-e2e="account-mfa-token" :text="qr.text"></qr>
           </v-list-item>
           <v-list-item>
-            <v-btn @click="lightbox.visible = false" data-e2e="close-account-mfa-token">Close</v-btn>
+            <v-btn @click="qr.visible = false" data-e2e="close-account-mfa-token">Close</v-btn>
           </v-list-item>
         </v-list>
       </template>
@@ -96,20 +85,30 @@ export default {
     qr
   },
   data: () => ({
+    roles: [],
     account: {
-      roles: ['error'],
       role: null,
       username: null,
       password: null,
       mfa: false
     },
-    lightbox: {
-      text: null,
-      visible: false
+    original: {
+      role: null,
+      username: null,
+      mfa: false
     },
+    passwordRules: {
+      required: () => true,
+      password: value => value == null || value == '' || filters.password.test(value) || 'Invalid password',
+    },
+    prechecks: false,
     rules: {
       required: value => value != null || 'Required',
       username: value => filters.name.test(value) || 'Invalid username'
+    },
+    qr: {
+      text: null,
+      visible: false
     }
   }),
   created: function ()
@@ -117,36 +116,49 @@ export default {
     //Get account
     api.accounts.get().then(account =>
     {
+      this.account.role = account.role;
       this.account.username = account.username;
       this.account.mfa = account.mfa;
-      this.account.role = account.role;
+
+      this.original.role = account.role;
+      this.original.username = account.username;
+      this.original.mfa = account.mfa;
     });
 
     //Get roles
     api.accounts.roles().then(roles =>
     {
-      this.account.roles = roles;
+      this.roles = roles;
     });
   },
   methods: {
     //Update account
-    update: function (property)
+    update: async function ()
     {
-      //Precheck
-      if (this.$refs[property].valid)
+      //Calculate changes
+      const changes = {};
+      for (const [key, value] of Object.entries(this.original))
       {
-        if (property == 'mfa' && this.account.mfa)
+        if (this.account[key] != value)
         {
-          api.accounts.update({[property]: this.account[property]}).then(res =>
-          {
-            this.lightbox.text = res.otpauth;
-            this.lightbox.visible = true;
-          });
+          //Save change
+          changes[key] = this.account[key];
         }
-        else
-        {
-          api.accounts.update({[property]: this.account[property]});
-        }
+      }
+
+      //Password
+      if (this.account.password != null && this.account.password != '')
+      {
+        changes.password = this.account.password;
+      }
+
+      //Update backend
+      const otpauth = await api.accounts.update(changes);
+
+      if (changes.mfa)
+      {
+        this.qr.text = otpauth;
+        this.qr.visible = true;
       }
     }
   }

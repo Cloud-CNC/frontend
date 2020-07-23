@@ -2,7 +2,8 @@
  * @fileoverview Controllers E2E tests
  */
 
-const {expect} = require('chai');
+//Imports
+import timings from '../utils/timings.js';
 
 describe('controllers', () =>
 {
@@ -21,12 +22,12 @@ describe('controllers', () =>
       cy.get('[data-e2e=controller-name]').type('A');
 
       cy.invalid('[data-e2e=controller-name]');
-      cy.get('[data-e2e=create-controller]').should('be.disabled');
+      cy.get('[data-e2e=upsert-controller]').should('be.disabled');
 
       cy.get('[data-e2e=controller-name]').clear().type('Test Controller');
 
       cy.valid('[data-e2e=controller-name]');
-      cy.get('[data-e2e=create-controller]').should('not.be.disabled');
+      cy.get('[data-e2e=upsert-controller]').should('not.be.disabled');
     });
 
     it('will create a controller', () =>
@@ -38,9 +39,9 @@ describe('controllers', () =>
 
         cy.get('[data-e2e=controller-name]').type('Test Controller');
 
-        cy.get('[data-e2e=create-controller]').click();
+        cy.get('[data-e2e=upsert-controller]').click();
 
-        cy.wait(2000);
+        cy.wait(timings.medium);
 
         cy.count('[data-e2e=entity-name]').should('eq', before + 1);
       });
@@ -59,15 +60,16 @@ describe('controllers', () =>
 
       cy.get('[data-e2e=download-controller-key]').last().click();
 
-      cy.wait(2000);
+      cy.wait(timings.medium);
 
-      cy.get('[data-e2e=download-controller-key]').last().children().eq(0).children().eq(0).invoke('attr', 'href').then(async href =>
+      cy.get('[data-e2e=download-controller-key]').last().children().eq(0).children().eq(0).invoke('attr', 'href').then(href =>
       {
-        const res = await fetch(href);
-        const text = await res.text();
-        const values = /Name:\s+(.{3,30})\s+ID:\s+([0-9a-f]{24})\s+Key:\s+([A-z0-9\\/\\+=]+)/.exec(text);
+        return fetch(href).then(res => res.text()).then(text =>
+        {
+          const values = /Name:\s+(.{3,30})\s+ID:\s+([0-9a-f]{24})\s+Key:\s+([A-z0-9\\/\\+=]+)/.exec(text);
 
-        expect(values).to.have.length(4);
+          cy.wrap(values).should('have.length', 4);
+        });
       });
     });
   });
@@ -93,11 +95,13 @@ describe('controllers', () =>
 
       cy.get('[data-e2e=edit-controller]').last().click();
 
-      cy.get('[data-e2e=controller-name]').clear().type(name).blur();
+      cy.get('[data-e2e=controller-name]').clear().type(name);
+
+      cy.get('[data-e2e=upsert-controller]').click();
 
       cy.get('[data-e2e=close-controller]').click();
 
-      cy.wait(2000);
+      cy.wait(timings.medium);
 
       cy.get('[data-e2e=entity-name]').last().contains(name);
     });
@@ -115,7 +119,7 @@ describe('controllers', () =>
       {
         cy.get('[data-e2e=remove-controller]').last().click();
 
-        cy.wait(2000);
+        cy.wait(timings.medium);
 
         cy.count('[data-e2e=entity-name]').should('eq', before - 1);
       });

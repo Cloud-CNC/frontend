@@ -2,6 +2,9 @@
  * @fileoverview Admin E2E tests
  */
 
+//Imports
+import timings from '../utils/timings.js';
+
 describe('admin', () => 
 {
   beforeEach(() =>
@@ -21,14 +24,14 @@ describe('admin', () =>
 
       cy.invalid('[data-e2e=account-username]');
       cy.invalid('[data-e2e=account-password]');
-      cy.get('[data-e2e=create-account]').should('be.disabled');
+      cy.get('[data-e2e=upsert-account]').should('be.disabled');
 
       cy.get('[data-e2e=account-username]').clear().type('Username');
       cy.get('[data-e2e=account-password]').clear().type('Testingpassword123!');
 
       cy.valid('[data-e2e=account-username]');
       cy.valid('[data-e2e=account-password]');
-      cy.get('[data-e2e=create-account]').should('not.be.disabled');
+      cy.get('[data-e2e=upsert-account]').should('not.be.disabled');
     });
 
     it('will accept valid input and create an account without MFA', () =>
@@ -41,7 +44,7 @@ describe('admin', () =>
         cy.get('[data-e2e=account-username]').type('Test Account 3');
         cy.get('[data-e2e=account-password]').type('Testingpassword123!');
 
-        cy.get('[data-e2e=create-account]').click();
+        cy.get('[data-e2e=upsert-account]').click();
 
         cy.get('[data-e2e=account-username]').should('not.be.visible');
         cy.get('[data-e2e=account-mfa-token]').should('not.be.visible');
@@ -63,14 +66,14 @@ describe('admin', () =>
           force: true
         });
 
-        cy.get('[data-e2e=create-account]').click();
+        cy.get('[data-e2e=upsert-account]').click();
 
         cy.get('[data-e2e=account-username]').should('not.be.visible');
         cy.get('[data-e2e=account-mfa-token]').should('be.visible');
 
         cy.get('[data-e2e=close-account-mfa-token]').click();
 
-        cy.wait(2000);
+        cy.wait(timings.medium);
 
         cy.count('[data-e2e=entity-name]').should('eq', before + 1);
       });
@@ -155,12 +158,14 @@ describe('admin', () =>
 
       cy.get('[data-e2e=edit-account]').last().click();
 
-      cy.get('[data-e2e=account-username]').clear().type(username).blur();
-      cy.get('[data-e2e=account-password]').clear().type(password).blur();
+      cy.get('[data-e2e=account-username]').clear().type(username);
+      cy.get('[data-e2e=account-password]').clear().type(password);
+
+      cy.get('[data-e2e=upsert-account]').click();
 
       cy.get('[data-e2e=close-account]').click();
 
-      cy.wait(2000);
+      cy.wait(timings.medium);
 
       cy.get('[data-e2e=entity-name]').last().contains(username);
     });
@@ -177,10 +182,12 @@ describe('admin', () =>
       cy.count('[data-e2e=entity-name]').then(before =>
       {
         cy.get('[data-e2e=remove-account]').last().click();
-        cy.wait(2000);
+
+        cy.wait(timings.medium);
+
         cy.get('[data-e2e=remove-account]').last().click();
 
-        cy.wait(2000);
+        cy.wait(timings.medium);
 
         cy.count('[data-e2e=entity-name]').should('eq', before - 2);
       });

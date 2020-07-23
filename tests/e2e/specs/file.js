@@ -2,6 +2,9 @@
  * @fileoverview Files E2E tests
  */
 
+//Imports
+import timings from '../utils/timings.js';
+
 describe('file', () => 
 {
   //Mock file
@@ -18,20 +21,20 @@ describe('file', () =>
     cy.get('[data-e2e=file-description]').clear().type('A 3D printer torture test.');
     cy.upload('Benchy.gcode', raw, 'text/plain', '[data-e2e=file-raw]');
 
-    cy.get('[data-e2e=create-file]').click();
+    cy.get('[data-e2e=upsert-file]').click();
 
-    cy.wait(2000);
+    cy.wait(timings.medium);
   });
 
   it('will display a file', () =>
   {
-    cy.wait(2000);
+    cy.wait(timings.medium);
 
     cy.get('[data-e2e=open-file]').last().click();
 
     cy.url().should('match', /^https:\/\/127\.0\.0\.1:8443\/file\/[0-9a-f]{24}$/);
 
-    cy.wait(5000);
+    cy.wait(timings.extraLong);
 
     cy.get('[data-e2e=file-viewer]').should('be.visible');
   });
@@ -52,9 +55,9 @@ describe('file', () =>
 
       cy.get('[data-e2e=controller-name]').type('Test Controller');
 
-      cy.get('[data-e2e=create-controller]').click();
+      cy.get('[data-e2e=upsert-controller]').click();
 
-      cy.wait(2000);
+      cy.wait(timings.medium);
 
       //Disable downloading the key
       cy.window().then(window =>
@@ -64,13 +67,14 @@ describe('file', () =>
 
       cy.get('[data-e2e=download-controller-key]').last().click();
 
-      cy.wait(2000);
-      
-      cy.get('[data-e2e=download-controller-key]').last().children().eq(0).children().eq(0).invoke('attr', 'href').then(async href =>
+      cy.wait(timings.medium);
+
+      cy.get('[data-e2e=download-controller-key]').last().children().eq(0).children().eq(0).invoke('attr', 'href').then(href =>
       {
-        const res = await fetch(href);
-        const text = await res.text();
-        controllerKey = /Key:\s+([A-z0-9\\/\\+=]+)/.exec(text)[1];
+        return fetch(href).then(res => res.text()).then(text =>
+        {
+          controllerKey = /Key:\s+([A-z0-9\\/\\+=]+)/.exec(text)[1];
+        });
       });
 
       //Create the machine
@@ -88,9 +92,9 @@ describe('file', () =>
       cy.get('[data-e2e=machine-width]').clear().type(11.1);
       cy.get('[data-e2e=machine-height]').clear().type(15);
 
-      cy.get('[data-e2e=create-machine]').click();
+      cy.get('[data-e2e=upsert-machine]').click();
 
-      cy.wait(2000);
+      cy.wait(timings.medium);
 
       //Extract the machine's ID and controller ID
       cy.get('[data-e2e=machine-info]').then(elements =>
@@ -136,14 +140,14 @@ describe('file', () =>
 
       cy.get('[data-e2e=remove-machine]').last().click();
 
-      cy.wait(2000);
+      cy.wait(timings.medium);
 
       //Remote the controller
       cy.visit('/controllers');
 
       cy.get('[data-e2e=remove-controller]').last().click();
 
-      cy.wait(2000);
+      cy.wait(timings.medium);
     });
   });
 
@@ -154,7 +158,7 @@ describe('file', () =>
     //Remove the file
     cy.get('[data-e2e=remove-file]').last().click();
 
-    cy.wait(2000);
+    cy.wait(timings.long);
 
     cy.visit('/trash');
 

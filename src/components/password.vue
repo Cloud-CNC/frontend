@@ -1,10 +1,12 @@
 <template>
   <v-text-field
-    :data-e2e="dataE2e"
     :append-icon="visible ? 'visibility_off' : 'visibility'"
+    :data-e2e="dataE2e"
+    :placeholder="placeholder"
     :prepend-icon="icon ? 'lock' : null"
     :rules="[rules.required, rules.password]"
     :type="visible ? 'text' : 'password'"
+    :value="value"
     @blur="event => $emit('blur', event)"
     @click:append="visible = !visible"
     @input="event => $emit('input', event)"
@@ -12,7 +14,6 @@
     counter="256"
     label="Password"
     ref="password"
-    :value="value"
   ></v-text-field>
 </template>
 
@@ -22,10 +23,6 @@ import filters from '../assets/filters';
 
 export default {
   data: () => ({
-    rules: {
-      required: value => value != null || 'Required',
-      password: value => filters.password.test(value) || 'Invalid password',
-    },
     valid: false,
     visible: false
   }),
@@ -42,6 +39,17 @@ export default {
     icon: {
       default: false,
       type: Boolean
+    },
+    placeholder: {
+      default: undefined,
+      type: String
+    },
+    rules: {
+      default: () => ({
+        required: value => value != null || 'Required',
+        password: value => filters.password.test(value) || 'Invalid password',
+      }),
+      type: Object
     },
     value: {
       type: String,

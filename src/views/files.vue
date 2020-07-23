@@ -8,11 +8,9 @@
             <v-list-item>
               <v-text-field
                 :rules="[rules.required, rules.name]"
-                @blur="update('name')"
                 counter="30"
                 data-e2e="file-name"
                 label="Name"
-                ref="name"
                 v-model="lightbox.name"
               />
             </v-list-item>
@@ -20,11 +18,9 @@
             <v-list-item>
               <v-textarea
                 :rules="[rules.description]"
-                @blur="update('description')"
                 counter="1000"
                 data-e2e="file-description"
                 label="Description"
-                ref="description"
                 v-model="lightbox.description"
               />
             </v-list-item>
@@ -36,13 +32,16 @@
                 accept=".gcode"
                 data-e2e="file-raw"
                 label="File"
-                ref="file"
               />
             </v-list-item>
             <v-list-item>
               <v-btn-toggle>
-                <v-btn data-e2e="create-file" v-if="lightbox.create" :disabled="!prechecks" @click="create()">Create</v-btn>
-                <v-btn @click="lightbox.visible = false" data-e2e="close-file">{{ lightbox.create ? 'Cancel' : 'Close' }}</v-btn>
+                <v-btn
+                  data-e2e="upsert-file"
+                  :disabled="!prechecks"
+                  @click="upsert()"
+                >{{ lightbox.create ? 'Create' : 'Save'}}</v-btn>
+                <v-btn @click="lightbox.visible = false" data-e2e="close-file">Cancel</v-btn>
               </v-btn-toggle>
             </v-list-item>
           </v-list>
@@ -77,11 +76,11 @@ export default {
   },
   data: () => ({
     lightbox: {
-      name: null,
+      create: false,
       description: null,
+      name: null,
       raw: null,
-      visible: false,
-      create: false
+      visible: false
     },
     files: [],
     prechecks: false,
@@ -121,40 +120,51 @@ export default {
       //Show lightbox
       this.lightbox.visible = true;
     },
-    //Create file
-    create: function ()
+    //Upsert file
+    upsert: async function ()
     {
-      //Convert file to UTF8
-      this.lightbox.raw.arrayBuffer().then(raw =>
+      //Create
+      if (this.lightbox.create)
       {
+        //Convert file to UTF8
+        let raw = await this.lightbox.raw.arrayBuffer();
         raw = new Uint8Array(raw);
         const temp = [];
         raw.forEach((byte, i) => temp[i] = String.fromCharCode(byte));
         raw = temp.join('');
 
-        api.files.create(this.lightbox.name, this.lightbox.description, raw).then(_id =>
-        {
-          //Add to list
-          this.files.push({_id, name: this.lightbox.name, description: this.lightbox.description});
+        //Update backend
+        const _id = await api.files.create(this.lightbox.name, this.lightbox.description, raw);
 
-          //Hide lightbox
-          this.lightbox.visible = false;
-        });
-      });
-    },
-    //Update file
-    update: function (property)
-    {
-      //Precheck
-      if (this.$refs[property].valid && !this.lightbox.create)
+        //Update frontend
+        this.files.push({_id, name: this.lightbox.name, description: this.lightbox.description});
+      }
+      //Edit
+      else
       {
-        //Update front end
-        const file = this.files.find(file => file._id == this.lightbox._id);
-        file[property] = this.lightbox[property];
+        //Find original file
+        const original = this.files.find(file => file._id == this.lightbox._id);
+
+        //Calculate changes
+        const changes = {};
+        for (const [key, value] of Object.entries(original))
+        {
+          if (this.lightbox[key] != value)
+          {
+            //Save change
+            changes[key] = this.lightbox[key];
+
+            //Update frontend
+            original[key] = this.lightbox[key];
+          }
+        }
 
         //Update backend
-        api.files.update({[property]: this.lightbox[property]}, this.lightbox._id);
+        await api.files.update(changes, this.lightbox._id);
       }
+
+      //Hide the lightbox
+      this.lightbox.visible = false;
     },
     //Remove file
     remove: function (file)

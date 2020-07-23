@@ -2,7 +2,8 @@
  * @fileoverview Machines E2E tests
  */
 
-const {expect} = require('chai');
+//Imports
+import timings from '../utils/timings.js';
 
 //The mock machine's controller's key
 let controllerKey;
@@ -19,9 +20,9 @@ describe('machines', () =>
 
     cy.get('[data-e2e=controller-name]').type('Test Controller');
 
-    cy.get('[data-e2e=create-controller]').click();
+    cy.get('[data-e2e=upsert-controller]').click();
 
-    cy.wait(2000);
+    cy.wait(timings.medium);
   });
 
   //Extract the key
@@ -38,13 +39,14 @@ describe('machines', () =>
 
     cy.get('[data-e2e=download-controller-key]').last().click();
 
-    cy.wait(2000);
+    cy.wait(timings.medium);
 
-    cy.get('[data-e2e=download-controller-key]').last().children().eq(0).children().eq(0).invoke('attr', 'href').then(async href =>
+    cy.get('[data-e2e=download-controller-key]').last().children().eq(0).children().eq(0).invoke('attr', 'href').then(href =>
     {
-      const res = await fetch(href);
-      const text = await res.text();
-      controllerKey = /Key:\s+([A-z0-9\\/\\+=]+)/.exec(text)[1];
+      return fetch(href).then(res => res.text()).then(text =>
+      {
+        controllerKey = /Key:\s+([A-z0-9\\/\\+=]+)/.exec(text)[1];
+      });
     });
   });
 
@@ -52,7 +54,8 @@ describe('machines', () =>
   {
     cy.login();
     cy.visit('/machines');
-    cy.wait(2000);
+
+    cy.wait(timings.medium);
   });
 
   describe('create a machine', () =>
@@ -72,7 +75,7 @@ describe('machines', () =>
       cy.valid('[data-e2e=machine-length]');
       cy.valid('[data-e2e=machine-width]');
       cy.valid('[data-e2e=machine-height]');
-      cy.get('[data-e2e=create-machine]').should('be.disabled');
+      cy.get('[data-e2e=upsert-machine]').should('be.disabled');
 
       cy.get('[data-e2e=machine-name]').clear().type('Test Machine');
       cy.get('[data-e2e=machine-tags]').clear().type('Test{enter}Generic CNC Machine{enter}');
@@ -86,7 +89,7 @@ describe('machines', () =>
       cy.valid('[data-e2e=machine-length]');
       cy.valid('[data-e2e=machine-width]');
       cy.valid('[data-e2e=machine-height]');
-      cy.get('[data-e2e=create-machine]').should('not.be.disabled');
+      cy.get('[data-e2e=upsert-machine]').should('not.be.disabled');
     });
 
     it('will create a machine', () =>
@@ -106,9 +109,10 @@ describe('machines', () =>
         cy.get('[data-e2e=machine-width]').clear().type(11.1);
         cy.get('[data-e2e=machine-height]').clear().type(15);
 
-        cy.get('[data-e2e=create-machine]').click();
+        cy.get('[data-e2e=upsert-machine]').click();
 
-        cy.wait(2000);
+        cy.wait(timings.medium);
+
         cy.count('[data-e2e=entity-name]').should('eq', before + 1);
       });
     });
@@ -281,13 +285,15 @@ describe('machines', () =>
 
       cy.get('[data-e2e=edit-machine]').last().click();
 
-      cy.get('[data-e2e=machine-name]').clear().type(name).blur();
+      cy.get('[data-e2e=machine-name]').clear().type(name);
       cy.get('[data-e2e=machine-tags]').clear({
         force: true
-      }).type(tags.join('{enter}')).blur();
-      cy.get('[data-e2e=machine-length]').clear().type(15).blur();
-      cy.get('[data-e2e=machine-width]').clear().type(17).blur();
-      cy.get('[data-e2e=machine-height]').clear().type(0.1).blur();
+      }).type(tags.join('{enter}'));
+      cy.get('[data-e2e=machine-length]').clear().type(15);
+      cy.get('[data-e2e=machine-width]').clear().type(17);
+      cy.get('[data-e2e=machine-height]').clear().type(0.1);
+
+      cy.get('[data-e2e=upsert-machine]').click();
 
       cy.get('[data-e2e=close-machine]').click();
 
@@ -306,7 +312,8 @@ describe('machines', () =>
       cy.count('[data-e2e=entity-name]').then(before =>
       {
         cy.get('[data-e2e=remove-machine]').last().click();
-        cy.wait(2000);
+        
+        cy.wait(timings.medium);
 
         cy.count('[data-e2e=entity-name]').should('eq', before - 1);
       });

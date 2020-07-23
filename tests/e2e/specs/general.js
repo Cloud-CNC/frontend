@@ -2,6 +2,9 @@
  * @fileoverview General E2E tests
  */
 
+//Imports
+import timings from '../utils/timings.js';
+
 describe('general', () => 
 {
   beforeEach(() =>
@@ -51,14 +54,14 @@ describe('general', () =>
 
       cy.get('[data-e2e=controller-name]').type('Test Controller');
 
-      cy.get('[data-e2e=create-controller]').click();
+      cy.get('[data-e2e=upsert-controller]').click();
 
-      cy.wait(2000);
+      cy.wait(timings.medium);
 
       //Create a machine
       cy.visit('/machines');
 
-      cy.wait(2000);
+      cy.wait(timings.medium);
 
       cy.get('[data-e2e=create]').click();
 
@@ -72,9 +75,9 @@ describe('general', () =>
       cy.get('[data-e2e=machine-width]').clear().type(11.1);
       cy.get('[data-e2e=machine-height]').clear().type(15);
 
-      cy.get('[data-e2e=create-machine]').click();
+      cy.get('[data-e2e=upsert-machine]').click();
 
-      cy.wait(2000);
+      cy.wait(timings.medium);
     });
 
     it('will display an error message', () =>
@@ -105,14 +108,14 @@ describe('general', () =>
 
       cy.get('[data-e2e=remove-machine]').last().click();
 
-      cy.wait(2000);
+      cy.wait(timings.medium);
 
       //Remote the controller
       cy.visit('/controllers');
 
       cy.get('[data-e2e=remove-controller]').last().click();
 
-      cy.wait(2000);
+      cy.wait(timings.medium);
     });
   });
 });

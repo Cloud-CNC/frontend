@@ -10,11 +10,9 @@
             <v-list-item>
               <v-text-field
                 :rules="[rules.required, rules.name]"
-                @blur="update('name')"
                 counter="30"
                 data-e2e="controller-name"
                 label="Name"
-                ref="name"
                 v-model="lightbox.name"
               />
             </v-list-item>
@@ -23,14 +21,10 @@
               <v-btn-toggle>
                 <v-btn
                   :disabled="!prechecks"
-                  @click="create()"
-                  data-e2e="create-controller"
-                  v-if="lightbox.create"
-                >Create</v-btn>
-                <v-btn
-                  @click="lightbox.visible = false"
-                  data-e2e="close-controller"
-                >{{ lightbox.create ? 'Cancel' : 'Close' }}</v-btn>
+                  @click="upsert()"
+                  data-e2e="upsert-controller"
+                >{{ lightbox.create ? 'Create' : 'Save' }}</v-btn>
+                <v-btn @click="lightbox.visible = false" data-e2e="close-controller">Cancel</v-btn>
               </v-btn-toggle>
             </v-list-item>
           </v-list>
@@ -95,7 +89,7 @@ export default {
   methods:
   {
     //Generate download data
-    download: (name, _id) => async() =>
+    download: (name, _id) => async () =>
     {
       //Get key
       const {key} = await api.controllers.key(_id);
@@ -122,34 +116,43 @@ export default {
       //Show lightbox
       this.lightbox.visible = true;
     },
-    //Create controller
-    create: function ()
+    upsert: async function ()
     {
-      api.controllers.create(this.lightbox.name).then(async ({_id}) =>
+      //Create
+      if (this.lightbox.create)
       {
-        //Add to list
-        this.controllers.push({
-          _id,
-          name: this.lightbox.name
-        });
+        //Update backend
+        const _id = await api.controllers.create(this.lightbox.name);
 
-        //Hide lightbox
-        this.lightbox.visible = false;
-      });
-    },
-    //Update machine
-    update: function (property)
-    {
-      //Precheck
-      if (this.$refs[property].valid && !this.lightbox.create)
+        //Update frontend
+        this.controllers.push({_id, name: this.lightbox.name});
+      }
+      //Edit
+      else
       {
-        //Update front end
-        const machine = this.controllers.find(machine => machine._id == this.lightbox._id);
-        machine[property] = this.lightbox[property];
+        //Find original controller
+        const original = this.controllers.find(controller => controller._id == this.lightbox._id);
+
+        //Calculate changes
+        const changes = {};
+        for (const [key, value] of Object.entries(original))
+        {
+          if (this.lightbox[key] != value)
+          {
+            //Save change
+            changes[key] = this.lightbox[key];
+
+            //Update frontend
+            original[key] = this.lightbox[key];
+          }
+        }
 
         //Update backend
-        api.controllers.update({[property]: this.lightbox[property]}, this.lightbox._id);
+        await api.controllers.update(changes, this.lightbox._id);
       }
+
+      //Hide the lightbox
+      this.lightbox.visible = false;
     },
     //Remove machine
     remove: function (machine)

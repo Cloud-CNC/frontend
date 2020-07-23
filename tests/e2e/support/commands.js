@@ -1,12 +1,9 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
+/**
+ * @fileoverview Cypress commands
+ */
+
+//Imports
+import timings from '../utils/timings.js';
 
 Cypress.Commands.add('count', selector =>
 {
@@ -24,7 +21,7 @@ Cypress.Commands.add('login', (username = 'Test Account', password = 'Testingpas
 
   cy.get('[data-e2e=login]').click();
 
-  cy.wait(2000);
+  cy.wait(timings.medium);
 
   cy.url().should('eq', 'https://127.0.0.1:8443/files');
 });
@@ -66,7 +63,7 @@ Cypress.Commands.add('hasHeardMessage', (msg, action) =>
   cy.task('addMessageListener', msg).then(listenerID =>
   {
     //Avoid a timing-based race condition by waiting before invoking the action
-    cy.wait(2000);
+    cy.wait(timings.medium);
 
     //Perform the post-registration, message invoking action
     action();
@@ -78,7 +75,7 @@ Cypress.Commands.add('hasHeardMessage', (msg, action) =>
       if (iteration < attempts)
       {
         //Wait before checking if the message has been sent
-        cy.wait(4000);
+        cy.wait(timings.long);
 
         //Return if the message has been sent otherwise recur
         cy.task('hasHeardMessage', listenerID).then(hasHeard =>

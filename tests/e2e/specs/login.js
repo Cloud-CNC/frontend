@@ -4,6 +4,7 @@
 
 //Imports
 import speakeasy from 'speakeasy';
+import timings from '../utils/timings.js';
 
 describe('login', () => 
 {
@@ -77,7 +78,7 @@ describe('login', () =>
       //Create an MFA account
       cy.visit('/admin');
 
-      cy.wait(2000);
+      cy.wait(timings.medium);
 
       cy.get('[data-e2e=create]').click();
 
@@ -87,9 +88,9 @@ describe('login', () =>
         force: true
       });
 
-      cy.get('[data-e2e=create-account]').click();
+      cy.get('[data-e2e=upsert-account]').click();
 
-      cy.wait(2000);
+      cy.wait(timings.medium);
 
       //Extract MFA secret
       cy.get('[data-e2e=account-mfa-token]').then(element =>
@@ -134,11 +135,11 @@ describe('login', () =>
       cy.get('[data-e2e=username]').type('Test Account 2');
       cy.get('[data-e2e=password]').type('Testingpassword123!');
 
-      cy.wait(500);
+      cy.wait(timings.short);
 
       cy.get('[data-e2e=login]').click();
 
-      cy.wait(2000);
+      cy.wait(timings.medium);
 
       const otp = speakeasy.totp({
         encoding: 'base32',
@@ -147,11 +148,11 @@ describe('login', () =>
 
       cy.get('[data-e2e=otp]').type(otp);
 
-      cy.wait(500);
+      cy.wait(timings.short);
 
       cy.get('[data-e2e=login]').click();
 
-      cy.wait(2000);
+      cy.wait(timings.medium);
 
       cy.url().should('eq', 'https://127.0.0.1:8443/files');
     });
@@ -165,7 +166,7 @@ describe('login', () =>
 
       cy.get('[data-e2e=remove-account]').last().click();
 
-      cy.wait(2000);
+      cy.wait(timings.medium);
     });
   });
 });
