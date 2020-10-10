@@ -41,6 +41,8 @@ describe('admin', () =>
       {
         cy.get('[data-e2e=create]').click();
 
+        cy.wait(timings.short);
+
         cy.get('[data-e2e=account-username]').type('Test Account 3');
         cy.get('[data-e2e=account-password]').type('Testingpassword123!');
 
@@ -48,6 +50,8 @@ describe('admin', () =>
 
         cy.get('[data-e2e=account-username]').should('not.be.visible');
         cy.get('[data-e2e=account-mfa-token]').should('not.be.visible');
+
+        cy.wait(timings.medium);
 
         cy.count('[data-e2e=entity-name]').should('eq', before + 1);
       });
