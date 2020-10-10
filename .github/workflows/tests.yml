@@ -18,7 +18,7 @@ jobs:
 
       #Setup the frontend
       - name: Clone frontend
-        uses: actions/checkout@v2.1.0
+        uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
           repository: 'cloud-cnc/frontend'
@@ -28,20 +28,20 @@ jobs:
         working-directory: ./frontend
         run: sudo npm ci --unsafe-perm=true --allow-root
 
+      #Run ESlint on the frontend
+      - name: ESlint
+        working-directory: ./frontend
+        run: npm run lint
+
       - name: Link frontend TLS certificate
         working-directory: ./frontend/config
         run: |
           ln -s ../../cert.cer ./
           ln -s ../../key.pem ./
 
-      #Run ESlint on the frontend
-      - name: ESlint
-        working-directory: ./frontend
-        run: npx eslint .
-
       #Setup the controller
       - name: Clone controller
-        uses: actions/checkout@v2.1.0
+        uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
           repository: 'cloud-cnc/controller'
@@ -58,11 +58,11 @@ jobs:
           ln -s ../../cert.cer ./
 
       #Setup the core
-      - name: Install MongoDB
-        run: sudo apt install -y mongodb
+      - name: Enable MongoDB
+        run: sudo systemctl start mongod
 
       - name: Clone core
-        uses: actions/checkout@v2.1.0
+        uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
           repository: 'cloud-cnc/core'
@@ -87,7 +87,7 @@ jobs:
         run: openssl rand -out secret.txt -base64 512
 
       #Run unit + E2E tests
-      - uses: paambaati/codeclimate-action@v2.6.0
+      - uses: paambaati/codeclimate-action@v2.7.4
         name: Run Tests
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_REPORTER_ID }}
