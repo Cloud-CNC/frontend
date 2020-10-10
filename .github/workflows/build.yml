@@ -12,8 +12,6 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
-      - uses: stefanoeb/eslint-action@1.0.2
-        name: ESLint
       - name: Install Modules
         run: sudo npm ci --unsafe-perm=true --allow-root
       - name: Build
