@@ -87,7 +87,7 @@ jobs:
         run: openssl rand -out secret.txt -base64 512
 
       #Run unit + E2E tests
-      - uses: paambaati/codeclimate-action@v2.7.4
+      - uses: paambaati/codeclimate-action@v2.6.0
         name: Run Tests
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_REPORTER_ID }}
