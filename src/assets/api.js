@@ -54,7 +54,7 @@ export default {
      */
     async roles()
     {
-      return (await rest('GET', '/accounts/roles')).roles;  
+      return (await rest('GET', '/accounts/roles')).roles;
     },
     /**
      * Create an account
@@ -138,17 +138,20 @@ export default {
     /**
      * Create a file
      * @param {String} name 
-     * @param {String} description 
-     * @param {String} raw 
+     * @param {String} description
+     * @param {String} extension
+     * @param {Blob} raw 
      */
-    async create(name, description, raw)
+    async create(name, description, extension, raw)
     {
       return (await rest('POST', '/files', {
-        name, description, raw
+        name, description, extension, raw
+      }, {
+        multipart: true
       }))._id;
     },
     /**
-     * Get a file
+     * Get a file's metadata
      * @param {String} id 
      */
     get(id)
@@ -156,11 +159,21 @@ export default {
       return rest('GET', `/files/${id}`);
     },
     /**
+     * Get a raw file
+     * @param {String} id 
+     */
+    raw(id)
+    {
+      return rest('GET', `/files/${id}/raw`, null, {
+        parse: false
+      });
+    },
+    /**
      * Update a file
      * @param {Object} data 
      * @param {String} data.name
      * @param {String} data.description
-     * @param {String} data.raw
+     * @param {String} data.extension
      * @param {String} id 
      */
     async update(data, id)
@@ -334,28 +347,57 @@ export default {
  * Simplified REST API client
  * @param {String} method HTTP Method
  * @param {String} url Relative URL
- * @param {Object} body JSON Body
+ * @param {Object} body Request body
+ * @param {Object} options Miscellaneous options
+ * @param {Boolean} options.multipart Wether or not to send as `multipart/form-data` (Default is false)
+ * @param {Boolean} options.parse Wether or not to parse the response (Default is true)
  * @returns {Promise<Object>}
  */
-async function rest(method, url, body = null)
+async function rest(method, url, body, options)
 {
-  //Configuration
-  const options = {credentials: 'include', method};
-  if (body != null)
+  //Default options
+  options = {
+    multipart: false,
+    parse: true,
+    ...options
+  };
+
+  //Generate request configuration
+  const config = {credentials: 'include', method};
+
+  if (body != null && !options.multipart)
   {
-    options.body = JSON.stringify(body);
-    options.headers = {'Content-Type': 'application/json'};
+    config.body = JSON.stringify(body);
+    config.headers = {'Content-Type': 'application/json'};
+  }
+  else if (body != null && options.multipart)
+  {
+    //Multipart form data
+    const formData = new FormData();
+
+    for (const [key, value] of Object.entries(body))
+    {
+      formData.append(key, value);
+    }
+
+    config.body = formData;
   }
 
   //Request
-  let res = await (await fetch(`${process.env.config.core.url}/api${url}`, options)).text();
+  const res = await fetch(`${process.env.config.core.url}/api${url}`, config);
+  const arrayBuffer = await res.arrayBuffer();
 
-  //Parse
-  if (res != '')
+  //Format output
+  let out = arrayBuffer;
+  if (arrayBuffer.byteLength > 0 && options.parse)
   {
     try
     {
-      res = JSON.parse(res);
+      //Convert to text
+      const text = new TextDecoder().decode(arrayBuffer);
+
+      //Parse JSON
+      out = JSON.parse(text);
     }
     catch (error)
     {
@@ -365,20 +407,20 @@ async function rest(method, url, body = null)
   }
 
   //Error
-  if (res.error && res.error.name == 'Unrecognized Session')
+  if (out.error && out.error.name == 'Unrecognized Session')
   {
     router.push('/login');
   }
-  else if (res.error)
+  else if (out.error)
   {
     //Display popup
-    store.commit('showError', res.error);
+    store.commit('showError', out.error);
 
-    console.error(`API Error: ${res.error.name} (${res.error.description})`);
-    return Promise.reject(res.error);
+    console.error(`API Error: ${out.error.name} (${out.error.description})`);
+    return Promise.reject(out.error);
   }
   else
   {
-    return Promise.resolve(res);
+    return Promise.resolve(out);
   }
 }

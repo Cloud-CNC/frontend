@@ -26,7 +26,7 @@
         </v-card>
       </v-row>
     </v-container>
-    <v-footer fixed color="transparent">
+    <v-footer fixed color="transparent" v-if="add">
       <v-spacer>
         <v-btn icon x-large color="accent" @click="$emit('add')" data-e2e="create" id="plus">
           <v-icon id="add">add</v-icon>
@@ -39,6 +39,10 @@
 <script>
 export default {
   props: {
+    add: {
+      default: true,
+      type: Boolean
+    },
     entities: {
       required: true,
       type: Array

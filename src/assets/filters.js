@@ -1,10 +1,12 @@
 /**
- * @fileoverview Regex Filters
+ * @fileoverview Regex filters used for frontend validation
+ * If you modify any filters here, you probably want to update your backend filters as well
  */
 
 export default {
   boolean: /^true|false$/,
   description: /^(.|\s){0,1000}$/,
+  extension: /^\w+$/,
   key: /^[A-z0-9+/]+={0,3}$/,
   name: /^.{3,30}$/,
   otp: /^\d{6}$/,

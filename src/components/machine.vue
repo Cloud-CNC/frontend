@@ -79,7 +79,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-text-field data-e2e="machine-command" label="GCODE" v-model="command">
+      <v-text-field data-e2e="machine-command" label="Command" v-model="command">
         <template v-slot:append-outer>
           <v-btn @click="send(`${command}\n`)" color="primary" data-e2e="send-machine-command">Send</v-btn>
         </template>

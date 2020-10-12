@@ -51,11 +51,11 @@
       </v-btn>
     </v-app-bar>
 
-    <v-content>
+    <v-main>
       <router-view></router-view>
-    </v-content>
+    </v-main>
 
-    <v-snackbar :timeout="0" v-model="$store.state.impersonate.visible">
+    <v-snackbar :timeout="-1" v-model="$store.state.impersonate.visible">
       You're currently impersonating {{$store.state.impersonate.name}}!
       <v-btn color="accent" @click="stopImpersonate(); $store.commit('hideImpersonate')" data-e2e="stop-impersonating">Stop</v-btn>
     </v-snackbar>

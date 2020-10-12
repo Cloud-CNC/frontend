@@ -1,7 +1,9 @@
 <template>
   <div>
     <lightbox v-model="lightbox.visible">
-      <template v-slot:title>{{ lightbox.create ? 'Create a new file' : 'Edit ' + lightbox.name }}</template>
+      <template v-slot:title>{{
+        lightbox.create ? "Create a new file" : "Edit " + lightbox.name
+      }}</template>
       <template v-slot:content>
         <v-form v-model="prechecks">
           <v-list>
@@ -29,7 +31,7 @@
               <v-file-input
                 :rules="[rules.raw]"
                 @change="lightbox.raw = $event"
-                accept=".gcode"
+                :accept="accepts"
                 data-e2e="file-raw"
                 label="File"
               />
@@ -40,8 +42,11 @@
                   data-e2e="upsert-file"
                   :disabled="!prechecks"
                   @click="upsert()"
-                >{{ lightbox.create ? 'Create' : 'Save'}}</v-btn>
-                <v-btn @click="lightbox.visible = false" data-e2e="close-file">Cancel</v-btn>
+                  >{{ lightbox.create ? "Create" : "Save" }}</v-btn
+                >
+                <v-btn @click="lightbox.visible = false" data-e2e="close-file"
+                  >Cancel</v-btn
+                >
               </v-btn-toggle>
             </v-list-item>
           </v-list>
@@ -51,13 +56,24 @@
     <gallery @add="showLightbox()" :entities="files">
       <template v-slot:actions="props">
         <v-btn-toggle>
-          <v-btn data-e2e="open-file" :to="`/file/${props.entity._id}`">Open</v-btn>
-          <v-btn data-e2e="edit-file" @click="showLightbox(props.entity)">Edit</v-btn>
-          <v-btn data-e2e="remove-file" color="error" @click="remove(props.entity)">Remove</v-btn>
+          <v-btn data-e2e="open-file" :to="`/file/${props.entity._id}`"
+            >Open</v-btn
+          >
+          <v-btn data-e2e="edit-file" @click="showLightbox(props.entity)"
+            >Edit</v-btn
+          >
+          <v-btn
+            data-e2e="remove-file"
+            color="error"
+            @click="remove(props.entity)"
+            >Remove</v-btn
+          >
         </v-btn-toggle>
       </template>
 
-      <template v-slot:empty class="font-weight-light">No files available!</template>
+      <template v-slot:empty class="font-weight-light"
+        >No files available!</template
+      >
     </gallery>
   </div>
 </template>
@@ -68,6 +84,10 @@ import api from '../assets/api';
 import filters from '../assets/filters';
 import gallery from '../components/gallery';
 import lightbox from '../components/lightbox';
+import {FileFormats} from 'unified-3d-loader';
+
+//Compute accepted extensions and mime types
+const accepts = Object.values(FileFormats).map(format => format.extensions.map(extension => '.' + extension).join(',') + ',' + format.mimes.join(',')).join(',') + ',.gcode';
 
 export default {
   components: {
@@ -75,10 +95,12 @@ export default {
     gallery
   },
   data: () => ({
+    accepts,
     lightbox: {
       create: false,
-      description: null,
       name: null,
+      description: null,
+      extension: null,
       raw: null,
       visible: false
     },
@@ -126,15 +148,15 @@ export default {
       //Create
       if (this.lightbox.create)
       {
-        //Convert file to UTF8
-        let raw = await this.lightbox.raw.arrayBuffer();
-        raw = new Uint8Array(raw);
-        const temp = [];
-        raw.forEach((byte, i) => temp[i] = String.fromCharCode(byte));
-        raw = temp.join('');
+        //Get file extension
+        const extension = this.lightbox.raw.name.split('.').pop();
+
+        //Convert file to blob
+        const raw = await this.lightbox.raw.arrayBuffer();
+        const rawBlob = new Blob([raw]);
 
         //Update backend
-        const _id = await api.files.create(this.lightbox.name, this.lightbox.description, raw);
+        const _id = await api.files.create(this.lightbox.name, this.lightbox.description, extension, rawBlob);
 
         //Update frontend
         this.files.push({_id, name: this.lightbox.name, description: this.lightbox.description});

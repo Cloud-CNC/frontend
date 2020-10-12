@@ -4,7 +4,7 @@
 
 //Imports
 import '@/registerServiceWorker';
-import '@/plugins/gcode-viewer';
+import '@/plugins/3d-viewer';
 import 'material-icons/iconfont/material-icons.scss';
 import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import App from '@/App.vue';

@@ -18,7 +18,9 @@
 
             <v-list-item>
               <v-btn-toggle>
-                <v-btn @click="execute" data-e2e="confirm-execute">Execute</v-btn>
+                <v-btn @click="execute" data-e2e="confirm-execute"
+                  >Execute</v-btn
+                >
                 <v-btn @click="visible = false">Cancel</v-btn>
               </v-btn-toggle>
             </v-list-item>
@@ -29,26 +31,37 @@
     <v-container fluid class="overlay-container">
       <v-col align="center">
         <v-toolbar class="overlay" color="primary">
-          <v-toolbar-title>{{ file.name }} - {{ file.description }}</v-toolbar-title>
+          <v-toolbar-title
+            >{{ file.name }} - {{ file.description }}</v-toolbar-title
+          >
 
           <v-spacer />
 
           <v-toolbar-items>
-            <v-btn icon @click="showLightbox()" data-e2e="execute-file">
-              <v-icon>dock</v-icon>
-            </v-btn>
+            <div class="toolbar-normalizer">
+              <v-btn
+                @click="showLightbox()"
+                color="accent"
+                data-e2e="execute-file"
+              >
+                <v-icon>dock</v-icon>
+                Execute
+              </v-btn>
+            </div>
           </v-toolbar-items>
         </v-toolbar>
       </v-col>
     </v-container>
-    <gcode-viewer
-      :bed="viewer.bed"
-      :gcode="file.raw"
+    <three-d-viewer
+      class="viewer"
+      :extension="file.extension"
+      data-e2e="file-viewer"
+      :file="file.raw"
+      :plane="viewer.plane"
       :position="viewer.position"
       :rotation="viewer.rotation"
       :scale="viewer.scale"
       :theme="theme"
-      data-e2e="file-viewer"
     />
   </div>
 </template>
@@ -69,29 +82,30 @@ export default {
     machine: null,
     file: {
       name: null,
+      extension: '',
       description: null,
-      raw: ''
+      raw: new ArrayBuffer(0)
     },
     visible: false,
     viewer: {
-      bed: {
+      plane: {
         X: 10,
-        Y: 10
+        Y: 10,
       },
       position: {
-        X: 5,
+        X: 0,
         Y: 0,
-        Z: -5
+        Z: 0,
       },
       rotation: {
         X: -90,
         Y: 0,
-        Z: 180
+        Z: 180,
       },
       scale: {
         X: 0.1,
         Y: 0.1,
-        Z: 0.1
+        Z: 0.1,
       }
     }
   }),
@@ -108,8 +122,19 @@ export default {
       }
     });
 
-    //Get file
-    api.files.get(this.$route.params.id).then(file => this.file = file);
+    //Get the file's metadata
+    api.files.get(this.$route.params.id).then(file => 
+    {
+      this.file.name = file.name;
+      this.file.description = file.description;
+      this.file.extension = file.extension;
+    });
+
+    //Get the raw file
+    api.files.raw(this.$route.params.id).then(raw =>
+    {
+      this.file.raw = raw;
+    });
   },
   methods: {
     //Show the execute lightbox
@@ -128,15 +153,15 @@ export default {
     {
       return this.$vuetify.theme.dark ?
         {
-          extrusionColor: '#1B5E20',
-          pathColor: '#4CAF50',
-          bedColor: '#3a3a3a',
-          backgroundColor: '#212121'
+          primary: '#1B5E20',
+          secondary: '#4CAF50',
+          plane: '#3a3a3a',
+          background: '#212121'
         } : {
-          extrusionColor: '#1565C0',
-          pathColor: '#64B5F6',
-          bedColor: '#9E9E9E',
-          backgroundColor: '#EEEEEE'
+          primary: '#1565C0',
+          secondary: '#64B5F6',
+          plane: '#9E9E9E',
+          background: '#EEEEEE'
         };
     }
   },
@@ -144,8 +169,8 @@ export default {
     machine: function ()
     {
       const machine = this.machines.find(machine => machine._id == this.machine);
-      this.viewer.bed.X = machine.length;
-      this.viewer.bed.Y = machine.width;
+      this.viewer.plane.X = machine.length;
+      this.viewer.plane.Y = machine.width;
       this.viewer.position.X = machine.length / 2;
       this.viewer.position.Z = -machine.width / 2;
     }
@@ -165,5 +190,16 @@ export default {
 
 .overlay {
   width: fit-content;
+}
+
+.toolbar-normalizer {
+  margin: auto;
+  padding: 10px;
+}
+
+#canvas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <gallery :entities="files">
+  <gallery :add="false" :entities="files">
     <template v-slot:actions="props">
       <v-btn-toggle>
         <v-btn @click="recover(props.entity)" data-e2e="recover-file">Recover</v-btn>
