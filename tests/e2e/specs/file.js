@@ -61,7 +61,7 @@ describe('file', () =>
     {
       cy.get('[data-e2e=slice-file]').click();
 
-      cy.wait(12 * timings.extraLong);
+      cy.wait(20 * timings.extraLong);
 
       cy.get('[data-e2e=save-file-name]').type('Benchy GCODE');
 
@@ -178,7 +178,7 @@ describe('file', () =>
     {
       cy.login();
 
-      cy.wait(timings.medium);
+      cy.wait(timings.long);
 
       //Remove the file
       cy.get('[data-e2e=remove-file]').last().click();
@@ -186,7 +186,7 @@ describe('file', () =>
 
       cy.visit('/trash');
 
-      cy.wait(timings.medium);
+      cy.wait(timings.long);
 
       cy.get('[data-e2e=remove-file]').last().click();
       cy.get('[data-e2e=remove-file-confirm]').click();
