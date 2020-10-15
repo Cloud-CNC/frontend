@@ -145,7 +145,10 @@ export default {
     async create(name, description, extension, raw)
     {
       return (await rest('POST', '/files', {
-        name, description, extension, raw
+        name,
+        description : description == null ? '' : description,
+        extension,
+        raw
       }, {
         multipart: true
       }))._id;

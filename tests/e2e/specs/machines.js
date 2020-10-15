@@ -78,6 +78,7 @@ describe('machines', () =>
       cy.get('[data-e2e=upsert-machine]').should('be.disabled');
 
       cy.get('[data-e2e=machine-name]').clear().type('Test Machine');
+      cy.get('[data-e2e=machine-tags]').parent().parent().parent().click();
       cy.get('[data-e2e=machine-tags]').clear().type('Test{enter}Generic CNC Machine{enter}');
       cy.get('[data-e2e=machine-length]').clear().type(10);
       cy.get('[data-e2e=machine-width]').clear().type(11.1);
@@ -100,11 +101,8 @@ describe('machines', () =>
         cy.get('[data-e2e=create]').click();
 
         cy.get('[data-e2e=machine-name]').clear().type('Test Machine');
-        cy.get('[data-e2e=machine-tags]').clear({
-          force: true
-        }).type('Test{enter}Generic CNC Machine{enter}', {
-          force: true
-        });
+        cy.get('[data-e2e=machine-tags]').parent().parent().parent().click();
+        cy.get('[data-e2e=machine-tags]').clear().type('Test{enter}Generic CNC Machine{enter}');
         cy.get('[data-e2e=machine-length]').clear().type(10);
         cy.get('[data-e2e=machine-width]').clear().type(11.1);
         cy.get('[data-e2e=machine-height]').clear().type(15);
@@ -265,6 +263,7 @@ describe('machines', () =>
       cy.valid('[data-e2e=machine-height]');
 
       cy.get('[data-e2e=machine-name]').clear().type('Test Machine [Edit]');
+      cy.get('[data-e2e=machine-tags]').parent().parent().parent().click();
       cy.get('[data-e2e=machine-tags]').clear().type('Test [Edit]{enter}Generic CNC Machine{enter}');
       cy.get('[data-e2e=machine-length]').clear().type(15);
       cy.get('[data-e2e=machine-width]').clear().type(17);

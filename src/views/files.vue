@@ -80,13 +80,13 @@
 
 <script>
 //Imports
+import {FileFormats} from 'unified-3d-loader';
 import api from '../assets/api';
 import filters from '../assets/filters';
 import gallery from '../components/gallery';
 import lightbox from '../components/lightbox';
-import {FileFormats} from 'unified-3d-loader';
 
-//Compute accepted extensions and mime types
+//Compute accepted extensions
 const accepts = Object.values(FileFormats).map(format => format.extensions.map(extension => '.' + extension).join(',') + ',' + format.mimes.join(',')).join(',') + ',.gcode';
 
 export default {
@@ -151,7 +151,7 @@ export default {
         //Get file extension
         const extension = this.lightbox.raw.name.split('.').pop();
 
-        //Convert file to blob
+        //Convert the file to a blob
         const raw = await this.lightbox.raw.arrayBuffer();
         const rawBlob = new Blob([raw]);
 

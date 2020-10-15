@@ -11,6 +11,7 @@
 
 //Imports
 const account = require('./account');
+const file = require('./file');
 const ipc = require('./ipc');
 
 module.exports = (on, config) => 
@@ -22,6 +23,7 @@ module.exports = (on, config) =>
   //Tasks
   on('task', {
     ...account,
+    ...file,
     ...ipc
   });
 

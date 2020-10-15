@@ -33,11 +33,8 @@ Cypress.Commands.add('upload', (name, data, mime, selector) =>
     //Get window to instantiate correct File (https://github.com/cypress-io/cypress/issues/933)
     cy.window().then(window =>
     {
-      //Get the data as bytes
-      const bytes = new TextEncoder('utf-8').encode(data);
-
       //Create the file
-      const file = new window.File([bytes], name, {
+      const file = new window.File([data], name, {
         type: mime
       });
 
