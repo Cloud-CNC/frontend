@@ -61,7 +61,9 @@ describe('file', () =>
     {
       cy.get('[data-e2e=slice-file]').click();
 
-      cy.wait(20 * timings.extraLong);
+      cy.wait(4 * timings.extraLong);
+
+      cy.get('[data-e2e=save-file-lightbox]').parent().parent().parent().parent().next().children().eq(0).should('be.visible');
 
       cy.get('[data-e2e=save-file-name]').type('Benchy GCODE');
 
@@ -178,7 +180,7 @@ describe('file', () =>
     {
       cy.login();
 
-      cy.wait(timings.long);
+      cy.wait(timings.medium);
 
       //Remove the file
       cy.get('[data-e2e=remove-file]').last().click();
@@ -186,7 +188,7 @@ describe('file', () =>
 
       cy.visit('/trash');
 
-      cy.wait(timings.long);
+      cy.wait(timings.medium);
 
       cy.get('[data-e2e=remove-file]').last().click();
       cy.get('[data-e2e=remove-file-confirm]').click();
@@ -216,6 +218,8 @@ describe('file', () =>
   {
     cy.login();
 
+    cy.wait(timings.medium);
+
     //Remove the files
     cy.get('[data-e2e=remove-file]').last().click();
     cy.get('[data-e2e=remove-file-confirm]').click();
@@ -227,10 +231,14 @@ describe('file', () =>
 
     cy.visit('/trash');
 
+    cy.wait(timings.medium);
+
     cy.get('[data-e2e=remove-file]').last().click();
     cy.get('[data-e2e=remove-file-confirm]').click();
 
     cy.get('[data-e2e=remove-file]').last().click();
     cy.get('[data-e2e=remove-file-confirm]').click();
+
+    cy.wait(timings.medium);
   });
 });
