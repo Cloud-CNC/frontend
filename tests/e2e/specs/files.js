@@ -124,6 +124,7 @@ describe('files', () =>
       cy.count('[data-e2e=entity-name]').then(before =>
       {
         cy.get('[data-e2e=remove-file]').last().click();
+        cy.get('[data-e2e=remove-file-confirm]').click();
 
         cy.wait(timings.medium);
 
@@ -140,6 +141,7 @@ describe('files', () =>
     cy.visit('/trash');
 
     cy.get('[data-e2e=remove-file]').last().click();
+    cy.get('[data-e2e=remove-file-confirm]').click();
 
     cy.wait(timings.medium);
   });

@@ -1,9 +1,11 @@
 <template>
   <div>
-    <lightbox v-model="lightboxes.upsert.visible">
-      <template
-        v-slot:title
-      >{{ lightboxes.upsert.create ? 'Create a new machine' : 'Edit ' + lightboxes.upsert.name }}</template>
+    <lightbox v-model="upsertLightbox.visible">
+      <template v-slot:title>{{
+        upsertLightbox.create
+          ? "Create a new machine"
+          : "Edit " + upsertLightbox.name
+      }}</template>
 
       <template v-slot:content>
         <v-form v-model="prechecks">
@@ -14,7 +16,7 @@
                 counter="30"
                 data-e2e="machine-name"
                 label="Name"
-                v-model="lightboxes.upsert.name"
+                v-model="upsertLightbox.name"
               />
             </v-list-item>
 
@@ -26,7 +28,7 @@
                 item-text="name"
                 item-value="_id"
                 label="Controller"
-                v-model="lightboxes.upsert.controller"
+                v-model="upsertLightbox.controller"
               ></v-select>
             </v-list-item>
 
@@ -38,7 +40,7 @@
                 :rules="[rules.required, rules.tags]"
                 data-e2e="machine-tags"
                 label="Tags"
-                v-model="lightboxes.upsert.tags"
+                v-model="upsertLightbox.tags"
               />
             </v-list-item>
 
@@ -48,7 +50,7 @@
                 data-e2e="machine-length"
                 label="Length"
                 type="number"
-                v-model.number="lightboxes.upsert.length"
+                v-model.number="upsertLightbox.length"
               />
             </v-list-item>
 
@@ -58,7 +60,7 @@
                 data-e2e="machine-width"
                 label="Width"
                 type="number"
-                v-model.number="lightboxes.upsert.width"
+                v-model.number="upsertLightbox.width"
               />
             </v-list-item>
 
@@ -68,7 +70,7 @@
                 data-e2e="machine-height"
                 label="Height"
                 type="number"
-                v-model.number="lightboxes.upsert.height"
+                v-model.number="upsertLightbox.height"
               />
             </v-list-item>
 
@@ -78,9 +80,14 @@
                   :disabled="!prechecks"
                   @click="upsert()"
                   data-e2e="upsert-machine"
-                >{{ lightboxes.upsert.create ? 'Create' : 'Save' }}</v-btn>
+                  >{{ upsertLightbox.create ? "Create" : "Save" }}</v-btn
+                >
 
-                <v-btn @click="lightboxes.upsert.visible = false" data-e2e="close-machine">Cancel</v-btn>
+                <v-btn
+                  @click="upsertLightbox.visible = false"
+                  data-e2e="close-machine"
+                  >Cancel</v-btn
+                >
               </v-btn-toggle>
             </v-list-item>
           </v-list>
@@ -88,39 +95,75 @@
       </template>
     </lightbox>
 
-    <lightbox data-e2e="machine-controller" v-model="lightboxes.control.visible">
-      <template v-slot:title>Control {{machine.name}}</template>
+    <lightbox v-model="controlLightbox.visible">
+      <template v-slot:title>Control {{ machine.name }}</template>
       <template v-slot:content>
-        <machine :machine="machine" :visible="lightboxes.control.visible" />
+        <machine data-e2e="machine-control-panel" :machine="machine" :visible="controlLightbox.visible" />
       </template>
     </lightbox>
 
-    <gallery @add="showLightbox()" :entities="machines">
+    <lightbox v-model="removeLightbox.visible">
+      <template v-slot:title
+        >Are you sure you want to remove {{ removeLightbox.name }}?</template
+      >
+      <template v-slot:content>
+        <v-form>
+          <v-btn-toggle>
+            <v-btn @click="remove" color="error" data-e2e="remove-machine-confirm">Remove</v-btn>
+            <v-btn @click="removeLightbox.visible = false">Cancel</v-btn>
+          </v-btn-toggle>
+        </v-form>
+      </template>
+    </lightbox>
+
+    <gallery @add="showUpsertLightbox()" :entities="machines">
       <template v-slot:description="props">
         <p data-e2e="machine-info">
-          Machine ID: {{props.entity._id}}
+          Machine ID: {{ props.entity._id }}
           <br />
-          Controller Name: {{controllers.find(controller => controller._id == props.entity.controller).name}}
+          Controller Name:
+          {{
+            controllers.find(
+              (controller) => controller._id == props.entity.controller
+            ).name
+          }}
           <br />
-          Controller ID: {{props.entity.controller}}
+          Controller ID: {{ props.entity.controller }}
         </p>
         <v-chip-group column>
-          <v-chip small :key="tag" v-for="tag in props.entity.tags">{{ tag }}</v-chip>
+          <v-chip small :key="tag" v-for="tag in props.entity.tags">{{
+            tag
+          }}</v-chip>
         </v-chip-group>
       </template>
 
       <template v-slot:actions="props">
         <v-btn-toggle>
           <v-btn
-            @click="machine = props.entity; lightboxes.control.visible = true"
+            @click="
+              machine = props.entity;
+              controlLightbox.visible = true;
+            "
             data-e2e="control-machine"
-          >Control</v-btn>
-          <v-btn @click="showLightbox(props.entity)" data-e2e="edit-machine">Edit</v-btn>
-          <v-btn color="error" @click="remove(props.entity)" data-e2e="remove-machine">Remove</v-btn>
+            >Control</v-btn
+          >
+          <v-btn
+            @click="showUpsertLightbox(props.entity)"
+            data-e2e="edit-machine"
+            >Edit</v-btn
+          >
+          <v-btn
+            color="error"
+            @click="showRemoveLightbox(props.entity)"
+            data-e2e="remove-machine"
+            >Remove</v-btn
+          >
         </v-btn-toggle>
       </template>
 
-      <template v-slot:empty class="font-weight-light">No machines available!</template>
+      <template v-slot:empty class="font-weight-light"
+        >No machines available!</template
+      >
     </gallery>
   </div>
 </template>
@@ -141,21 +184,24 @@ export default {
   },
   data: () => ({
     controllers: [],
-    lightboxes: {
-      control: {
-        visible: false
-      },
-      upsert: {
-        _id: null,
-        controller: null,
-        tags: [],
-        name: null,
-        length: 0,
-        width: 0,
-        height: 0,
-        create: false,
-        visible: false
-      }
+    controlLightbox: {
+      visible: false
+    },
+    removeLightbox: {
+      id: null,
+      name: null,
+      visible: false
+    },
+    upsertLightbox: {
+      _id: null,
+      controller: null,
+      tags: [],
+      name: null,
+      length: 0,
+      width: 0,
+      height: 0,
+      create: false,
+      visible: false
     },
     machine: {name: null},
     machines: [],
@@ -178,86 +224,96 @@ export default {
     api.machines.all().then(machines => this.machines = machines);
   },
   methods: {
-    //Show lightbox
-    showLightbox: function (machine)    
+    //Show remove lightbox
+    showRemoveLightbox: function (machine)
+    {
+      this.removeLightbox.id = machine._id;
+      this.removeLightbox.name = machine.name;
+      this.removeLightbox.visible = true;
+    },
+    //Show upsert lightbox
+    showUpsertLightbox: function (machine)    
     {
       //Configure lightbox
       if (machine == null)      
       {
-        this.lightboxes.upsert._id = null;
-        this.lightboxes.upsert.controller =
+        this.upsertLightbox._id = null;
+        this.upsertLightbox.controller =
           this.controllers.length > 0 ? this.controllers[this.controllers.length - 1]._id : null;
-        this.lightboxes.upsert.name = null;
-        this.lightboxes.upsert.tags = [];
-        this.lightboxes.upsert.length = 0;
-        this.lightboxes.upsert.width = 0;
-        this.lightboxes.upsert.height = 0;
-        this.lightboxes.upsert.create = true;
+        this.upsertLightbox.name = null;
+        this.upsertLightbox.tags = [];
+        this.upsertLightbox.length = 0;
+        this.upsertLightbox.width = 0;
+        this.upsertLightbox.height = 0;
+        this.upsertLightbox.create = true;
       }
       else      
       {
-        this.lightboxes.upsert._id = machine._id;
-        this.lightboxes.upsert.controller = machine.controller;
-        this.lightboxes.upsert.name = machine.name;
-        this.lightboxes.upsert.tags = machine.tags;
-        this.lightboxes.upsert.length = machine.length;
-        this.lightboxes.upsert.width = machine.width;
-        this.lightboxes.upsert.height = machine.height;
-        this.lightboxes.upsert.create = false;
+        this.upsertLightbox._id = machine._id;
+        this.upsertLightbox.controller = machine.controller;
+        this.upsertLightbox.name = machine.name;
+        this.upsertLightbox.tags = machine.tags;
+        this.upsertLightbox.length = machine.length;
+        this.upsertLightbox.width = machine.width;
+        this.upsertLightbox.height = machine.height;
+        this.upsertLightbox.create = false;
       }
 
       //Show upsert lightbox
-      this.lightboxes.upsert.visible = true;
+      this.upsertLightbox.visible = true;
     },
     upsert: async function ()
     {
       //Create
-      if (this.lightboxes.upsert.create)
+      if (this.upsertLightbox.create)
       {
         //Update backend
-        const _id = await api.machines.create(this.lightboxes.upsert.controller, this.lightboxes.upsert.name, this.lightboxes.upsert.tags, this.lightboxes.upsert.length, this.lightboxes.upsert.width, this.lightboxes.upsert.height);
+        const _id = await api.machines.create(this.upsertLightbox.controller, this.upsertLightbox.name, this.upsertLightbox.tags, this.upsertLightbox.length, this.upsertLightbox.width, this.upsertLightbox.height);
 
         //Update frontend
-        this.machines.push({_id, controller: this.lightboxes.upsert.controller, name: this.lightboxes.upsert.name, tags: this.lightboxes.upsert.tags, length: this.lightboxes.upsert.length, width: this.lightboxes.upsert.width, height: this.lightboxes.upsert.height});
+        this.machines.push({_id, controller: this.upsertLightbox.controller, name: this.upsertLightbox.name, tags: this.upsertLightbox.tags, length: this.upsertLightbox.length, width: this.upsertLightbox.width, height: this.upsertLightbox.height});
       }
       //Edit
       else
       {
         //Find original machine
-        const original = this.machines.find(machine => machine._id == this.lightboxes.upsert._id);
+        const original = this.machines.find(machine => machine._id == this.upsertLightbox._id);
 
         //Calculate changes
         const changes = {};
         for (const [key, value] of Object.entries(original))
         {
-          if (this.lightboxes.upsert[key] != value)
+          if (this.upsertLightbox[key] != value)
           {
             //Save change
-            changes[key] = this.lightboxes.upsert[key];
+            changes[key] = this.upsertLightbox[key];
 
             //Update frontend
-            original[key] = this.lightboxes.upsert[key];
+            original[key] = this.upsertLightbox[key];
           }
         }
 
         //Update backend
-        await api.machines.update(changes, this.lightboxes.upsert._id);
+        await api.machines.update(changes, this.upsertLightbox._id);
       }
 
-      //Hide the lightboxes.upsert
-      this.lightboxes.upsert.visible = false;
+      //Hide the upsertLightbox
+      this.upsertLightbox.visible = false;
     },
     //Remove machine
-    remove: function (machine)    
+    remove: async function ()
     {
-      api.machines.remove(machine._id).then(() =>      
-      {
-        //Get index
-        const index = this.machines.findIndex(item => item._id == machine._id);
+      //Remove the machine
+      await api.machines.remove(this.removeLightbox.id);
 
-        //Remove machine
-        this.machines.splice(index, 1);
-      });
+      //Get index
+      const index = this.machines.findIndex(item => item._id == this.removeLightbox.id);
+
+      //Remove machine
+      this.machines.splice(index, 1);
+
+      //Hide remove lightbox
+      this.removeLightbox.visible = false;
     }
   }
 };

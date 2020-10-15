@@ -180,10 +180,12 @@ describe('file', () =>
 
       //Remove the file
       cy.get('[data-e2e=remove-file]').last().click();
+      cy.get('[data-e2e=remove-file-confirm]').click();
 
       cy.visit('/trash');
 
       cy.get('[data-e2e=remove-file]').last().click();
+      cy.get('[data-e2e=remove-file-confirm]').click();
 
       //Stop the mock controller
       cy.task('stop');
@@ -192,6 +194,7 @@ describe('file', () =>
       cy.visit('/machines');
 
       cy.get('[data-e2e=remove-machine]').last().click();
+      cy.get('[data-e2e=remove-machine-confirm]').click();
 
       cy.wait(timings.medium);
 
@@ -199,6 +202,7 @@ describe('file', () =>
       cy.visit('/controllers');
 
       cy.get('[data-e2e=remove-controller]').last().click();
+      cy.get('[data-e2e=remove-controller-confirm]').click();
 
       cy.wait(timings.medium);
     });
@@ -210,13 +214,19 @@ describe('file', () =>
 
     //Remove the files
     cy.get('[data-e2e=remove-file]').last().click();
+    cy.get('[data-e2e=remove-file-confirm]').click();
+
     cy.get('[data-e2e=remove-file]').last().click();
+    cy.get('[data-e2e=remove-file-confirm]').click();
 
     cy.wait(timings.long);
 
     cy.visit('/trash');
 
     cy.get('[data-e2e=remove-file]').last().click();
+    cy.get('[data-e2e=remove-file-confirm]').click();
+
     cy.get('[data-e2e=remove-file]').last().click();
+    cy.get('[data-e2e=remove-file-confirm]').click();
   });
 });

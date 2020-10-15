@@ -1,8 +1,10 @@
 <template>
   <div>
-    <lightbox v-model="lightbox.visible">
+    <lightbox v-model="upsertLightbox.visible">
       <template v-slot:title>{{
-        lightbox.create ? "Create a new file" : "Edit " + lightbox.name
+        upsertLightbox.create
+          ? "Create a new file"
+          : "Edit " + upsertLightbox.name
       }}</template>
       <template v-slot:content>
         <v-form v-model="prechecks">
@@ -13,7 +15,7 @@
                 counter="30"
                 data-e2e="file-name"
                 label="Name"
-                v-model="lightbox.name"
+                v-model="upsertLightbox.name"
               />
             </v-list-item>
 
@@ -23,14 +25,14 @@
                 counter="1000"
                 data-e2e="file-description"
                 label="Description"
-                v-model="lightbox.description"
+                v-model="upsertLightbox.description"
               />
             </v-list-item>
 
-            <v-list-item v-if="lightbox.create">
+            <v-list-item v-if="upsertLightbox.create">
               <v-file-input
                 :rules="[rules.raw]"
-                @change="lightbox.raw = $event"
+                @change="upsertLightbox.raw = $event"
                 :accept="accepts"
                 data-e2e="file-raw"
                 label="File"
@@ -42,9 +44,11 @@
                   data-e2e="upsert-file"
                   :disabled="!prechecks"
                   @click="upsert()"
-                  >{{ lightbox.create ? "Create" : "Save" }}</v-btn
+                  >{{ upsertLightbox.create ? "Create" : "Save" }}</v-btn
                 >
-                <v-btn @click="lightbox.visible = false" data-e2e="close-file"
+                <v-btn
+                  @click="upsertLightbox.visible = false"
+                  data-e2e="close-file"
                   >Cancel</v-btn
                 >
               </v-btn-toggle>
@@ -53,19 +57,32 @@
         </v-form>
       </template>
     </lightbox>
-    <gallery @add="showLightbox()" :entities="files">
+
+    <lightbox v-model="removeLightbox.visible">
+      <template v-slot:title>Are you sure you want to remove {{ removeLightbox.name }}?</template>
+      <template v-slot:content>
+        <v-form>
+          <v-btn-toggle>
+            <v-btn @click="remove" color="error" data-e2e="remove-file-confirm">Remove</v-btn>
+            <v-btn @click="removeLightbox.visible = false">Cancel</v-btn>
+          </v-btn-toggle>
+        </v-form>
+      </template>
+    </lightbox>
+
+    <gallery @add="showUpsertLightbox()" :entities="files">
       <template v-slot:actions="props">
         <v-btn-toggle>
           <v-btn data-e2e="open-file" :to="`/file/${props.entity._id}`"
             >Open</v-btn
           >
-          <v-btn data-e2e="edit-file" @click="showLightbox(props.entity)"
+          <v-btn data-e2e="edit-file" @click="showUpsertLightbox(props.entity)"
             >Edit</v-btn
           >
           <v-btn
             data-e2e="remove-file"
             color="error"
-            @click="remove(props.entity)"
+            @click="showRemoveLightbox(props.entity)"
             >Remove</v-btn
           >
         </v-btn-toggle>
@@ -96,7 +113,12 @@ export default {
   },
   data: () => ({
     accepts,
-    lightbox: {
+    removeLightbox: {
+      id: null,
+      name: null,
+      visible: false
+    },
+    upsertLightbox: {
       create: false,
       name: null,
       description: null,
@@ -120,85 +142,95 @@ export default {
   },
   methods:
   {
-    //Show lightbox
-    showLightbox: function (file)
+    //Show remove lightbox
+    showRemoveLightbox: function (file)
     {
-      //Configure lightbox
+      this.removeLightbox.id = file._id;
+      this.removeLightbox.name = file.name;
+      this.removeLightbox.visible = true;
+    },
+    //Show upsert lightbox
+    showUpsertLightbox: function (file)
+    {
+      //Configure upsert lightbox
       if (file == null)
       {
-        this.lightbox._id = null;
-        this.lightbox.name = null;
-        this.lightbox.description = null;
-        this.lightbox.create = true;
+        this.upsertLightbox._id = null;
+        this.upsertLightbox.name = null;
+        this.upsertLightbox.description = null;
+        this.upsertLightbox.create = true;
       }
       else
       {
-        this.lightbox._id = file._id;
-        this.lightbox.name = file.name;
-        this.lightbox.description = file.description;
-        this.lightbox.create = false;
+        this.upsertLightbox._id = file._id;
+        this.upsertLightbox.name = file.name;
+        this.upsertLightbox.description = file.description;
+        this.upsertLightbox.create = false;
       }
 
-      //Show lightbox
-      this.lightbox.visible = true;
+      //Show upsert lightbox
+      this.upsertLightbox.visible = true;
     },
     //Upsert file
     upsert: async function ()
     {
       //Create
-      if (this.lightbox.create)
+      if (this.upsertLightbox.create)
       {
         //Get file extension
-        const extension = this.lightbox.raw.name.split('.').pop();
+        const extension = this.upsertLightbox.raw.name.split('.').pop();
 
         //Convert the file to a blob
-        const raw = await this.lightbox.raw.arrayBuffer();
+        const raw = await this.upsertLightbox.raw.arrayBuffer();
         const rawBlob = new Blob([raw]);
 
         //Update backend
-        const _id = await api.files.create(this.lightbox.name, this.lightbox.description, extension, rawBlob);
+        const _id = await api.files.create(this.upsertLightbox.name, this.upsertLightbox.description, extension, rawBlob);
 
         //Update frontend
-        this.files.push({_id, name: this.lightbox.name, description: this.lightbox.description});
+        this.files.push({_id, name: this.upsertLightbox.name, description: this.upsertLightbox.description});
       }
       //Edit
       else
       {
         //Find original file
-        const original = this.files.find(file => file._id == this.lightbox._id);
+        const original = this.files.find(file => file._id == this.upsertLightbox._id);
 
         //Calculate changes
         const changes = {};
         for (const [key, value] of Object.entries(original))
         {
-          if (this.lightbox[key] != value)
+          if (this.upsertLightbox[key] != value)
           {
             //Save change
-            changes[key] = this.lightbox[key];
+            changes[key] = this.upsertLightbox[key];
 
             //Update frontend
-            original[key] = this.lightbox[key];
+            original[key] = this.upsertLightbox[key];
           }
         }
 
         //Update backend
-        await api.files.update(changes, this.lightbox._id);
+        await api.files.update(changes, this.upsertLightbox._id);
       }
 
-      //Hide the lightbox
-      this.lightbox.visible = false;
+      //Hide the upsert lightbox
+      this.upsertLightbox.visible = false;
     },
     //Remove file
-    remove: function (file)
+    remove: async function ()
     {
-      api.files.remove(file._id).then(() =>
-      {
-        //Get index
-        const index = this.files.findIndex(item => item._id == file._id);
+      //Remove the file
+      await api.files.remove(this.removeLightbox.id);
 
-        //Remove file
-        this.files.splice(index, 1);
-      });
+      //Get index
+      const index = this.files.findIndex(item => item._id == this.removeLightbox.id);
+
+      //Remove file
+      this.files.splice(index, 1);
+
+      //Hide remove lightbox
+      this.removeLightbox.visible = false;
     }
   }
 };

@@ -186,10 +186,12 @@ describe('admin', () =>
       cy.count('[data-e2e=entity-name]').then(before =>
       {
         cy.get('[data-e2e=remove-account]').last().click();
+        cy.get('[data-e2e=remove-account-confirm]').click();
 
         cy.wait(timings.medium);
 
         cy.get('[data-e2e=remove-account]').last().click();
+        cy.get('[data-e2e=remove-account-confirm]').click();
 
         cy.wait(timings.medium);
 

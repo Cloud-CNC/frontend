@@ -1,9 +1,11 @@
 <template>
   <div>
-    <lightbox v-model="lightboxes.upsert.visible">
-      <template
-        v-slot:title
-      >{{lightboxes.upsert.create ? 'Create a new account' : 'Edit ' + lightboxes.upsert.username }}</template>
+    <lightbox v-model="upsertLightbox.visible">
+      <template v-slot:title>{{
+        upsertLightbox.create
+          ? "Create a new account"
+          : "Edit " + upsertLightbox.username
+      }}</template>
 
       <template v-slot:content>
         <v-form v-model="prechecks">
@@ -14,37 +16,41 @@
                 counter="30"
                 data-e2e="account-username"
                 label="Username"
-                v-model="lightboxes.upsert.username"
+                v-model="upsertLightbox.username"
               />
             </v-list-item>
 
             <v-list-item>
               <password
-                :placeholder="lightboxes.upsert.create ? undefined : '[unchanged]'"
+                :placeholder="upsertLightbox.create ? undefined : '[unchanged]'"
                 :rules="passwordRules"
                 autocomplete="new-password"
                 data-e2e="account-password"
-                v-model="lightboxes.upsert.password"
+                v-model="upsertLightbox.password"
               ></password>
             </v-list-item>
 
             <v-list-item>
-              <v-switch data-e2e="account-mfa" label="MFA" v-model="lightboxes.upsert.mfa"></v-switch>
+              <v-switch
+                data-e2e="account-mfa"
+                label="MFA"
+                v-model="upsertLightbox.mfa"
+              ></v-switch>
             </v-list-item>
 
             <v-list-item>
               <v-select
-                :items="lightboxes.upsert.roles"
+                :items="upsertLightbox.roles"
                 data-e2e="account-role"
                 label="Role"
-                v-model="lightboxes.upsert.role"
+                v-model="upsertLightbox.role"
               >
-                <template
-                  v-slot:item="role"
-                >{{role.item.charAt(0).toUpperCase() + role.item.substring(1)}}</template>
-                <template
-                  v-slot:selection="role"
-                >{{role.item.charAt(0).toUpperCase() + role.item.substring(1)}}</template>
+                <template v-slot:item="role">{{
+                  role.item.charAt(0).toUpperCase() + role.item.substring(1)
+                }}</template>
+                <template v-slot:selection="role">{{
+                  role.item.charAt(0).toUpperCase() + role.item.substring(1)
+                }}</template>
               </v-select>
             </v-list-item>
 
@@ -54,8 +60,13 @@
                   :disabled="!prechecks"
                   @click="upsert()"
                   data-e2e="upsert-account"
-                >{{ lightboxes.upsert.create ? 'Create' : 'Save' }}</v-btn>
-                <v-btn @click="lightboxes.upsert.visible = false" data-e2e="close-account">Cancel</v-btn>
+                  >{{ upsertLightbox.create ? "Create" : "Save" }}</v-btn
+                >
+                <v-btn
+                  @click="upsertLightbox.visible = false"
+                  data-e2e="close-account"
+                  >Cancel</v-btn
+                >
               </v-btn-toggle>
             </v-list-item>
           </v-list>
@@ -63,39 +74,74 @@
       </template>
     </lightbox>
 
-    <lightbox v-model="lightboxes.qr.visible">
+    <lightbox v-model="qrLightbox.visible">
       <template v-slot:title>MFA QR Code</template>
 
       <template v-slot:content>
         <v-list>
           <v-list-item>
-            <qr data-e2e="account-mfa-token" :text="lightboxes.qr.text"></qr>
+            <qr data-e2e="account-mfa-token" :text="qrLightbox.text"></qr>
           </v-list-item>
           <v-list-item>
-            <v-btn @click="lightboxes.qr.visible = false" data-e2e="close-account-mfa-token">Close</v-btn>
+            <v-btn
+              @click="qrLightbox.visible = false"
+              data-e2e="close-account-mfa-token"
+              >Close</v-btn
+            >
           </v-list-item>
         </v-list>
       </template>
     </lightbox>
 
-    <gallery @add="showLightbox()" :entities="accounts">
-      <template v-slot:name="props">{{props.entity.username}}</template>
+    <lightbox v-model="removeLightbox.visible">
+      <template v-slot:title>Are you sure you want to remove {{ removeLightbox.username }}?</template>
+
+      <template v-slot:content>
+        <v-form>
+          <v-btn-toggle>
+            <v-btn @click="remove" color="error" data-e2e="remove-account-confirm">Remove</v-btn>
+            <v-btn @click="removeLightbox.visible = false">Cancel</v-btn>
+          </v-btn-toggle>
+        </v-form>
+      </template>
+    </lightbox>
+
+    <gallery @add="showUpsertLightbox()" :entities="accounts">
+      <template v-slot:name="props">{{ props.entity.username }}</template>
 
       <template v-slot:description="props">
         <v-chip-group>
-          <v-chip>{{ props.entity.role.charAt(0).toUpperCase() + props.entity.role.substring(1) }}</v-chip>
+          <v-chip>{{
+            props.entity.role.charAt(0).toUpperCase() +
+            props.entity.role.substring(1)
+          }}</v-chip>
         </v-chip-group>
       </template>
 
       <template v-slot:actions="props">
         <v-btn-toggle>
-          <v-btn @click="impersonate(props.entity)" data-e2e="impersonate-account">Impersonate</v-btn>
-          <v-btn @click="showLightbox(props.entity)" data-e2e="edit-account">Edit</v-btn>
-          <v-btn color="error" @click="remove(props.entity)" data-e2e="remove-account">Remove</v-btn>
+          <v-btn
+            @click="impersonate(props.entity)"
+            data-e2e="impersonate-account"
+            >Impersonate</v-btn
+          >
+          <v-btn
+            @click="showUpsertLightbox(props.entity)"
+            data-e2e="edit-account"
+            >Edit</v-btn
+          >
+          <v-btn
+            color="error"
+            @click="showRemoveLightbox(props.entity)"
+            data-e2e="remove-account"
+            >Remove</v-btn
+          >
         </v-btn-toggle>
       </template>
 
-      <template v-slot:empty class="font-weight-light">No accounts available!</template>
+      <template v-slot:empty class="font-weight-light"
+        >No accounts available!</template
+      >
     </gallery>
   </div>
 </template>
@@ -119,21 +165,24 @@ export default {
   },
   data: () => ({
     accounts: [],
-    lightboxes: {
-      upsert: {
-        _id: null,
-        create: false,
-        mfa: false,
-        password: null,
-        role: null,
-        roles: ['error'],
-        username: null,
-        visible: false
-      },
-      qr: {
-        text: null,
-        visible: false
-      }
+    removeLightbox: {
+      id: null,
+      username: null,
+      visible: false
+    },
+    upsertLightbox: {
+      _id: null,
+      create: false,
+      mfa: false,
+      password: null,
+      role: null,
+      roles: ['error'],
+      username: null,
+      visible: false
+    },
+    qrLightbox: {
+      text: null,
+      visible: false
     },
     prechecks: false,
     rules: {
@@ -144,13 +193,13 @@ export default {
   computed: {
     passwordRules: function ()
     {
-      return this.lightboxes.upsert.create ? {
+      return this.upsertLightbox.create ? {
         required: value => value != null || 'Required',
         password: value => filters.password.test(value) || 'Invalid password',
       } : {
-        required: () => true,
-        password: value => value == null || value == '' || filters.password.test(value) || 'Invalid password',
-      };
+          required: () => true,
+          password: value => value == null || value == '' || filters.password.test(value) || 'Invalid password',
+        };
     }
   },
   created: function ()
@@ -161,93 +210,100 @@ export default {
     //Get roles
     api.accounts.roles().then(roles =>
     {
-      this.lightboxes.upsert.roles = roles;
+      this.upsertLightbox.roles = roles;
     });
   },
   methods: {
-    //Show lightbox
-    showLightbox: function (account)
+    //Show remove lightbox
+    showRemoveLightbox: function (account)
+    {
+      this.removeLightbox.id = account._id;
+      this.removeLightbox.username = account.username;
+      this.removeLightbox.visible = true;
+    },
+    //Show upsert lightbox
+    showUpsertLightbox: function (account)
     {
       //Configure lightbox
       if (account == null)
       {
-        this.lightboxes.upsert._id = null;
-        this.lightboxes.upsert.username = null;
-        this.lightboxes.upsert.password = null;
-        this.lightboxes.upsert.mfa = false;
-        this.lightboxes.upsert.role = this.lightboxes.upsert.roles[0];
-        this.lightboxes.upsert.create = true;
+        this.upsertLightbox._id = null;
+        this.upsertLightbox.username = null;
+        this.upsertLightbox.password = null;
+        this.upsertLightbox.mfa = false;
+        this.upsertLightbox.role = this.upsertLightbox.roles[0];
+        this.upsertLightbox.create = true;
       }
       else
       {
-        this.lightboxes.upsert._id = account._id;
-        this.lightboxes.upsert.username = account.username;
-        this.lightboxes.upsert.password = null;
-        this.lightboxes.upsert.mfa = account.mfa;
-        this.lightboxes.upsert.role = account.role;
-        this.lightboxes.upsert.create = false;
+        this.upsertLightbox._id = account._id;
+        this.upsertLightbox.username = account.username;
+        this.upsertLightbox.password = null;
+        this.upsertLightbox.mfa = account.mfa;
+        this.upsertLightbox.role = account.role;
+        this.upsertLightbox.create = false;
       }
 
       //Show lightbox
-      this.lightboxes.upsert.visible = true;
+      this.upsertLightbox.visible = true;
     },
     //Upsert account
     upsert: async function ()
     {
       //Create
-      if (this.lightboxes.upsert.create)
+      if (this.upsertLightbox.create)
       {
         //Update backend
-        const {_id, otpauth} = await api.accounts.create(this.lightboxes.upsert.role, this.lightboxes.upsert.username, this.lightboxes.upsert.password, this.lightboxes.upsert.mfa);
+        const {_id, otpauth} = await api.accounts.create(this.upsertLightbox.role, this.upsertLightbox.username, this.upsertLightbox.password, this.upsertLightbox.mfa);
 
         //Show otpauth URL if present
         if (otpauth != null)
         {
-          this.lightboxes.qr.text = otpauth;
-          this.lightboxes.qr.visible = true;
+          this.qrLightbox.text = otpauth;
+          this.qrLightbox.visible = true;
         }
 
         //Update frontend
-        this.accounts.push({_id, username: this.lightboxes.upsert.username, mfa: this.lightboxes.upsert.mfa, role: this.lightboxes.upsert.role});
+        this.accounts.push({_id, username: this.upsertLightbox.username, mfa: this.upsertLightbox.mfa, role: this.upsertLightbox.role});
       }
       //Edit
       else
       {
         //Find original account
-        const original = this.accounts.find(account => account._id == this.lightboxes.upsert._id);
+        const original = this.accounts.find(account => account._id == this.upsertLightbox._id);
 
         //Calculate changes
         const changes = {};
         for (const [key, value] of Object.entries(original))
         {
-          if (this.lightboxes.upsert[key] != value)
+          if (this.upsertLightbox[key] != value)
           {
             //Save change
-            changes[key] = this.lightboxes.upsert[key];
+            changes[key] = this.upsertLightbox[key];
 
             //Update frontend
-            original[key] = this.lightboxes.upsert[key];
+            original[key] = this.upsertLightbox[key];
           }
         }
 
         //Password
-        if (this.lightboxes.upsert.password != null && this.lightboxes.upsert.password != '')
+        if (this.upsertLightbox.password != null && this.upsertLightbox.password != '')
         {
-          changes.password = this.lightboxes.upsert.password;
+          changes.password = this.upsertLightbox.password;
         }
 
         //Update backend
-        const otpauth = await api.accounts.update(changes, this.lightboxes.upsert._id);
+        const otpauth = await api.accounts.update(changes, this.upsertLightbox._id);
 
         if (changes.mfa)
         {
-          this.lightboxes.qr.text = otpauth;
-          this.lightboxes.qr.visible = true;
+          this.qrLightbox.text = otpauth;
+          this.qrLightbox.visible = true;
         }
       }
 
-      //Hide the lightboxes.upsert
-      this.lightboxes.upsert.visible = false;
+      //Hide the upsertLightbox
+      this.upsertLightbox.visible = false;
     },
     //Impersonate account
     impersonate: function (account)
@@ -259,16 +315,19 @@ export default {
       api.accounts.impersonate.start(account._id, account.username);
     },
     //Remove account
-    remove: function (account)
+    remove: async function ()
     {
-      api.accounts.remove(account._id).then(() =>
-      {
-        //Get index
-        const index = this.accounts.findIndex(item => item._id == account._id);
+      //Remove the account
+      await api.accounts.remove(this.removeLightbox.id);
 
-        //Remove account
-        this.accounts.splice(index, 1);
-      });
+      //Get index
+      const index = this.accounts.findIndex(item => item._id == this.removeLightbox.id);
+
+      //Remove account
+      this.accounts.splice(index, 1);
+
+      //Hide remove lightbox
+      this.removeLightbox.visible = false;
     }
   }
 };

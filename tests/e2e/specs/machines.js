@@ -156,7 +156,7 @@ describe('machines', () =>
       cy.get('[data-e2e=control-machine]').last().click({
         force: true
       });
-      cy.get('[data-e2e=machine-controller]').next().should('be.visible');
+      cy.get('[data-e2e=machine-control-panel]').should('be.visible');
 
       cy.hasHeardMessage('[INVALID]', () =>
       {
@@ -169,7 +169,7 @@ describe('machines', () =>
       cy.get('[data-e2e=control-machine]').last().click({
         force: true
       });
-      cy.get('[data-e2e=machine-controller]').next().should('be.visible');
+      cy.get('[data-e2e=machine-control-panel]').should('be.visible');
 
       cy.hasHeardMessage('M112\n', () =>
       {
@@ -227,7 +227,7 @@ describe('machines', () =>
       cy.get('[data-e2e=control-machine]').last().click({
         force: true
       });
-      cy.get('[data-e2e=machine-controller]').next().should('be.visible');
+      cy.get('[data-e2e=machine-control-panel]').should('be.visible');
 
       const command = '[RAW COMMAND]';
       cy.hasHeardMessage(`${command}\n`, () =>
@@ -311,6 +311,7 @@ describe('machines', () =>
       cy.count('[data-e2e=entity-name]').then(before =>
       {
         cy.get('[data-e2e=remove-machine]').last().click();
+        cy.get('[data-e2e=remove-machine-confirm]').click();
         
         cy.wait(timings.medium);
 
@@ -324,5 +325,6 @@ describe('machines', () =>
     cy.visit('/controllers');
 
     cy.get('[data-e2e=remove-controller]').last().click();
+    cy.get('[data-e2e=remove-controller-confirm]').click();
   });
 });

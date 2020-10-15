@@ -66,6 +66,7 @@ describe('account', () =>
       cy.visit('/admin');
 
       cy.get('[data-e2e=remove-account]').last().click();
+      cy.get('[data-e2e=remove-account-confirm]').click();
     });
   });
 });

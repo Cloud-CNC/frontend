@@ -107,6 +107,7 @@ describe('general', () =>
       cy.visit('/machines');
 
       cy.get('[data-e2e=remove-machine]').last().click();
+      cy.get('[data-e2e=remove-machine-confirm]').click();
 
       cy.wait(timings.medium);
 
@@ -114,6 +115,7 @@ describe('general', () =>
       cy.visit('/controllers');
 
       cy.get('[data-e2e=remove-controller]').last().click();
+      cy.get('[data-e2e=remove-controller-confirm]').click();
 
       cy.wait(timings.medium);
     });

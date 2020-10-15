@@ -30,6 +30,7 @@ describe('trash', () =>
     cy.wait(timings.medium);
 
     cy.get('[data-e2e=remove-file]').last().click();
+    cy.get('[data-e2e=remove-file-confirm]').click();
 
     cy.wait(timings.medium);
   });
@@ -63,6 +64,7 @@ describe('trash', () =>
 
         //Reset for next test
         cy.get('[data-e2e=remove-file]').last().click();
+        cy.get('[data-e2e=remove-file-confirm]').click();
 
         cy.wait(timings.medium);
       });
@@ -75,6 +77,7 @@ describe('trash', () =>
     cy.count('[data-e2e=entity-name]').then(before =>
     {
       cy.get('[data-e2e=remove-file]').last().click();
+      cy.get('[data-e2e=remove-file-confirm]').click();
 
       cy.wait(timings.medium);
 

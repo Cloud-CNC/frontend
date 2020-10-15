@@ -1,9 +1,11 @@
 <template>
   <div>
-    <lightbox v-model="lightbox.visible">
-      <template
-        v-slot:title
-      >{{ lightbox.create ? 'Create a new controller' : 'Edit ' + lightbox.name }}</template>
+    <lightbox v-model="upsertLightbox.visible">
+      <template v-slot:title>{{
+        upsertLightbox.create
+          ? "Create a new controller"
+          : "Edit " + upsertLightbox.name
+      }}</template>
       <template v-slot:content>
         <v-form v-model="prechecks">
           <v-list>
@@ -13,7 +15,7 @@
                 counter="30"
                 data-e2e="controller-name"
                 label="Name"
-                v-model="lightbox.name"
+                v-model="upsertLightbox.name"
               />
             </v-list-item>
 
@@ -23,8 +25,13 @@
                   :disabled="!prechecks"
                   @click="upsert()"
                   data-e2e="upsert-controller"
-                >{{ lightbox.create ? 'Create' : 'Save' }}</v-btn>
-                <v-btn @click="lightbox.visible = false" data-e2e="close-controller">Cancel</v-btn>
+                  >{{ upsertLightbox.create ? "Create" : "Save" }}</v-btn
+                >
+                <v-btn
+                  @click="upsertLightbox.visible = false"
+                  data-e2e="close-controller"
+                  >Cancel</v-btn
+                >
               </v-btn-toggle>
             </v-list-item>
           </v-list>
@@ -32,20 +39,44 @@
       </template>
     </lightbox>
 
-    <gallery @add="showLightbox()" :entities="controllers">
+    <lightbox v-model="removeLightbox.visible">
+      <template v-slot:title>Are you sure you want to remove {{ removeLightbox.name }}?</template>
+      <template v-slot:content>
+        <v-form>
+          <v-btn-toggle>
+            <v-btn @click="remove" color="error" data-e2e="remove-controller-confirm">Remove</v-btn>
+            <v-btn @click="removeLightbox.visible = false">Cancel</v-btn>
+          </v-btn-toggle>
+        </v-form>
+      </template>
+    </lightbox>
+
+    <gallery @add="showDownloadLightbox()" :entities="controllers">
       <template v-slot:actions="props">
         <v-btn-toggle>
           <download
             :data="download(props.entity.name, props.entity._id)"
             :filename="`${props.entity.name}.txt`"
             data-e2e="download-controller-key"
-          >Download</download>
-          <v-btn @click="showLightbox(props.entity)" data-e2e="edit-controller">Edit</v-btn>
-          <v-btn color="error" @click="remove(props.entity)" data-e2e="remove-controller">Remove</v-btn>
+            >Download</download
+          >
+          <v-btn
+            @click="showDownloadLightbox(props.entity)"
+            data-e2e="edit-controller"
+            >Edit</v-btn
+          >
+          <v-btn
+            color="error"
+            @click="showRemoveLightbox(props.entity)"
+            data-e2e="remove-controller"
+            >Remove</v-btn
+          >
         </v-btn-toggle>
       </template>
 
-      <template v-slot:empty class="font-weight-light">No controllers available!</template>
+      <template v-slot:empty class="font-weight-light"
+        >No controllers available!</template
+      >
     </gallery>
   </div>
 </template>
@@ -65,7 +96,12 @@ export default {
     lightbox
   },
   data: () => ({
-    lightbox: {
+    removeLightbox: {
+      id: null,
+      name: null,
+      visible: false
+    },
+    upsertLightbox: {
       _id: null,
       name: null,
       visible: false,
@@ -96,75 +132,85 @@ export default {
 
       return `Name: ${name}\r\nID: ${_id}\r\nKey: ${key}`;
     },
-    //Show lightbox
-    showLightbox: function (controller)
+    //Show download lightbox
+    showDownloadLightbox: function (controller)
     {
       //Configure lightbox
       if (controller == null)
       {
-        this.lightbox._id = null;
-        this.lightbox.name = null;
-        this.lightbox.create = true;
+        this.upsertLightbox._id = null;
+        this.upsertLightbox.name = null;
+        this.upsertLightbox.create = true;
       }
       else
       {
-        this.lightbox._id = controller._id;
-        this.lightbox.name = controller.name;
-        this.lightbox.create = false;
+        this.upsertLightbox._id = controller._id;
+        this.upsertLightbox.name = controller.name;
+        this.upsertLightbox.create = false;
       }
 
-      //Show lightbox
-      this.lightbox.visible = true;
+      //Show upsert lightbox
+      this.upsertLightbox.visible = true;
+    },
+    //Show remove lightbox
+    showRemoveLightbox: function (controller)
+    {
+      this.removeLightbox.id = controller._id;
+      this.removeLightbox.name = controller.name;
+      this.removeLightbox.visible = true;
     },
     upsert: async function ()
     {
       //Create
-      if (this.lightbox.create)
+      if (this.upsertLightbox.create)
       {
         //Update backend
-        const _id = await api.controllers.create(this.lightbox.name);
+        const _id = await api.controllers.create(this.upsertLightbox.name);
 
         //Update frontend
-        this.controllers.push({_id, name: this.lightbox.name});
+        this.controllers.push({_id, name: this.upsertLightbox.name});
       }
       //Edit
       else
       {
         //Find original controller
-        const original = this.controllers.find(controller => controller._id == this.lightbox._id);
+        const original = this.controllers.find(controller => controller._id == this.upsertLightbox._id);
 
         //Calculate changes
         const changes = {};
         for (const [key, value] of Object.entries(original))
         {
-          if (this.lightbox[key] != value)
+          if (this.upsertLightbox[key] != value)
           {
             //Save change
-            changes[key] = this.lightbox[key];
+            changes[key] = this.upsertLightbox[key];
 
             //Update frontend
-            original[key] = this.lightbox[key];
+            original[key] = this.upsertLightbox[key];
           }
         }
 
         //Update backend
-        await api.controllers.update(changes, this.lightbox._id);
+        await api.controllers.update(changes, this.upsertLightbox._id);
       }
 
-      //Hide the lightbox
-      this.lightbox.visible = false;
+      //Hide the upsert lightbox
+      this.upsertLightbox.visible = false;
     },
-    //Remove machine
-    remove: function (machine)
+    //Remove controller
+    remove: async function ()
     {
-      api.controllers.remove(machine._id).then(() =>
-      {
-        //Get index
-        const index = this.controllers.findIndex(item => item._id == machine._id);
+      //Remove the controller
+      await api.controllers.remove(this.removeLightbox.id);
 
-        //Remove machine
-        this.controllers.splice(index, 1);
-      });
+      //Get index
+      const index = this.controllers.findIndex(item => item._id == this.removeLightbox.id);
+
+      //Remove controller
+      this.controllers.splice(index, 1);
+
+      //Hide remove lightbox
+      this.removeLightbox.visible = false;
     }
   }
 };
