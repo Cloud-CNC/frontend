@@ -7,11 +7,11 @@ import timings from '../utils/timings.js';
 
 //Files
 const gcode = 'G0 X0 Y0 Z0\nG0 X5 Y0 Z0\nG0 X5 Y5 Z0\nG0 X5 Y5 Z5\nG0 E1 X5 Y5 Z0\nG0 E2 X5 Y0 Z0\nG0 E3 X0 Y0 Z0';
-let stl;
+//let stl;
 
 describe('file', () => 
 {
-  before(() =>
+  /*before(() =>
   {
     //Load the files
     cy.task('readBinary', './tests/e2e/fixtures/cube.stl').then(file =>
@@ -19,7 +19,7 @@ describe('file', () =>
       //Convert to ArrayBuffer
       stl = new Uint8Array(JSON.parse(file)).buffer;
     });
-  });
+  });*/
 
   before(() =>
   {
