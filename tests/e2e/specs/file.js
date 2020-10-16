@@ -5,10 +5,21 @@
 //Imports
 import timings from '../utils/timings.js';
 
+//Files
+const gcode = 'G0 X0 Y0 Z0\nG0 X5 Y0 Z0\nG0 X5 Y5 Z0\nG0 X5 Y5 Z5\nG0 E1 X5 Y5 Z0\nG0 E2 X5 Y0 Z0\nG0 E3 X0 Y0 Z0';
+let stl;
+
 describe('file', () => 
 {
-  //Mock file
-  const raw = 'G0 X0 Y0 Z0\nG0 X5 Y0 Z0\nG0 X5 Y5 Z0\nG0 X5 Y5 Z5\nG0 E1 X5 Y5 Z0\nG0 E2 X5 Y0 Z0\nG0 E3 X0 Y0 Z0';
+  before(() =>
+  {
+    //Load the files
+    cy.task('readBinary', './tests/e2e/fixtures/cube.stl').then(file =>
+    {
+      //Convert to ArrayBuffer
+      stl = new Uint8Array(JSON.parse(file)).buffer;
+    });
+  });
 
   before(() =>
   {
@@ -17,9 +28,9 @@ describe('file', () =>
     //Create a file
     cy.get('[data-e2e=create]').click();
 
-    cy.get('[data-e2e=file-name]').clear().type('Benchy');
-    cy.get('[data-e2e=file-description]').clear().type('A 3D printer torture test.');
-    cy.upload('Benchy.gcode', raw, 'text/plain', '[data-e2e=file-raw]');
+    cy.get('[data-e2e=file-name]').clear().type('Cube');
+    cy.get('[data-e2e=file-description]').clear().type('A cube');
+    cy.upload('Cube.gcode', gcode, 'text/plain', '[data-e2e=file-raw]');
 
     cy.get('[data-e2e=upsert-file]').click();
 
@@ -122,7 +133,7 @@ describe('file', () =>
 
       cy.get('[data-e2e=execute-machine]').prev().should('have.text', 'Test Machine');
 
-      cy.hasHeardMessage(`M28\n${raw}M29\n`, () =>
+      cy.hasHeardMessage(`M28\n${gcode}M29\n`, () =>
       {
         cy.get('[data-e2e=confirm-execute]').click();
       });
