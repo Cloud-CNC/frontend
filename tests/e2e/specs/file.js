@@ -63,7 +63,7 @@ describe('file', () =>
 
       cy.wait(4 * timings.extraLong);
 
-      cy.get('[data-e2e=save-file-lightbox]').parent().parent().parent().parent().next().children().eq(0).should('be.visible');
+      cy.get('[data-e2e=save-file-lightbox]').parent().parent().parent().parent().next().next().children().eq(0).should('be.visible');
 
       cy.get('[data-e2e=save-file-name]').type('Benchy GCODE');
 
@@ -180,19 +180,6 @@ describe('file', () =>
     {
       cy.login();
 
-      cy.wait(timings.medium);
-
-      //Remove the file
-      cy.get('[data-e2e=remove-file]').last().click();
-      cy.get('[data-e2e=remove-file-confirm]').click();
-
-      cy.visit('/trash');
-
-      cy.wait(timings.medium);
-
-      cy.get('[data-e2e=remove-file]').last().click();
-      cy.get('[data-e2e=remove-file-confirm]').click();
-
       //Stop the mock controller
       cy.task('stop');
 
@@ -227,11 +214,17 @@ describe('file', () =>
     cy.get('[data-e2e=remove-file]').last().click();
     cy.get('[data-e2e=remove-file-confirm]').click();
 
+    cy.get('[data-e2e=remove-file]').last().click();
+    cy.get('[data-e2e=remove-file-confirm]').click();
+
     cy.wait(timings.long);
 
     cy.visit('/trash');
 
     cy.wait(timings.medium);
+
+    cy.get('[data-e2e=remove-file]').last().click();
+    cy.get('[data-e2e=remove-file-confirm]').click();
 
     cy.get('[data-e2e=remove-file]').last().click();
     cy.get('[data-e2e=remove-file-confirm]').click();
