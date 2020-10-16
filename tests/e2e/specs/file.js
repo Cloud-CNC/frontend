@@ -7,11 +7,11 @@ import timings from '../utils/timings.js';
 
 //Files
 const gcode = 'G0 X0 Y0 Z0\nG0 X5 Y0 Z0\nG0 X5 Y5 Z0\nG0 X5 Y5 Z5\nG0 E1 X5 Y5 Z0\nG0 E2 X5 Y0 Z0\nG0 E3 X0 Y0 Z0';
-let stl;
+//let stl;
 
 describe('file', () => 
 {
-  before(() =>
+  /*before(() =>
   {
     //Load the files
     cy.task('readBinary', './tests/e2e/fixtures/cube.stl').then(file =>
@@ -19,7 +19,7 @@ describe('file', () =>
       //Convert to ArrayBuffer
       stl = new Uint8Array(JSON.parse(file)).buffer;
     });
-  });
+  });*/
 
   before(() =>
   {
@@ -30,7 +30,7 @@ describe('file', () =>
 
     cy.get('[data-e2e=file-name]').clear().type('Cube');
     cy.get('[data-e2e=file-description]').clear().type('A cube');
-    cy.upload('Cube.stl', stl, 'model/stl', '[data-e2e=file-raw]');
+    cy.upload('Cube.gcode', gcode, 'text/plain', '[data-e2e=file-raw]');
 
     cy.get('[data-e2e=upsert-file]').click();
 
@@ -82,17 +82,6 @@ describe('file', () =>
     before(() =>
     {
       cy.login();
-
-      //Create the GCODE file
-      cy.get('[data-e2e=create]').click();
-  
-      cy.get('[data-e2e=file-name]').clear().type('Cube');
-      cy.get('[data-e2e=file-description]').clear().type('A cube');
-      cy.upload('Cube.gcode', gcode, 'text/plain', '[data-e2e=file-raw]');
-  
-      cy.get('[data-e2e=upsert-file]').click();
-  
-      cy.wait(timings.medium);
 
       //Create the controller and extract its key
       cy.visit('/controllers');
@@ -207,25 +196,11 @@ describe('file', () =>
     cy.get('[data-e2e=remove-file]').last().click();
     cy.get('[data-e2e=remove-file-confirm]').click();
 
-    cy.get('[data-e2e=remove-file]').last().click();
-    cy.get('[data-e2e=remove-file-confirm]').click();
-
-    //cy.get('[data-e2e=remove-file]').last().click();
-    //cy.get('[data-e2e=remove-file-confirm]').click();
-
-    cy.wait(timings.medium);
+    cy.wait(timings.long);
 
     cy.visit('/trash');
 
     cy.get('[data-e2e=remove-file]').last().click();
     cy.get('[data-e2e=remove-file-confirm]').click();
-
-    cy.get('[data-e2e=remove-file]').last().click();
-    cy.get('[data-e2e=remove-file-confirm]').click();
-
-    //cy.get('[data-e2e=remove-file]').last().click();
-    //cy.get('[data-e2e=remove-file-confirm]').click();
-
-    cy.wait(timings.medium);
   });
 });
