@@ -203,27 +203,41 @@ describe('file', () =>
   {
     cy.login();
 
+    cy.wait(timings.medium);
+
     //Remove the file
     cy.get('[data-e2e=remove-file]').last().click();
     cy.get('[data-e2e=remove-file-confirm]').click();
 
-    cy.get('[data-e2e=remove-file]').last().click();
-    cy.get('[data-e2e=remove-file-confirm]').click();
+    cy.wait(timings.short);
 
     cy.get('[data-e2e=remove-file]').last().click();
     cy.get('[data-e2e=remove-file-confirm]').click();
 
-    cy.wait(timings.long);
+    cy.wait(timings.short);
+
+    cy.get('[data-e2e=remove-file]').last().click();
+    cy.get('[data-e2e=remove-file-confirm]').click();
+
+    cy.wait(timings.medium);
 
     cy.visit('/trash');
 
-    cy.get('[data-e2e=remove-file]').last().click();
-    cy.get('[data-e2e=remove-file-confirm]').click();
+    cy.wait(timings.medium);
 
     cy.get('[data-e2e=remove-file]').last().click();
     cy.get('[data-e2e=remove-file-confirm]').click();
 
+    cy.wait(timings.short);
+
     cy.get('[data-e2e=remove-file]').last().click();
     cy.get('[data-e2e=remove-file-confirm]').click();
+
+    cy.wait(timings.short);
+
+    cy.get('[data-e2e=remove-file]').last().click();
+    cy.get('[data-e2e=remove-file-confirm]').click();
+
+    cy.wait(timings.medium);
   });
 });
