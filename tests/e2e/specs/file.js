@@ -50,7 +50,7 @@ describe('file', () =>
     cy.get('[data-e2e=file-viewer]').should('be.visible');
   });
 
-  it('will slice a file and redirect', () =>
+  /*it('will slice a file and redirect', () =>
   {
     cy.login();
 
@@ -72,7 +72,7 @@ describe('file', () =>
       cy.url().should('match', /^https:\/\/127\.0\.0\.1:8443\/file\/[0-9a-f]{24}$/);
       cy.url().should('not.equal', previousURL);
     });
-  });
+  });*/
 
   describe('execute a file', () =>
   {
