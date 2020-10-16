@@ -26,16 +26,16 @@ describe('files', () =>
       cy.get('[data-e2e=file-description]').type('+'.repeat(1001), {
         delay: 0
       });
-      cy.upload('Benchy.x', '', 'text/plain', '[data-e2e=file-raw]');
+      cy.upload('Cube.x', '', 'text/plain', '[data-e2e=file-raw]');
 
       cy.invalid('[data-e2e=file-name]');
       cy.invalid('[data-e2e=file-description]');
       cy.invalid('[data-e2e=file-raw');
       cy.get('[data-e2e=upsert-file]').should('be.disabled');
 
-      cy.get('[data-e2e=file-name]').clear().type('Benchy');
+      cy.get('[data-e2e=file-name]').clear().type('Cube');
       cy.get('[data-e2e=file-description]').clear().type('A 3D printer torture test.');
-      cy.upload('Benchy.gcode', raw, 'text/plain', '[data-e2e=file-raw]');
+      cy.upload('Cube.gcode', raw, 'text/plain', '[data-e2e=file-raw]');
 
       cy.valid('[data-e2e=file-name]');
       cy.valid('[data-e2e=file-description]');
@@ -50,9 +50,9 @@ describe('files', () =>
       {
         cy.get('[data-e2e=create]').click();
 
-        cy.get('[data-e2e=file-name]').clear().type('Benchy');
+        cy.get('[data-e2e=file-name]').clear().type('Cube');
         cy.get('[data-e2e=file-description]').clear().type('A 3D printer torture test.');
-        cy.upload('Benchy.gcode', raw, 'text/plain', '[data-e2e=file-raw]');
+        cy.upload('Cube.gcode', raw, 'text/plain', '[data-e2e=file-raw]');
 
         cy.valid('[data-e2e=upsert-file]');
         cy.get('[data-e2e=upsert-file]').click();
@@ -85,7 +85,7 @@ describe('files', () =>
       cy.invalid('[data-e2e=file-name]');
       cy.invalid('[data-e2e=file-description]');
 
-      cy.get('[data-e2e=file-name]').clear().type('Benchy [Edit]');
+      cy.get('[data-e2e=file-name]').clear().type('Cube [Edit]');
       cy.get('[data-e2e=file-description]').clear().type('A 3D printer torture test. Edit: Did absolutely nothing different, just wanted to test this.');
 
       cy.valid('[data-e2e=file-name]');
@@ -94,7 +94,7 @@ describe('files', () =>
 
     it('will edit a file', () =>
     {
-      const name = 'Benchy [Edit]';
+      const name = 'Cube [Edit]';
       const description = 'A 3D printer torture test. Edit: Did absolutely nothing different, just wanted to test this.';
 
       cy.get('[data-e2e=edit-file]').last().click();

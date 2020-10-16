@@ -14,7 +14,7 @@ describe('file', () =>
   before(() =>
   {
     //Load the files
-    cy.task('readBinary', './tests/e2e/fixtures/benchy.stl').then(file =>
+    cy.task('readBinary', './tests/e2e/fixtures/cube.stl').then(file =>
     {
       //Convert to ArrayBuffer
       stl = new Uint8Array(JSON.parse(file)).buffer;
@@ -28,9 +28,9 @@ describe('file', () =>
     //Create a file
     cy.get('[data-e2e=create]').click();
 
-    cy.get('[data-e2e=file-name]').clear().type('Benchy');
-    cy.get('[data-e2e=file-description]').clear().type('A 3D printer torture test.');
-    cy.upload('Benchy.stl', stl, 'model/stl', '[data-e2e=file-raw]');
+    cy.get('[data-e2e=file-name]').clear().type('Cube');
+    cy.get('[data-e2e=file-description]').clear().type('A cube');
+    cy.upload('Cube.stl', stl, 'model/stl', '[data-e2e=file-raw]');
 
     cy.get('[data-e2e=upsert-file]').click();
 
@@ -61,13 +61,13 @@ describe('file', () =>
     {
       cy.get('[data-e2e=slice-file]').click();
 
-      cy.wait(4 * timings.extraLong);
+      cy.wait(timings.extraLong);
 
       cy.get('[data-e2e=save-file-lightbox]').parent().parent().parent().parent().next().next().children().eq(0).should('be.visible');
 
-      cy.get('[data-e2e=save-file-name]').type('Benchy GCODE');
+      cy.get('[data-e2e=save-file-name]').type('Cube GCODE');
 
-      cy.get('[data-e2e=save-file-description]').type('A Benchy sliced via Cura WASM');
+      cy.get('[data-e2e=save-file-description]').type('A cube sliced via Cura WASM');
 
       cy.get('[data-e2e=save-file]').click();
 
@@ -88,9 +88,9 @@ describe('file', () =>
       //Create a file
       cy.get('[data-e2e=create]').click();
 
-      cy.get('[data-e2e=file-name]').clear().type('Benchy');
-      cy.get('[data-e2e=file-description]').clear().type('A 3D printer torture test.');
-      cy.upload('Benchy.gcode', gcode, 'text/plain', '[data-e2e=file-raw]');
+      cy.get('[data-e2e=file-name]').clear().type('Cube GCODE 2');
+      cy.get('[data-e2e=file-description]').clear().type('A cube');
+      cy.upload('Cube.gcode', gcode, 'text/plain', '[data-e2e=file-raw]');
 
       cy.get('[data-e2e=upsert-file]').click();
 
