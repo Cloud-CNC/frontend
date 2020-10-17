@@ -20,7 +20,7 @@ module.exports = {
       //Read
       const buffer = fs.readFileSync(path);
 
-      const hash = crypto.createHash('sha256').update(buffer).digest('base64');
+      const hash = crypto.createHash('sha256').update(buffer).digest('hex');
 
       //Convert to JSON
       const json = JSON.stringify(Array.from(buffer));
