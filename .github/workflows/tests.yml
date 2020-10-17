@@ -99,7 +99,5 @@ jobs:
         name: Archive E2E videos
         if: ${{ always() }}
         with:
-          name: videos
-          path: |
-            ./frontend/tests/e2e/logs/
-            ./frontend/tests/e2e/videos/
+          name: e2e-videos
+          path: ./frontend/tests/e2e/videos/

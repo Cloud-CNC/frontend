@@ -10,7 +10,6 @@
 // const webpack = require('@cypress/webpack-preprocessor')
 
 //Imports
-const {resolve} = require('path');
 const account = require('./account');
 const file = require('./file');
 const ipc = require('./ipc');
@@ -23,12 +22,7 @@ module.exports = (on, config) =>
   on('file:preprocessor', require('@cypress/code-coverage/use-babelrc'));
 
   //Terminal report
-  terminalReport(on, {
-    outputRoot: resolve('./tests/e2e/logs/'),
-    outputTarget: {
-      'out.txt': 'txt'
-    }
-  });
+  terminalReport(on);
 
   //Tasks
   on('task', {
