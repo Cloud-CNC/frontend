@@ -5,6 +5,10 @@
 //Commands
 import './commands';
 
+//Terminal report
+import terminalReport from 'cypress-terminal-report/src/installLogsCollector';
+terminalReport();
+
 //Code coverage
 import '@cypress/code-coverage/support';
 

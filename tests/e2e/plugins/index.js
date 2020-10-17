@@ -10,15 +10,25 @@
 // const webpack = require('@cypress/webpack-preprocessor')
 
 //Imports
+const {resolve} = require('path');
 const account = require('./account');
 const file = require('./file');
 const ipc = require('./ipc');
+const terminalReport = require('cypress-terminal-report/src/installLogsPrinter');
 
 module.exports = (on, config) => 
 {
   //Coverage
   require('@cypress/code-coverage/task')(on, config);
   on('file:preprocessor', require('@cypress/code-coverage/use-babelrc'));
+
+  //Terminal report
+  terminalReport(on, {
+    outputRoot: resolve('./tests/e2e/logs/'),
+    outputTarget: {
+      'out.txt': 'txt'
+    }
+  });
 
   //Tasks
   on('task', {

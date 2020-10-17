@@ -3,9 +3,10 @@ node_modules
 /dist
 
 # Cypress
-tests/e2e/screenshots/*
-tests/e2e/videos/*
-tests/e2e/reports/*
+tests/e2e/logs
+tests/e2e/screenshots
+tests/e2e/videos
+tests/e2e/reports
 
 # local env files
 .env.local
