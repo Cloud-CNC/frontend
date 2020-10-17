@@ -97,6 +97,7 @@ jobs:
       #Archive E2E videos
       - uses: actions/upload-artifact@v2
         name: Archive E2E videos
+        if: ${{ always() }}
         with:
           name: videos
           path: tests/e2e/videos/
