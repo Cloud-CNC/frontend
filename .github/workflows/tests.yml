@@ -93,3 +93,10 @@ jobs:
           CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_REPORTER_ID }}
         with:
           coverageCommand: sudo npm run coverage --prefix frontend
+
+      #Archive E2E videos
+      - uses: actions/upload-artifact@v2
+        name: Archive E2E videos
+        with:
+          name: videos
+          path: tests/e2e/videos/
