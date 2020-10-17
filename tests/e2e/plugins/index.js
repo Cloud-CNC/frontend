@@ -10,7 +10,6 @@
 // const webpack = require('@cypress/webpack-preprocessor')
 
 //Imports
-const {resolve} = require('path');
 const account = require('./account');
 const file = require('./file');
 const ipc = require('./ipc');
@@ -24,12 +23,7 @@ module.exports = (on, config) =>
 
   //Terminal report
   terminalReport(on, {
-    printLogsToConsole: 'never',
-    printLogsToFile: 'always',
-    outputRoot: resolve('./tests/e2e/logs/'),
-    outputTarget: {
-      'out.txt': 'txt'
-    }
+    printLogsToConsole: 'always'
   });
 
   //Tasks
