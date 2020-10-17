@@ -100,4 +100,4 @@ jobs:
         if: ${{ always() }}
         with:
           name: videos
-          path: tests/e2e/videos/
+          path: ./frontend/tests/e2e/videos/
