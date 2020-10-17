@@ -3,7 +3,6 @@
  */
 
 //Imports
-const crypto = require('crypto');
 const fs = require('fs');
 
 //Exports
@@ -17,15 +16,13 @@ module.exports = {
 
     if (exists)
     {
+      console.log(`[readBinary] The path ${path} exists, reading as binary file.`);
+
       //Read
       const buffer = fs.readFileSync(path);
 
-      const hash = crypto.createHash('sha256').update(buffer).digest('hex');
-
       //Convert to JSON
       const json = JSON.stringify(Array.from(buffer));
-
-      console.log(`[readBinary] Read ${path} as a binary file, hash: ${hash}`);
 
       return json;
     }

@@ -17,6 +17,8 @@ describe('file', () =>
     {
       //Convert to ArrayBuffer
       stl = new Uint8Array(JSON.parse(file)).buffer;
+
+      console.log(stl);
     });
   });
 
@@ -47,7 +49,7 @@ describe('file', () =>
     {
       cy.get('[data-e2e=slice-file]').click();
 
-      cy.wait(timings.long);
+      cy.wait(timings.extraLong);
 
       cy.get('[data-e2e=save-file-name]').type('Benchy GCODE');
 
@@ -66,11 +68,13 @@ describe('file', () =>
 
     //Remove the files
     cy.get('[data-e2e=remove-file]').last().click();
+    cy.wait(timings.medium);
     cy.get('[data-e2e=remove-file-confirm]').click();
 
     cy.wait(timings.short);
 
     cy.get('[data-e2e=remove-file]').last().click();
+    cy.wait(timings.medium);
     cy.get('[data-e2e=remove-file-confirm]').click();
 
     cy.wait(timings.long);
@@ -78,11 +82,13 @@ describe('file', () =>
     cy.visit('/trash');
 
     cy.get('[data-e2e=remove-file]').last().click();
+    cy.wait(timings.medium);
     cy.get('[data-e2e=remove-file-confirm]').click();
 
     cy.wait(timings.short);
 
     cy.get('[data-e2e=remove-file]').last().click();
+    cy.wait(timings.medium);
     cy.get('[data-e2e=remove-file-confirm]').click();
   });
 });
