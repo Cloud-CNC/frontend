@@ -17,15 +17,6 @@ describe('file', () =>
     {
       //Convert to ArrayBuffer
       stl = new Uint8Array(JSON.parse(file)).buffer;
-
-      //Hash
-      crypto.subtle.digest('SHA-256', stl).then(hashBuffer =>
-      {
-        const array = Array.from(new Uint8Array(hashBuffer));
-        const hex = array.map(byte => byte.toString(16).padStart(2, '0')).join('').toUpperCase();
-
-        console.log(`Cube hash: ${hex} (SHA256) Cube length: ${stl.byteLength}`);
-      });
     });
   });
 

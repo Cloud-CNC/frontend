@@ -22,9 +22,7 @@ module.exports = (on, config) =>
   on('file:preprocessor', require('@cypress/code-coverage/use-babelrc'));
 
   //Terminal report
-  terminalReport(on, {
-    printLogsToConsole: 'always'
-  });
+  terminalReport(on);
 
   //Tasks
   on('task', {
