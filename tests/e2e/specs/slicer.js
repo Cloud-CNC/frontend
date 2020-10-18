@@ -13,17 +13,16 @@ describe('file', () =>
   before(() =>
   {
     //Load the files
-    cy.task('readBinary', './tests/e2e/fixtures/cube.stl').then(() =>
+    cy.task('readBinary', './tests/e2e/fixtures/cube.stl').then(file =>
     {
-      //Sanity checking (Always a bad day when you have to do this)
-      throw new Error('Cypress better error out!!!');
+      //throw new Error('Cypress better error out!!!');
 
-      /*console.log(`STL Raw: ${file.length > 100 ? file.substring(0, 100) : file}`);
+      console.log(`STL Raw: ${file.length > 100 ? file.substring(0, 100) : file}`);
 
       //Convert to ArrayBuffer
       stl = new Uint8Array(JSON.parse(file)).buffer;
 
-      console.log(`STL ArrayBuffer: ${stl}`);*/
+      console.log(`STL ArrayBuffer: ${stl}`);
     });
   });
 
