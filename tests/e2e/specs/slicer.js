@@ -15,10 +15,12 @@ describe('file', () =>
     //Load the files
     cy.task('readBinary', './tests/e2e/fixtures/cube.stl').then(file =>
     {
+      console.log(`STL Raw: ${file.length > 100 ? file.substring(0, 100) : file}`);
+
       //Convert to ArrayBuffer
       stl = new Uint8Array(JSON.parse(file)).buffer;
 
-      console.log('STL', stl);
+      console.log(`STL ArrayBuffer: ${stl}`);
     });
   });
 
