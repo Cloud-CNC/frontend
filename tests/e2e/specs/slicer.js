@@ -15,17 +15,8 @@ describe('file', () =>
     //Load the files
     cy.task('readBinary', './tests/e2e/fixtures/cube.stl').then(file =>
     {
-      let msg = '';
-
-      msg += `STL Raw: ${file.length > 100 ? file.substring(0, 100) : file}`;
-
       //Convert to ArrayBuffer
       stl = new Uint8Array(JSON.parse(file)).buffer;
-
-      msg += `STL ArrayBuffer: ${stl.byteLength > 100 ? stl.slice(0, 100) : stl}`;
-
-      //console.log++ :)
-      throw new Error(msg);
     });
   });
 
@@ -43,6 +34,9 @@ describe('file', () =>
     cy.get('[data-e2e=upsert-file]').click();
 
     cy.wait(timings.medium);
+
+    //console.log++
+    throw new Error(JSON.stringify(Array.from(new Uint8Array(stl))));
   });
 
   it('will slice a file and redirect', () =>
