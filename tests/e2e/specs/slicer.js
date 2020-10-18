@@ -18,7 +18,7 @@ describe('file', () =>
       //Convert to ArrayBuffer
       stl = new Uint8Array(JSON.parse(file)).buffer;
 
-      console.log(stl);
+      console.log('STL', stl);
     });
   });
 

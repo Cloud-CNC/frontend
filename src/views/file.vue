@@ -273,8 +273,7 @@ export default {
     {
       //Create the slicer
       const slicer = new CuraWASM({
-        transfer: false,
-        verbose: true
+        transfer: false
       });
 
       slicer.on('progress', progress =>
