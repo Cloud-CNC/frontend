@@ -285,7 +285,7 @@ export default {
       this.progress.value = 0;
       this.progress.visible = true;
 
-      console.log('Raw file', this.file);
+      console.log('Raw file', JSON.stringify(Array.from(this.file.raw)));
 
       //Slice
       this.file.raw = await slicer.slice(this.file.raw, this.file.extension);
