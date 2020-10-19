@@ -34,9 +34,6 @@ describe('file', () =>
     cy.get('[data-e2e=upsert-file]').click();
 
     cy.wait(timings.medium);
-
-    //console.log++
-    throw new Error(JSON.stringify(Array.from(new Uint8Array(stl))));
   });
 
   it('will slice a file and redirect', () =>
