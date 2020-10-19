@@ -232,6 +232,8 @@ export default {
         //Get the raw file
         api.files.raw(this.$route.params.id).then(raw =>
         {
+          console.log('Raw file', raw);
+
           this.file.raw = raw;
         });
       }
@@ -285,7 +287,7 @@ export default {
       this.progress.value = 0;
       this.progress.visible = true;
 
-      console.log('Raw file', JSON.stringify(Array.from(new Uint8Array(this.file.raw))));
+      console.log(`Raw file length: ${this.file.raw.byteLength}`);
 
       //Slice
       this.file.raw = await slicer.slice(this.file.raw, this.file.extension);
