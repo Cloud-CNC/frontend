@@ -33,8 +33,6 @@ describe('file', () =>
     cy.get('[data-e2e=upsert-file]').click();
 
     cy.wait(timings.medium);
-
-    throw new Error(stl);
   });
 
   it('will slice a file and redirect', () =>
