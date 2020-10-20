@@ -41,6 +41,8 @@ describe('file', () =>
 
     cy.get('[data-e2e=open-file]').last().click();
 
+    cy.wait(timings.medium);
+
     //Ger previous URL
     cy.url().then(previousURL =>
     {
