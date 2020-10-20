@@ -15,8 +15,7 @@ describe('file', () =>
     //Load the files
     cy.fixture('./cube.stl', 'utf8').then(file =>
     {
-      //Convert to Uint8Array
-      stl = new TextEncoder().encode(file);
+      stl = file;
     });
   });
 
