@@ -5,11 +5,21 @@
 //Imports
 import timings from '../utils/timings.js';
 
-//File
-const file = 'G0 X0 Y0 Z0\nG0 X5 Y0 Z0\nG0 X5 Y5 Z0\nG0 X5 Y5 Z5\nG0 E1 X5 Y5 Z0\nG0 E2 X5 Y0 Z0\nG0 E3 X0 Y0 Z0';
+//Files
+const gcode = 'G0 X0 Y0 Z0\nG0 X5 Y0 Z0\nG0 X5 Y5 Z0\nG0 X5 Y5 Z5\nG0 E1 X5 Y5 Z0\nG0 E2 X5 Y0 Z0\nG0 E3 X0 Y0 Z0';
+let stl;
 
 describe('file', () => 
 {
+  before(() =>
+  {
+    //Load the STL
+    cy.fixture('./cube.stl', 'utf8').then(file =>
+    {
+      stl = file;
+    });
+  });
+
   before(() =>
   {
     cy.login();
@@ -19,7 +29,7 @@ describe('file', () =>
 
     cy.get('[data-e2e=file-name]').clear().type('Thing');
     cy.get('[data-e2e=file-description]').clear().type('A thingy');
-    cy.upload('Thing.gcode', file, 'text/plain', '[data-e2e=file-raw]');
+    cy.upload('Thing.gcode', gcode, 'text/plain', '[data-e2e=file-raw]');
 
     cy.get('[data-e2e=upsert-file]').click();
 
@@ -37,6 +47,79 @@ describe('file', () =>
     cy.wait(timings.extraLong);
 
     cy.get('[data-e2e=file-viewer]').should('be.visible');
+  });
+
+  describe('will slice a file and redirect', () =>
+  {
+    before(() =>
+    {
+      cy.login();
+  
+      //Create a file
+      cy.get('[data-e2e=create]').click();
+  
+      cy.get('[data-e2e=file-name]').clear().type('Thing');
+      cy.get('[data-e2e=file-description]').clear().type('A thingy');
+      cy.upload('Cube.stl', stl, 'model/stl', '[data-e2e=file-raw]');
+  
+      cy.get('[data-e2e=upsert-file]').click();
+  
+      cy.wait(timings.medium);
+    });
+
+    it('will slice a file and redirect', () =>
+    {
+      cy.login();
+
+      cy.get('[data-e2e=open-file]').last().click();
+
+      cy.wait(timings.medium);
+
+      //Ger previous URL
+      cy.url().then(previousURL =>
+      {
+        cy.get('[data-e2e=slice-file]').click();
+
+        cy.wait(timings.extraLong);
+
+        cy.get('[data-e2e=save-file-name]').type('Benchy GCODE');
+
+        cy.get('[data-e2e=save-file-description]').type('A Benchy sliced via Cura WASM');
+
+        cy.get('[data-e2e=save-file]').click();
+
+        cy.url().should('match', /^https:\/\/127\.0\.0\.1:8443\/file\/[0-9a-f]{24}$/);
+        cy.url().should('not.equal', previousURL);
+      });
+    });
+
+    after(() =>
+    {
+      cy.visit('/files');
+  
+      //Remove the files
+      cy.get('[data-e2e=remove-file]').last().click();
+      cy.get('[data-e2e=remove-file-confirm]').click();
+  
+      cy.wait(timings.short);
+  
+      cy.get('[data-e2e=remove-file]').last().click();
+      cy.get('[data-e2e=remove-file-confirm]').click();
+  
+      cy.wait(timings.long);
+  
+      cy.visit('/trash');
+  
+      cy.get('[data-e2e=remove-file]').last().click();
+      cy.get('[data-e2e=remove-file-confirm]').click();
+  
+      cy.wait(timings.short);
+  
+      cy.get('[data-e2e=remove-file]').last().click();
+      cy.get('[data-e2e=remove-file-confirm]').click();
+
+      cy.wait(timings.long);
+    });
   });
 
   describe('execute a file', () =>
@@ -122,7 +205,7 @@ describe('file', () =>
 
       cy.get('[data-e2e=execute-machine]').prev().should('have.text', 'Test Machine');
 
-      cy.hasHeardMessage(`M28\n${file}M29\n`, () =>
+      cy.hasHeardMessage(`M28\n${gcode}M29\n`, () =>
       {
         cy.get('[data-e2e=confirm-execute]').click();
       });
