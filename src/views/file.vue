@@ -235,7 +235,7 @@ export default {
         api.files.raw(this.$route.params.id).then(raw =>
         {
           console.log('[A] Raw file', JSON.stringify(Array.from(new Uint8Array(raw))));
-          console.log(`[A] Raw file length: ${this.file.raw.byteLength}`);
+          console.log(`[A] Raw file length: ${raw}`);
 
           this.file.raw = raw;
         });
@@ -290,7 +290,7 @@ export default {
       this.progress.value = 0;
       this.progress.visible = true;
 
-      console.log('[B] Raw file', JSON.stringify(Array.from(new Uint8Array(raw))));
+      console.log('[B] Raw file', JSON.stringify(Array.from(new Uint8Array(this.file.raw))));
       console.log(`[B] Raw file length: ${this.file.raw.byteLength}`);
 
       //Slice
