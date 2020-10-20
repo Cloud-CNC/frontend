@@ -11,7 +11,6 @@
 
 //Imports
 const account = require('./account');
-const file = require('./file');
 const ipc = require('./ipc');
 const terminalReport = require('cypress-terminal-report/src/installLogsPrinter');
 
@@ -27,7 +26,6 @@ module.exports = (on, config) =>
   //Tasks
   on('task', {
     ...account,
-    ...file,
     ...ipc
   });
 

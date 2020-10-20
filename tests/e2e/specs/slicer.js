@@ -13,10 +13,10 @@ describe('file', () =>
   before(() =>
   {
     //Load the files
-    cy.task('readBinary', './tests/e2e/fixtures/cube.stl').then(file =>
+    cy.fixture('./cube.stl', 'utf8').then(file =>
     {
-      //Convert to ArrayBuffer
-      stl = new Uint8Array(JSON.parse(file));
+      //Convert to Uint8Array
+      stl = new TextEncoder().encode(file);
     });
   });
 
