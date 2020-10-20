@@ -73,7 +73,9 @@
 
             <v-list-item>
               <v-btn-toggle>
-                <v-btn @click="save" data-e2e="save-file" :disabled="!prechecks">Save</v-btn>
+                <v-btn @click="save" data-e2e="save-file" :disabled="!prechecks"
+                  >Save</v-btn
+                >
                 <v-btn @click="saveLightbox.visible = false">Cancel</v-btn>
               </v-btn-toggle>
             </v-list-item>
@@ -232,7 +234,8 @@ export default {
         //Get the raw file
         api.files.raw(this.$route.params.id).then(raw =>
         {
-          console.log('Raw file', raw);
+          console.log('[A] Raw file', JSON.stringify(Array.from(new Uint8Array(raw))));
+          console.log(`[A] Raw file length: ${this.file.raw.byteLength}`);
 
           this.file.raw = raw;
         });
@@ -287,7 +290,8 @@ export default {
       this.progress.value = 0;
       this.progress.visible = true;
 
-      console.log(`Raw file length: ${this.file.raw.byteLength}`);
+      console.log('[B] Raw file', JSON.stringify(Array.from(new Uint8Array(raw))));
+      console.log(`[B] Raw file length: ${this.file.raw.byteLength}`);
 
       //Slice
       this.file.raw = await slicer.slice(this.file.raw, this.file.extension);
