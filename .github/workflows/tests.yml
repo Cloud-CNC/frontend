@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [13, 14]
+        node: [14, 15]
     steps:
       - uses: actions/setup-node@v1
         with:
@@ -20,7 +20,6 @@ jobs:
       - name: Clone frontend
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.ref }}
           repository: 'cloud-cnc/frontend'
           path: frontend
 
@@ -43,7 +42,6 @@ jobs:
       - name: Clone controller
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.ref }}
           repository: 'cloud-cnc/controller'
           path: controller
 
@@ -64,7 +62,6 @@ jobs:
       - name: Clone core
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.ref }}
           repository: 'cloud-cnc/core'
           path: core
 
@@ -87,7 +84,7 @@ jobs:
         run: openssl rand -out secret.txt -base64 512
 
       #Run unit + E2E tests
-      - uses: paambaati/codeclimate-action@v2.6.0
+      - uses: paambaati/codeclimate-action@v2.7.4
         name: Run Tests
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_REPORTER_ID }}
