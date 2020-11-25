@@ -90,6 +90,7 @@ jobs:
           CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_REPORTER_ID }}
         with:
           coverageCommand: sudo npm run coverage --prefix frontend
+          coverageLocations: ./frontend/coverage
 
       #Archive E2E videos
       - uses: actions/upload-artifact@v2
