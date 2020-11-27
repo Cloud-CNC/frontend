@@ -92,10 +92,10 @@ jobs:
           coverageCommand: sudo npm run coverage --prefix frontend
           coverageLocations: ./frontend/coverage
 
-      #Archive E2E videos
+      #Archive E2E videos on fail
       - uses: actions/upload-artifact@v2
         name: Archive E2E videos
-        if: ${{ always() }}
+        if: ${{ failure() }}
         with:
           name: e2e-videos
           path: ./frontend/tests/e2e/videos/
