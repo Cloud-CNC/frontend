@@ -17,9 +17,7 @@ const coreProcess = childProcess.spawn('node', [
 ], {
   cwd: coreLocation,
   env: {
-    DB: 'cloud-cnc-e2e',
-    LOG: 'console',
-    NODE_ENV: 'development',
+    NODE_ENV: 'e2e',
     PATH: process.env.PATH
   }
 });

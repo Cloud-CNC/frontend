@@ -3,8 +3,10 @@
  */
 
 //Imports
-const IpcHelper = require('../utils/ipc');
+const {tmpNameSync} = require('tmp');
+const {writeFileSync} = require('fs');
 const childProcess = require('child_process');
+const IpcHelper = require('../utils/ipc');
 const nodeConfig = require('config');
 const path = require('path');
 
@@ -28,6 +30,10 @@ module.exports = {
     const controllerLocation = path.resolve(nodeConfig.get('controller.location'));
     console.log(`Starting the mock controller located at: ${controllerLocation}`);
 
+    //Save controller key to a temporary directory
+    const keyFileName = tmpNameSync();
+    writeFileSync(keyFileName, controllerKey);
+
     //Start the controller
     controllerProcess = childProcess.spawn('node', [
       'index.js'
@@ -35,11 +41,9 @@ module.exports = {
       cwd: controllerLocation,
       env: {
         CONTROLLER_ID: controllerID,
-        CONTROLLER_KEY: controllerKey,
-        E2E: 'true',
-        LOG: 'console',
+        CONTROLLER_KEY: keyFileName,
         MACHINE_ID: machineID,
-        NODE_ENV: 'development',
+        NODE_ENV: 'e2e',
         PATH: process.env.PATH
       }
     });
