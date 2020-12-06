@@ -185,6 +185,7 @@ describe('file', () =>
         const element = elements[elements.length - 1];
         const parsed = /Machine ID:\s+([0-9a-f]+)\s+Controller Name:\s+.+\s+Controller ID:\s+([0-9a-f]+)/.exec(element.innerText);
 
+        //Start the controller in E2E mode
         cy.task('start', {
           controllerID: parsed[2],
           controllerKey,
@@ -205,7 +206,7 @@ describe('file', () =>
 
       cy.get('[data-e2e=execute-machine]').prev().should('have.text', 'Test Machine');
 
-      cy.hasHeardMessage(`M28\n${gcode}M29\n`, () =>
+      cy.hasHeardMessage(gcode, () =>
       {
         cy.get('[data-e2e=confirm-execute]').click();
       });
