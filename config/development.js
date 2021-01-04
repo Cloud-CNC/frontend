@@ -11,7 +11,10 @@ module.exports = {
     location: '../core',
 
     //URL of the Cloud CNC core (Use an empty string to make the API address relative to the website address)
-    url: 'https://127.0.0.1'
+    url: 'https://127.0.0.1',
+
+    //Wether or not the core uses a self signed certificate (Trust certificate for things like websockets)
+    selfSigned: true,
   },
 
   //Mock controller options

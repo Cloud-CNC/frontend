@@ -3,8 +3,43 @@
  */
 
 //Imports
+import {io} from 'socket.io-client';
 import router from '@/router/index';
 import store from '@/store/index';
+
+//Instance variables
+let socket;
+
+/**
+ * Connect to the Core over Web sockets
+ */
+const connect = () =>
+{
+  //Connect to the Core
+  socket = io(process.env.config.core.url, {
+    withCredentials: true,
+    rejectUnauthorized: !process.env.config.core.selfSigned
+  });
+
+  socket.on('connect_error', ({error}) =>
+  {
+    //Display popup
+    store.commit('showError', error);
+
+    //Log
+    console.error(`Socket API Connection Error: ${error.name} (${error.description})`);
+  });
+
+  //Register error message handler
+  socket.on('error', ({error}) =>
+  {
+    //Display popup
+    store.commit('showError', error);
+
+    //Log
+    console.error(`Socket API Error: ${error.name} (${error.description})`);
+  });
+};
 
 /**
  * API Wrapper
@@ -146,7 +181,7 @@ export default {
     {
       return (await rest('POST', '/files', {
         name,
-        description : description == null ? '' : description,
+        description: description == null ? '' : description,
         extension,
         raw
       }, {
@@ -312,16 +347,92 @@ export default {
      */
     async command(id, command)
     {
-      return rest('POST', `/machines/${id}/command`, {command});
+      //If not connected, connect
+      if (socket == null)
+      {
+        await connect();
+      }
+
+      //Send the message
+      socket.emit('command', {
+        payload: command,
+        machine: id
+      });
     },
     /**
      * Start executing the specified file on the specified machine
      * @param {String} id 
      * @param {String} file 
      */
-    execute(id, file)
+    async execute(id, file)
     {
-      return rest('POST', `/machines/${id}/execute`, {file});
+      //If not connected, connect
+      if (socket == null)
+      {
+        await connect();
+      }
+
+      //Send the message
+      socket.emit('execute', {
+        file,
+        machine: id
+      });
+    },
+    /**
+     * Start streaming output from a machine
+     * @param {String} id The machine ID
+     */
+    async startOutput(id)
+    {
+      //If not connected, connect
+      if (socket == null)
+      {
+        await connect();
+      }
+
+      //Send the message
+      socket.emit('startOutput', {
+        machine: id
+      });
+    },
+    /**
+     * Stop streaming output from a machine
+     * @param {String} id The machine ID
+     */
+    async stopOutput(id)
+    {
+      //If not connected, connect
+      if (socket == null)
+      {
+        await connect();
+      }
+
+      //Send the message
+      socket.emit('stopOutput', {
+        machine: id
+      });
+    },
+    /**
+     * Listen to a machine's output
+     * @param {String} id
+     * @param {Function} cb The callback to be executed when new output is generated (Executed multiple times)
+     */
+    async listen(id, cb)
+    {
+      //If not connected, connect
+      if (socket == null)
+      {
+        await connect();
+      }
+
+      //Listen to the socket for the specified machine's output
+      socket.on('output', data =>
+      {
+        if (data.machine == id)
+        {
+          cb(data.payload);
+        }
+      });
     },
     /**
      * Update a machine
@@ -419,7 +530,9 @@ async function rest(method, url, body, options)
     //Display popup
     store.commit('showError', out.error);
 
-    console.error(`API Error: ${out.error.name} (${out.error.description})`);
+    //Log
+    console.error(`HTTP API Error: ${out.error.name} (${out.error.description})`);
+
     return Promise.reject(out.error);
   }
   else

@@ -17,7 +17,6 @@
           "length": Number,
           "width": Number,
           "height": Number,
-          "__v": Number
         }
       -->
     </v-row>
@@ -31,16 +30,23 @@
                 @click="send('M112\n')"
                 color="red"
                 data-e2e="emergency-stop-machine"
-              >Emergency Stop</v-btn>
+                >Emergency Stop</v-btn
+              >
             </v-list-item>
             <v-list-item>
-              <v-btn block @click="send('M0\n')" data-e2e="stop-machine">Stop</v-btn>
+              <v-btn block @click="send('M0\n')" data-e2e="stop-machine"
+                >Stop</v-btn
+              >
             </v-list-item>
             <v-list-item>
-              <v-btn block @click="send('M81\n')" data-e2e="turn-off-machine">Off</v-btn>
+              <v-btn block @click="send('M81\n')" data-e2e="turn-off-machine"
+                >Off</v-btn
+              >
             </v-list-item>
             <v-list-item>
-              <v-btn block @click="send('G28\n')" data-e2e="home-machine">Home</v-btn>
+              <v-btn block @click="send('G28\n')" data-e2e="home-machine"
+                >Home</v-btn
+              >
             </v-list-item>
           </v-list>
         </v-row>
@@ -55,10 +61,20 @@
           >
             <v-icon>keyboard_arrow_up</v-icon>
           </v-btn>
-          <v-btn icon @click="send('G91\nG0 X10\n')" data-e2e="jog-machine-left" id="jog-left">
+          <v-btn
+            icon
+            @click="send('G91\nG0 X10\n')"
+            data-e2e="jog-machine-left"
+            id="jog-left"
+          >
             <v-icon>keyboard_arrow_left</v-icon>
           </v-btn>
-          <v-btn icon @click="send('G91\nG0 X-10\n')" data-e2e="jog-machine-right" id="jog-right">
+          <v-btn
+            icon
+            @click="send('G91\nG0 X-10\n')"
+            data-e2e="jog-machine-right"
+            id="jog-right"
+          >
             <v-icon>keyboard_arrow_right</v-icon>
           </v-btn>
           <v-btn
@@ -69,21 +85,62 @@
           >
             <v-icon>keyboard_arrow_down</v-icon>
           </v-btn>
-          <v-btn icon @click="send('G91\nG0 Z10\n')" data-e2e="jog-machine-up" id="jog-up">
+          <v-btn
+            icon
+            @click="send('G91\nG0 Z10\n')"
+            data-e2e="jog-machine-up"
+            id="jog-up"
+          >
             <v-icon>keyboard_arrow_up</v-icon>
           </v-btn>
-          <v-btn icon @click="send('G91\nG0 Z-10\n')" data-e2e="jog-machine-down" id="jog-down">
+          <v-btn
+            icon
+            @click="send('G91\nG0 Z-10\n')"
+            data-e2e="jog-machine-down"
+            id="jog-down"
+          >
             <v-icon>keyboard_arrow_down</v-icon>
           </v-btn>
         </div>
       </v-col>
     </v-row>
     <v-row>
-      <v-text-field data-e2e="machine-command" label="Command" v-model="command">
+      <v-text-field
+        data-e2e="machine-command"
+        label="Command"
+        v-model="command"
+      >
         <template v-slot:append-outer>
-          <v-btn @click="send(`${command}\n`)" color="primary" data-e2e="send-machine-command">Send</v-btn>
+          <v-btn
+            @click="send(`${command}\n`)"
+            color="primary"
+            data-e2e="send-machine-command"
+            >Send</v-btn
+          >
         </template>
       </v-text-field>
+    </v-row>
+    <v-row>
+      <v-col class="no-pad">
+        <v-card class="no-pad" elevation="0">
+          <v-card-title class="no-pad">Log</v-card-title>
+          <v-card-text class="no-pad" id="log" ref="log">
+            <pre>{{ log }}</pre>
+          </v-card-text>
+          <v-card-actions class="actions no-pad">
+            <v-btn @click="() => (log = '')">
+              <v-icon>clear</v-icon>
+              Clear
+            </v-btn>
+            <v-switch
+              v-model="autoscroll"
+              :label="autoscroll ? 'Auto scroll' : 'Manual scroll'"
+            >
+              <v-icon>arrow_downward</v-icon>
+            </v-switch>
+          </v-card-actions>
+        </v-card>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -92,9 +149,14 @@
 //Imports
 import api from '@/assets/api';
 
+//Max log length
+const maxLog = 10000;
+
 export default {
   data: () => ({
+    autoscroll: true,
     command: null,
+    log: ''
   }),
   props: {
     machine: {
@@ -105,6 +167,37 @@ export default {
       required: true,
       type: Boolean,
     },
+  },
+  created: function ()
+  {
+    //Listen to output
+    api.machines.startOutput(this.machine._id);
+    api.machines.listen(this.machine._id, output =>
+    {
+      //Append output
+      this.log += output;
+
+      //Trim output to prevent massive memory usage
+      if (this.log.length > maxLog)
+      {
+        this.log = '[Output trimmed]\r\n' + this.log.substring(this.log.length - maxLog);
+      }
+
+      //Auto scroll
+      if (this.autoscroll)
+      {
+        //Update on next tick (Let Vue add text and make the DOM bigger before attempting to auto scroll)
+        this.$nextTick(() =>
+        {
+          this.$refs.log.scrollTop = this.$refs.log.scrollHeight;
+        });
+      }
+    });
+  },
+  destroyed: function ()
+  {
+    //Cleanup
+    api.machines.stopOutput(this.machine._id);
   },
   methods: {
     send(data) 
@@ -155,5 +248,19 @@ export default {
 
 #jog-down {
   grid-area: down;
+}
+
+#log {
+  font-family: monospace;
+  max-height: 400px;
+  overflow: auto;
+}
+
+.actions {
+  justify-content: space-evenly;
+}
+
+.no-pad {
+  padding: 0;
 }
 </style>

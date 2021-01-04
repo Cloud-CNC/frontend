@@ -70,10 +70,6 @@ jobs:
           repository: 'cloud-cnc/core'
           path: core
 
-      - name: Create files directory
-        working-directory: ./core
-        run: mkdir files
-
       - name: Install core modules
         working-directory: ./core
         run: sudo npm ci --unsafe-perm=true --allow-root
@@ -83,10 +79,6 @@ jobs:
         run: |
           ln -s ../../cert.cer ./
           ln -s ../../key.pem ./
-
-      - name: Generate Salt
-        working-directory: ./core/config
-        run: openssl rand -out secret.txt -base64 512
 
       #Run unit + E2E tests
       - uses: paambaati/codeclimate-action@v2.7.4

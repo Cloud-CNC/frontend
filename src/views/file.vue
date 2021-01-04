@@ -139,9 +139,9 @@
 
 <script>
 //Imports
+import {CuraWASM} from 'cura-wasm';
 import {FileFormats} from 'unified-3d-loader';
 import api from '../assets/api';
-import CuraWASM from 'cura-wasm';
 import filters from '../assets/filters';
 import lightbox from '../components/lightbox';
 import router from '@/router/index';
