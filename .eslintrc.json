@@ -1,0 +1,50 @@
+  {
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": 10,
+      "sourceType": "module"
+    },
+    "extends": [
+      "@nuxtjs/eslint-config-typescript",
+      "plugin:wdio/recommended",
+      "plugin:nuxt/recommended",
+    ],
+    "plugins": [
+      "eslint-plugin-import",
+      "wdio"
+    ],
+    "rules": {
+      "arrow-parens": [
+        "warn",
+        "as-needed"
+      ],
+      "brace-style": [
+        "warn",
+        "allman"
+      ],
+      "camelcase": [
+        "warn",
+        {
+          "properties": "always"
+        }
+      ],
+      "curly": "warn",
+      "no-var": "error",
+      "no-extra-semi": "error",
+      "object-curly-spacing": "warn",
+      "semi": "error",
+      "import/order": [
+        "error"
+      ],
+      "quotes": [
+        "warn",
+        "single"
+      ],
+      "quote-props": [
+        "warn",
+        "consistent-as-needed"
+      ],
+      "space-in-parens": "warn",
+      "prefer-const": "warn"
+    }
+  }
