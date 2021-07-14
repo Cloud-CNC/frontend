@@ -17,10 +17,10 @@
           v-for="route in $router.options.routes"
         >
           <v-list-item-action>
-            <v-icon>mdi-home</v-icon>
+            <v-icon>{{ route.meta.icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title v-text="route.name" />
+            <v-list-item-title v-text="route.meta.name" />
           </v-list-item-content>
         </v-list-item>
       </v-list>

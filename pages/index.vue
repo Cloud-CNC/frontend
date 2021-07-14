@@ -83,7 +83,7 @@ import Vue from 'vue'
 //Export
 export default Vue.extend({
   meta: {
-    icon: 'home',
+    icon: 'mdi-home',
     name: 'Home'
   }
 });

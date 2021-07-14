@@ -25,7 +25,7 @@ import Vue from 'vue'
 //Export
 export default Vue.extend({
   meta: {
-    icon: 'inspire',
+    icon: 'mdi-head-lightbulb',
     name: 'Inspire'
   }
 });

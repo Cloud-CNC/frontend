@@ -45,7 +45,8 @@ export default {
 
   //Modules
   modules: [
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa',
+    '~/modules/meta.ts'
   ],
 
   //PWA module configuration
