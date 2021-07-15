@@ -3,8 +3,9 @@
  */
 
 //Imports
-import {NuxtConfig} from '@nuxt/types';
 import colors from 'vuetify/src/util/colors';
+import {NuxtConfig} from '@nuxt/types';
+import {version} from './package.json';
 
 //Export
 export default {
@@ -26,12 +27,19 @@ export default {
     ]
   },
 
+  //Environment variables
+  env: {
+    version
+  },
+
   //Global CSS
   css: [
+    '@/assets/global.css'
   ],
 
   //Pre-render plugins
   plugins: [
+    '~/plugins/persisted-state.client.ts'
   ],
 
   //Auto import components
@@ -46,7 +54,7 @@ export default {
   //Modules
   modules: [
     '@nuxtjs/pwa',
-    '~/modules/meta.ts'
+    '@/modules/meta.ts'
   ],
 
   //PWA module configuration
@@ -58,13 +66,21 @@ export default {
 
   //Vuetify module configuration
   vuetify: {
-    customVariables: ['~/assets/variables.scss'],
     theme: {
       dark: true,
       themes: {
         dark: {
+          primary: colors.lightBlue.darken3,
+          secondary: colors.blue.darken3,
+          accent: colors.blueGrey.darken3,
+          info: colors.lightBlue.accent2,
+          warning: colors.amber.base,
+          error: colors.red.base,
+          success: colors.green.darken1
+        },
+        light: {
           primary: colors.lightBlue.lighten2,
-          secondary: colors.deepOrange.lighten2,
+          secondary: colors.blue.lighten1,
           accent: colors.blueGrey.darken3,
           info: colors.lightBlue.accent2,
           warning: colors.amber.base,

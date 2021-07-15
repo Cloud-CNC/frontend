@@ -26,7 +26,8 @@ import Vue from 'vue'
 export default Vue.extend({
   meta: {
     icon: 'mdi-head-lightbulb',
-    name: 'Inspire'
+    name: 'Inspire',
+    index: 11
   }
 });
 </script>

@@ -84,7 +84,8 @@ import Vue from 'vue'
 export default Vue.extend({
   meta: {
     icon: 'mdi-home',
-    name: 'Home'
+    name: 'Home',
+    index: 10
   }
 });
 </script>
