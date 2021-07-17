@@ -77,7 +77,7 @@ const extendRoutes = (routes: NuxtRouteConfig[]) =>
       }
     }
   }
-}
+};
 
 //Module
 const module: Module = function ()

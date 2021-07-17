@@ -54,7 +54,8 @@ export default {
   //Modules
   modules: [
     '@nuxtjs/pwa',
-    '@/modules/meta.ts'
+    '@/modules/meta.ts',
+    '@/modules/plugin/index.ts'
   ],
 
   //PWA module configuration
@@ -67,11 +68,10 @@ export default {
   //Vuetify module configuration
   vuetify: {
     theme: {
-      dark: true,
       themes: {
         dark: {
-          primary: colors.lightBlue.darken3,
-          secondary: colors.blue.darken3,
+          primary: colors.lightBlue.lighten1,
+          secondary: colors.blue.lighten1,
           accent: colors.blueGrey.darken3,
           info: colors.lightBlue.accent2,
           warning: colors.amber.base,
@@ -79,7 +79,7 @@ export default {
           success: colors.green.darken1
         },
         light: {
-          primary: colors.lightBlue.lighten2,
+          primary: colors.lightBlue.lighten1,
           secondary: colors.blue.lighten1,
           accent: colors.blueGrey.darken3,
           info: colors.lightBlue.accent2,

@@ -26,9 +26,12 @@ export const mutations: MutationTree<RootState> = {
 
 //Actions
 export const actions: ActionTree<RootState, RootState> = {
-  //Update vuetify
-  synchronizeTheme(ctx)
+  invertTheme(ctx)
   {
+    //Update the state
+    ctx.commit('invertTheme');
+
+    //Update Vuetify
     this.app.vuetify!.framework.theme.dark = ctx.state.dark;
   }
 };

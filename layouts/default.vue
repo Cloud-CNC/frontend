@@ -53,14 +53,12 @@
 
       <v-spacer />
 
-      <v-btn @click="invertTheme" icon>
+      <v-btn @click="() => $store.dispatch('invertTheme')" icon>
         <v-icon>mdi-invert-colors</v-icon>
       </v-btn>
     </v-app-bar>
     <v-main>
-      <v-container>
-        <Nuxt />
-      </v-container>
+      <Nuxt />
     </v-main>
   </v-app>
 </template>
@@ -73,24 +71,32 @@ import Vue from 'vue';
 export default Vue.extend({
   computed: {
     /**
+     * Get all active routes
+     * 
      * Sort routes by:
      * 1. Routes with a lower index
      * 2. Routes with a defined index
      * 
-     * Routes without an index are treated as having the highest possible integer in EMCAScript
+     * Routes without an index are treated as having an index of 1,000,000
      */
     routes()
     {
-      return this.$router.options.routes?.sort((a, b) =>
+      return this.$router.options.routes
+        ?.filter(route => !route.meta?.hidden)
+        .sort((a, b) =>
       {
         //Get route indexes
-        const aIndex = a.meta != null && typeof a.meta.index == 'number' ? a.meta.index as number : Number.MAX_SAFE_INTEGER;
-        const bIndex = b.meta != null && typeof b.meta.index == 'number' ? b.meta.index as number : Number.MAX_SAFE_INTEGER;
+        const aIndex = a.meta != null && typeof a.meta.index == 'number' ? a.meta.index as number : 1_000_000;
+        const bIndex = b.meta != null && typeof b.meta.index == 'number' ? b.meta.index as number : 1_000_000;
 
         //Compare
         return aIndex - bIndex;
       });
     },
+
+    /**
+     * Get the current frontend version
+     */
     version()
     {
       return this.$nuxt.context.env.version;
@@ -99,21 +105,11 @@ export default Vue.extend({
   beforeCreate()
   {
     //Synchronize the theme
-    this.$store.dispatch('synchronizeTheme');
+    this.$vuetify.theme.dark = this.$store.state.dark;
   },
   data: () => ({
     drawer: false
-  }),
-  methods: {
-    invertTheme()
-    {
-      //Update the state
-      this.$store.commit('invertTheme');
-
-      //Synchronize the theme
-      this.$store.dispatch('synchronizeTheme');
-    }
-  }
+  })
 });
 </script>
 

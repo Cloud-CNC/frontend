@@ -1,44 +1,37 @@
 <template>
-  <v-app>
-    <h1 v-if="error.statusCode === 404">
-      {{ pageNotFound }}
-    </h1>
-    <h1 v-else>
-      {{ otherError }}
-    </h1>
-    <NuxtLink to="/">
-      Home page
-    </NuxtLink>
-  </v-app>
+  <app-center>
+    <h1 class="font-weight-light text-h1">Error {{ error.statusCode }}</h1>
+    <h4 class="font-weight-light text-h4">{{ error.message }}</h4>
+    <v-btn class="home" color="primary" to="/"
+      ><v-icon left>mdi-home</v-icon> Take me home</v-btn
+    >
+  </app-center>
 </template>
 
-<script>
-export default {
-  layout: 'empty',
+<script lang="ts">
+//Imports
+import Vue, {PropType} from 'vue';
+import {NuxtError} from '@nuxt/types';
+
+//Export
+export default Vue.extend({
+  head()
+  {
+    return {
+      title: `Error ${this.error.statusCode}`
+    };
+  },
   props: {
     error: {
-      type: Object,
-      default: null
-    }
-  },
-  data () {
-    return {
-      pageNotFound: '404 Not Found',
-      otherError: 'An error occurred'
-    }
-  },
-  head () {
-    const title =
-      this.error.statusCode === 404 ? this.pageNotFound : this.otherError
-    return {
-      title
+      type: Object as PropType<NuxtError>,
+      required: true
     }
   }
-}
+});
 </script>
 
 <style scoped>
-h1 {
-  font-size: 20px;
+.home {
+  margin-top: 10px;
 }
 </style>
