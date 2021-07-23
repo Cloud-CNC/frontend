@@ -2,16 +2,21 @@
  * @fileoverview Cloud CNC frontend-plugin support module
  * 
  * Based on https://vueschool.io/articles/vuejs-tutorials/build-file-based-theme-inheritance-module-in-nuxt
+ * and https://github.com/nuxt/components/blob/main/src/loader.ts
  */
 
 //Imports
+import extractMeta from '../../lib/extract-meta';
 import getPlugins from './get-plugins';
 import jiti from 'jiti';
-import {Module} from '@nuxt/types';
+import {Module, NuxtConfig} from '@nuxt/types';
 import {base, directories, merged, watchSource} from './utils';
-import {copy, ensureDir, emptyDir, existsSync} from 'fs-extra';
-import {merge} from 'lodash';
 import {resolve} from 'path';
+import {copy, ensureDir, emptyDir, existsSync, readdir} from 'fs-extra';
+import {merge} from 'lodash';
+
+//Portal targets
+const portalTargets = new Map<string, string>();
 
 //Module
 const module: Module = async function ()
@@ -45,10 +50,39 @@ const module: Module = async function ()
       //Compute config path
       const configPath = resolve(plugin.directory, plugin.config!);
 
-      //Execute and load the config
-      const config = jiti(plugin.directory, {
+      //Execute and load the config file
+      const file = jiti(plugin.directory, {
         requireCache: false
       })(configPath);
+
+      //Get the config
+      const config = (file.default || file) as NuxtConfig;
+
+      //Add modules
+      if (config.modules != null)
+      {
+        for (const module of config.modules)
+        {
+          //Module paths
+          if (typeof module == 'string')
+          {
+            this.addModule(resolve(plugin.directory, module));
+          }
+          //Module paths with config
+          else if (Array.isArray(module) && module.length == 2 && typeof module[0] == 'string')
+          {
+            this.addModule([
+              resolve(plugin.directory, module[0]),
+              module[1]
+            ]);
+          }
+          //Inline modules
+          else
+          {
+            this.addModule(module);
+          }
+        }
+      }
 
       //Merge options into Nuxt options
       this.options = merge(this.options, typeof config.default == 'object' ? config.default : config);
@@ -60,23 +94,23 @@ const module: Module = async function ()
     //Merge source code if specified
     if (plugin.source != null)
     {
-      //Compute source path
-      const sourcePath = resolve(plugin.directory, plugin.source);
+      //Compute source directory path
+      const sourceDirectory = resolve(plugin.directory, plugin.source);
 
       //Copy plugin source code
       for (const directory of directories)
       {
         //Copy if exists
-        if (existsSync(resolve(sourcePath, directory)))
+        if (existsSync(resolve(sourceDirectory, directory)))
         {
-          await copy(resolve(sourcePath, directory), resolve(merged, directory));
+          await copy(resolve(sourceDirectory, directory), resolve(merged, directory));
         }
       }
 
       //Watch for changes in development
       if (process.env.NODE_ENV == 'development')
       {
-        watchSource(sourcePath);
+        watchSource(sourceDirectory);
       }
     }
   }
@@ -86,6 +120,72 @@ const module: Module = async function ()
   {
     watchSource(base);
   }
+
+  //Update portal targets
+  if (existsSync(resolve(merged, 'portals')))
+  {
+    //Iterate over portals
+    for (const portal of await readdir(resolve(merged, 'portals')))
+    {
+      //Compute the portal path
+      const portalPath = resolve(merged, 'portals', portal);
+
+      //Extract the portal metadata
+      const meta = await extractMeta(portalPath);
+
+      if (meta.target == null)
+      {
+        throw new Error('[Plugin Module] Portal metadata lacked target property!');
+      }
+
+      //Compute the target path
+      const targetPath = resolve(merged, meta.target);
+
+      //Update targets
+      portalTargets.set(targetPath, portalPath);
+    }
+  }
+
+  //Extend the Webpack build
+  this.extendBuild(config =>
+  {
+    //Find the Vue SFC rule
+    const vueRule = config.module?.rules.find(rule => rule.test?.toString().includes('.vue'));
+
+    //Ensure the rule is defined
+    if (vueRule == null)
+    {
+      throw new Error('[Plugin Module] No Vue SFC Webpack rule!');
+    }
+
+    //Move the loader to the modifiers
+    if (vueRule.use == null)
+    {
+      vueRule.use = [{
+        loader: vueRule.loader!.toString(),
+        options: vueRule.options
+      }];
+
+      //Delete the loader
+      delete vueRule.loader;
+      delete vueRule.options;
+    }
+    //Convert to an array
+    else if (!Array.isArray(vueRule.use))
+    {
+      vueRule.use = [
+        vueRule.use as any
+      ];
+    }
+
+    //Add a loader
+    vueRule.use!.unshift({
+      loader: resolve(__dirname, 'loader'),
+      options: {
+        targets: portalTargets
+      }
+    });
+  });
 };
 
 //Export

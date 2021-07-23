@@ -3,7 +3,6 @@
  */
 
 //Imports
-import {parse} from '@pobedit/package-name-parser';
 import {readPackageSync} from 'read-pkg';
 import {resolve} from 'path';
 
@@ -48,17 +47,8 @@ export default (root: string) =>
   //Filter dependencies
   const plugins = Object.entries(rootPkg.dependencies).flatMap(([key, value]) =>
   {
-    //Parse the dependency
-    const {name, scope} = parse(key);
-
     //Filter non-plugins
-    if (
-      name.startsWith('cloud-cnc-plugin-') ||
-      (
-        scope == 'cloud-cnc' &&
-        name.startsWith('plugin-')
-      )
-    )
+    if (key.startsWith('@cloud-cnc/plugin-') || key.startsWith('cloud-cnc-plugin-'))
     {
       //Compute the dependency directory
       const directory = value.startsWith('file:') ? resolve(root, value.substring(5)) : resolve(root, 'node_modules', key);

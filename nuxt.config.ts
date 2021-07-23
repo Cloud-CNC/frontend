@@ -39,7 +39,7 @@ export default {
 
   //Pre-render plugins
   plugins: [
-    '~/plugins/persisted-state.client.ts'
+    '@/plugins/persisted-state.client.ts'
   ],
 
   //Auto import components
@@ -53,9 +53,10 @@ export default {
 
   //Modules
   modules: [
-    '@nuxtjs/pwa',
     '@/modules/meta.ts',
-    '@/modules/plugin/index.ts'
+    '@/modules/plugin/index.ts',
+    '@nuxtjs/pwa',
+    'portal-vue/nuxt'
   ],
 
   //PWA module configuration

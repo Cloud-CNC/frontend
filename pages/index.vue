@@ -1,16 +1,16 @@
 <template>
   <div>
     <h1>Before</h1>
-    <slot name="inbetween">
+    <plugin-target name="inbetween" multiple>
       <h1>Default</h1>
-    </slot>
+    </plugin-target>
     <h1>After</h1>
   </div>
 </template>
 
 <script lang="ts">
 //Imports
-import Vue from 'vue'
+import Vue from 'vue';
 
 //Export
 export default Vue.extend({

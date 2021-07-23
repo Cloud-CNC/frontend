@@ -18,6 +18,7 @@ export const directories = [
   'middleware',
   'pages',
   'plugins',
+  'portals',
   'static',
   'store'
 ];
@@ -53,8 +54,6 @@ export const watchSource = (source: string) =>
   {
     //Compute new path
     const newPath = oldPath.replace(source, merged);
-
-    throw new Error(`Unlinking ${newPath} (Old: ${oldPath})`);
 
     //Delete the file
     await remove(newPath);

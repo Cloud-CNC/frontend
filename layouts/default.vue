@@ -7,7 +7,7 @@
             alt="Cloud CNC icon"
             class="icon"
             :src="
-              require(`~/assets/icon-${
+              require(`@/assets/icon-${
                 $vuetify.theme.dark ? 'dark' : 'light'
               }.png`)
             "
