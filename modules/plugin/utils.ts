@@ -3,7 +3,7 @@
  */
 
 //Imports
-import {copy, remove} from 'fs-extra';
+import {copy, existsSync, remove} from 'fs-extra';
 import {resolve} from 'path';
 import {watch} from 'chokidar';
 
@@ -32,6 +32,37 @@ export const base = resolve(__dirname, '..', '..');
  * Fully-qualified merged source code directory
  */
 export const merged = resolve(base, 'merged');
+
+/**
+ * Resolve a module path
+ * @param root Plugin root directory
+ * @param source Plugin source directory
+ * @param raw Raw module path
+ * @returns Fully-qualified module path
+ */
+export const resolveModule = (root: string, source: string, raw: string) =>
+{
+  //Relative to source
+  if (raw.startsWith('@/') || raw.startsWith('~/'))
+  {
+    return resolve(root, source, raw.substring(2));
+  }
+  //Relative to root
+  else if (existsSync(resolve(root, raw)))
+  {
+    return resolve(root, raw);
+  }
+  //Relative to Node module
+  else if (existsSync(resolve(root, 'node_modules', raw)))
+  {
+    return resolve(root, 'node_modules', raw); 
+  }
+  //Unknown
+  else
+  {
+    return raw;
+  }
+};
 
 /**
  * Watch source code in the specified directory

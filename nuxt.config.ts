@@ -47,16 +47,16 @@ export default {
 
   //Modules for dev and build
   buildModules: [
+    '@/modules/meta.ts',
     '@nuxt/typescript-build',
-    '@nuxtjs/vuetify'
+    '@nuxtjs/pwa',
+    '@nuxtjs/vuetify',
+    'portal-vue/nuxt'
   ],
-
+  
   //Modules
   modules: [
-    '@/modules/meta.ts',
-    '@/modules/plugin/index.ts',
-    '@nuxtjs/pwa',
-    'portal-vue/nuxt'
+    '@/modules/plugin/index.ts'
   ],
 
   //PWA module configuration

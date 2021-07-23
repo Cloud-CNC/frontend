@@ -10,7 +10,7 @@ import extractMeta from '../../lib/extract-meta';
 import getPlugins from './get-plugins';
 import jiti from 'jiti';
 import {Module, NuxtConfig} from '@nuxt/types';
-import {base, directories, merged, watchSource} from './utils';
+import {base, directories, merged, resolveModule, watchSource} from './utils';
 import {resolve} from 'path';
 import {copy, ensureDir, emptyDir, existsSync, readdir} from 'fs-extra';
 import {merge} from 'lodash';
@@ -58,29 +58,45 @@ const module: Module = async function ()
       //Get the config
       const config = (file.default || file) as NuxtConfig;
 
+      //Add build modules
+      if (config.buildModules != null)
+      {
+        for (let module of config.buildModules)
+        {
+          //Resolve module paths
+          if (typeof module == 'string')
+          {
+            module = resolveModule(plugin.directory, plugin.source || plugin.directory, module);
+          }
+          //Resolve module paths with config
+          else if (Array.isArray(module) && typeof module[0] == 'string')
+          {
+            module[0] = resolveModule(plugin.directory, plugin.source || plugin.directory, module[0]);
+          }
+
+          //Add the module
+          this.addModule(module);
+        }
+      }
+
       //Add modules
       if (config.modules != null)
       {
-        for (const module of config.modules)
+        for (let module of config.modules)
         {
-          //Module paths
+          //Resolve module paths
           if (typeof module == 'string')
           {
-            this.addModule(resolve(plugin.directory, module));
+            module = resolveModule(plugin.directory, plugin.source || plugin.directory, module);
           }
-          //Module paths with config
-          else if (Array.isArray(module) && module.length == 2 && typeof module[0] == 'string')
+          //Resolve module paths with config
+          else if (Array.isArray(module) && typeof module[0] == 'string')
           {
-            this.addModule([
-              resolve(plugin.directory, module[0]),
-              module[1]
-            ]);
+            module[0] = resolveModule(plugin.directory, plugin.source || plugin.directory, module[0]);
           }
-          //Inline modules
-          else
-          {
-            this.addModule(module);
-          }
+
+          //Add the module
+          this.addModule(module);
         }
       }
 
