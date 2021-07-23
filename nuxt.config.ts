@@ -15,7 +15,7 @@ export default {
   //Global page headers
   head: {
     titleTemplate: '%s - Cloud CNC',
-    title: 'Cloud CNC',
+    title: 'Home',
     meta: [
       {charset: 'utf-8'},
       {name: 'viewport', content: 'width=device-width, initial-scale=1'},
