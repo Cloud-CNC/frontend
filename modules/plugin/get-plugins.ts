@@ -47,7 +47,9 @@ export default (root: string) =>
   }
 
   //Filter dependencies
-  const plugins = Object.entries(rootPkg.dependencies).flatMap(([key, value]) =>
+  const plugins = [] as Plugin[];
+
+  for (const [key, value] of Object.entries(rootPkg.dependencies))
   {
     //Filter non-plugins
     if (key.startsWith('@cloud-cnc/plugin-') || key.startsWith('cloud-cnc-plugin-'))
@@ -74,13 +76,10 @@ export default (root: string) =>
         source: dependencyPkg['cloud-cnc'].frontend.source
       };
 
-      return [plugin];
+      //Add the plugin
+      plugins.push(plugin);
     }
-    else
-    {
-      return [];
-    }
-  });
+  }
 
   return plugins;
 };
