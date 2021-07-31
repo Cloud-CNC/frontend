@@ -36,7 +36,9 @@ interface Plugin
 export default (root: string) =>
 {
   //Read the package
-  const rootPkg = readPackageSync();
+  const rootPkg = readPackageSync({
+    cwd: root
+  });
 
   //Ensure there are dependencies
   if (rootPkg.dependencies == null)
