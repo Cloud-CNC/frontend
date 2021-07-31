@@ -36,6 +36,8 @@
         "./*"
       ]
     },
+
+    /* Ambient types */
     "types": [
       "@nuxt/types",
       "@types/node",

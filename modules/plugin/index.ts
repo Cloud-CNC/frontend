@@ -50,18 +50,18 @@ const module: Module = async function ()
       //Compute config path
       const configPath = resolve(plugin.directory, plugin.config!);
 
-      //Execute and load the config file
-      const file = jiti(plugin.directory, {
+      //Load the plugin config
+      const config = jiti(plugin.directory, {
         requireCache: false
       })(configPath);
 
-      //Get the config
-      const config = (file.default || file) as NuxtConfig;
+      //Get the export
+      const configExport = (config.default || config) as NuxtConfig;
 
       //Add build modules
-      if (config.buildModules != null)
+      if (configExport.buildModules != null)
       {
-        for (let module of config.buildModules)
+        for (let module of configExport.buildModules)
         {
           //Resolve module paths
           if (typeof module == 'string')
@@ -80,9 +80,9 @@ const module: Module = async function ()
       }
 
       //Add modules
-      if (config.modules != null)
+      if (configExport.modules != null)
       {
-        for (let module of config.modules)
+        for (let module of configExport.modules)
         {
           //Resolve module paths
           if (typeof module == 'string')
@@ -101,7 +101,7 @@ const module: Module = async function ()
       }
 
       //Merge options into Nuxt options
-      this.options = merge(this.options, typeof config.default == 'object' ? config.default : config);
+      this.options = merge(this.options, typeof configExport.default == 'object' ? configExport.default : configExport);
 
       //Add config to watch
       this.options.watch.push(resolve(plugin.directory, plugin.config));
@@ -129,6 +129,9 @@ const module: Module = async function ()
         watchSource(sourceDirectory);
       }
     }
+
+    //Log
+    console.log(`Loaded plugin ${plugin.name} (From ${plugin.directory})`);
   }
 
   //Watch for changes in development
